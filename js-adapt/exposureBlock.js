@@ -81,7 +81,7 @@ function ExposureBlock(params) {
     // STIMULI
     // install normal stimuli
     this.stimuliObj = stimObj;
-    this.vid = install_stimuli(stimObj, css_stim_class);
+    this.vid = stimObj.install(css_stim_class);
 
     // "switch" to catch stimuli for given stimuli object (must have catchFilenameFormatter specified...)
     if (typeof catchStimObj === 'undefined') {
@@ -93,7 +93,7 @@ function ExposureBlock(params) {
                         })(stimObj);
     }
     this.catchStimuliObj = catchStimObj;
-    this.catchVid = install_stimuli(this.catchStimuliObj, css_stim_class+'catch');
+    this.catchVid = this.catchStimuliObj.install(css_stim_class+'catch');
     
     ////////////////////////////////////////////////////////////////////////////////
     // create and link up test block
@@ -451,133 +451,6 @@ ExposureBlock.prototype = {
 };
 
 
-// // bind a keyup handler for catch trial hits:
-// $(document).bind('keydown.exposure', function(e) {
-//     if (keyCaptureCatch && catchRespKeys[String(e.which)]) {
-//         // turn off further keyboard handling (to prevent recording multiple presses)
-//         keyCaptureCatch = false;
-//         // record trial counter, response
-//         var resp = [exposureInfo(), absURLtoFilename(catchVid[exposureStims[expCounter]].currentSrc),
-//                     catchRespKeys[String(e.which)]].join();
-//         $('#expResp').val($('#expResp').val() + resp + respDelim);
-//         return false;
-//     } else if (e.which==32) {
-//         // returning false in JQuery suppresses default spacebar behavior (usually a pagedown)
-//         // this is important in the MTurk frame since pressing spacebar could
-//         // move the window away from the frame with the experiment in it...
-//         return false;
-//     }
-// });
-
-// // handler for video-ended events. record catch trials misses, and go
-// // on to next trial.
-// $(".vidStim").bind("ended", function() {
-//                        // skip normal end-of-stimuli processing during preview when expCounter == -1
-//                        // (necessary to avoid triggering next-trial code during preview mode)
-//                        if (expCounter < 0) {
-//                            return false;
-//                        }
-//                        // increment progressbar
-//                        plusPB("progressBar", pbIncrementSize);
-//                        setTimeout(function() {
-//                                       // RECORD MISSED CATCH TRIALS
-//                                       if (keyCaptureCatch) {
-//                                           // the click handler sets keyCaptureCatch to false so it will only be true
-//                                           // on missed catch trials
-//                                           var resp = [exposureInfo(), absURLtoFilename(catchVid[exposureStims[expCounter]].currentSrc), 'miss'].join();
-//                                           $('#expResp').val($('#expResp').val() + resp + respDelim);
-//                                           keyCaptureCatch = false;
-//                                       }
-
-//                                       // start the next trial, or signal the end of a block
-//                                       if (expTrials.has(expCounter+1)) {
-//                                           // trigger a block of test trials
-//                                           $("#expInstructions").hide();
-//                                           $(document).trigger('testBreak');
-//                                       } else {
-//                                           $(document).trigger("nextExposureTrial");
-//                                       }
-//                                   }, expITI);
-//                    });
-
-
-
-$(document).ready(function() {
-    // this function is in experiment-specific js code (see expt_*.js)
-    //installVideos();
-    
-    //exposureBlock = 
-    // binding to $(document) allows triggering from anywhere (including at the beginning of the experiment).
-    // $(document).bind("nextExposureTrial", function() {
-    //     $("#expInstructions").show();
-    //     expCounter++;
-    //     $('#expStatus').html('n = ' + expCounter);
-    //     // check for catch trial
-    //     if (catchTrials.has(expCounter)) {
-    //         showCatch();
-    //         // may need to setTimeout this to happen not at the beginning of the video but when
-    //         // the catch dot appears...
-    //         keyCaptureCatch = true;
-    //         catchVid[exposureStims[expCounter]].play();
-    //     } else {
-    //         // play normal exposure stimulus
-    //         showExposure();
-    //         vid[exposureStims[expCounter]].play();
-    //     }
-    // });
-
-    // // ALTERNATIVE IMPLEMENTATION for catch trials: respond with clicks (not debugged, use w/ caution)
-    // // record catch trial false alarms (clicks on non-catch videos)
-    // $(vid).click(function() {
-    //     var resp = [exposureInfo(), absURLtoFilename(vid.currentSrc), 'FA'].join();
-    //     $('#expResp').val($('#expResp').val() + resp + "\n");
-    // });
-
-    // // record catch trial hits (correct clicks)
-    // $(catchVid).click(function(e) {
-    //     if (keyCaptureCatch) {
-    //         var resp = [exposureInfo(), absURLtoFilename(catchVid.currentSrc), 'hit'].join();
-    //         $('#expResp').val($('#expResp').val() + resp + "\n");
-    //         keyCaptureCatch = false;
-    //     }
-    // });
-
-    $('#expStatus').html('Exposure block loaded');
-    // DEBUGGING: add button to start exposure block
-    $("#buttons").append("<input type='button' value='startExp' onclick='$(document).trigger(\"nextExposureTrial\");'></button>");
-});
-
-// hide stimuli videos (in a robust way), and show the specified catch video,
-// defaulting to the current stimulus
-function showCatch(n) {
-    n = typeof(n) != 'undefined' ? n : exposureStims[expCounter];
-    $(".vidStim").height(0);
-    $(catchVid[n]).height(vidHeight);
-}
-// hide all video stimuli and show normal (non-catch) video
-function showExposure(n) {
-    n = typeof(n) != 'undefined' ? n : exposureStims[expCounter];
-    $(".vidStim").height(0);
-    $(vid[n]).height(vidHeight);
-}
-
-// pseudorandomly distribute catch trials
-function catchTrialsInit() {
-    var i = 0;
-    var numExpTrials = expTrials[expTrials.length-1];
-    var interval = Math.ceil(numExpTrials / numCatchTrials);
-    catchTrials = [];
-    while (i < numExpTrials) {
-        var n;
-        // ensure that the last block's catch trial is actually a valid trial number
-        do {
-            n = i+Math.floor(Math.random()*interval);
-        } while (n >= numExpTrials);
-        catchTrials.push(n);
-        i += interval;
-    }
-}
-
 // strip off everything but the filename tail from an absolute URL (like that
 // returned by video.currentSrc)
 function absURLtoFilename(url) {
@@ -586,14 +459,6 @@ function absURLtoFilename(url) {
     // Should it be?: /[^\/]*$/
     return /[^/]*$/.exec(url);
 }
-
-
-// convert category and number to video filename
-function vidFilenames(category, aud) {
-    return [prefix + 'V' + category + 'A' + aud + vidSuffix,
-            prefix + 'V' + category + 'a' + aud + 'C' + vidSuffix];
-}
-
 
 // function for array membership
 Array.prototype.has=function(v){
