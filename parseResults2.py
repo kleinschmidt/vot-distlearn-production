@@ -66,24 +66,23 @@ if __name__ == '__main__':
     cfg.read(fncfg)
 
     exptname = cfg.get('Experiment', 'name')
+
+    # Check whether or not to add assignments on HITs where errors were reported
+    # ...in the config file:
     try: 
         replaceErrors = cfg.get('Experiment', 'extendErrors')
     except ConfigParser.NoOptionError:
         replaceErrors = False
-
+    # ...in the command line arguments:
     for args in sys.argv:
         if args == '-extendErrors':
             replaceErrors = True
 
     # open connection to mturk if hits are going to be extended
     if replaceErrors:
-        keyscfg = ConfigParser.SafeConfigParser()
-        keyscfg.read('keys.cfg')
         try:
             print("  Opening MTurk connection...")
-            conn = MTurkConnection(aws_access_key_id=keyscfg.get('Keys', 'access_key'), \
-                                   aws_secret_access_key=keyscfg.get('Keys', 'secret_key'), \
-                                   is_secure=True)
+            conn = MTurkConnection(is_secure=True)
             print("    success!")
         except AWSConnectionError as reason:
             print("    Connection failed: {0}".format(reason))

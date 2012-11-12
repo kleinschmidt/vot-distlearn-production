@@ -8,7 +8,9 @@ fi
 
 DIR="$( cd "$( dirname "$0" )" && pwd )"
 
-#cd /Users/dkleinschmidt/code/aws-mturk-clt-1.3.0/bin
+# you must specify the environment variable MTURK_CMD_HOME to point to the
+# directory where the AWS MTurk command lines tools have been installd.
+# see http://mturk.s3.amazonaws.com/CLT_Tutorial/UserGuide.html
 cd $MTURK_CMD_HOME/bin
 
 prefix=$1
@@ -28,7 +30,4 @@ done
 
 
 # retrieve results to temp file
-./getResults.sh -successfile ${DIR}/$prefix.success -outputfile ${DIR}/$prefix.results $@ #>> $DIR/$prefix.log
-# append contents of temp file to the base file, and cleanup temp file
-#cat $DIR/$prefix.results.temp >> $DIR/$prefix.results
-#rm $DIR/${1}.results.temp
+./getResults.sh -successfile ${DIR}/$prefix.success -outputfile ${DIR}/$prefix.results $@
