@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ExternalQuestion xmlns="http://mechanicalturk.amazonaws.com/AWSMechanicalTurkDataSchemas/2006-07-14/ExternalQuestion.xsd">
+  <ExternalURL>http://your.url.here/expt_vroomen_replication.html?blockOrder=${blockOrder}&amp;condition=${condition}&amp;testTrials=${testTrials}&amp;respKeys=${respKeys}</ExternalURL>
+  <FrameHeight>750</FrameHeight>
+</ExternalQuestion>
