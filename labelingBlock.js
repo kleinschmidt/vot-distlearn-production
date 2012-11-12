@@ -24,11 +24,19 @@ function LabelingBlock(params) {
         case 'ITI':
             this.ITI = params[p];
             break;
+        case 'respKeys':
+            this.respKeys = params[p];
+            break;
+        case 'categories':
+            this.categories = params[p];
+            break;
         default:
             break;
         }
     }
 
+    // set namespace for this block (prefix for events/form fields/etc.) and
+    // the class that the stimuli are assigned
     if (typeof(namespace) === 'undefined') {
         namespace = '';
         css_stim_class = 'stim';
@@ -37,6 +45,7 @@ function LabelingBlock(params) {
         this.namespace = namespace;
     }
 
+    // install stimuli
     if (typeof(stimuliObj) === 'undefined') {
         // ERROR
     }
@@ -57,8 +66,6 @@ function LabelingBlock(params) {
                        'name="' + namespace + 'Resp" ></textArea').appendTo('#mturk_form');
     $('#mturk_form').append('<br />');
     
-    
-    
 }
 
 
@@ -67,8 +74,8 @@ LabelingBlock.prototype = {
     blockReps: 1,
     stims: [],
     n: 0,
-    respKeys: {}, //{71: 'B', 72: 'D'},
-    categories: [], // ['B', 'D']
+    respKeys: undefined, //{71: 'B', 72: 'D'},
+    categories: undefined, // ['B', 'D']
     ncorrect: 0,
     keyCapture: false,
     tResp: -1,
@@ -135,16 +142,30 @@ LabelingBlock.prototype = {
         // initialize trial counter
         this.n = 0;
 
-        // populate the response key map from the global one
-        this.respKeys = respKeyMap;
-        // populate the category names from the global vector if it exists, or extract from the resp keys
-        if (typeof categories === 'undefined') {
-            this.categories = [];
-            for (k in this.respKeys) {
-                this.categories.push(k);
+        ////////////////////////////////////////////////////////////////////////////////
+        // initialize response keys and response labels:
+        // response keys can be provided to constructor, or default to global var respKeyMap
+        if (typeof this.respKeys === 'undefined') {
+            this.respKeys = respKeyMap;
+        }
+
+        // likewise response labels ('categories') can be provided to the constructor or
+        // set from the global (if it exists), or default to being extracted from the values
+        // of the response key mapping.
+        if (typeof this.categories === 'undefined') {
+            // populate the category names from the global vector if it exists, or extract from the resp keys
+            if (typeof categories === 'undefined') {
+                this.categories = [];
+                for (k in this.respKeys) {
+                    this.categories.push(this.respKeys[k]);
+                }
+            } else {
+                this.categories = categories;
             }
-        } else {
-            this.categories = categories;
+        }
+
+        if (!validateRespKeys(this.respKeys, this.categories)) {
+            return false;
         }
         
 
@@ -574,4 +595,14 @@ function extend(child, supertype)
 {
     child.prototype.__proto__ = supertype.prototype;
     child.prototype.__super__ = supertype.prototype;
+}
+
+function validateRespKeys(respKeys, categories) {
+    for (k in respKeys) {
+        if (! categories.has(respKeys[k])) {
+            if (console) console.log('ERROR: response label {0} not found in specified categories {1}'.format(respKeys[k], categories));
+            return false;
+        }
+    }
+    return true;
 }
