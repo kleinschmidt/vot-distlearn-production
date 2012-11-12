@@ -1,25 +1,23 @@
-// how many exposure trials have elapsed in current block. -1 before block is started
-//var expCounter = -1;
-// NOW .n below
-// inter-trial interval for exposure videos (in ms)
-//var expITI = 850;
-// global variables for exposure and catch video DOM elementsx
-//var vid, catchVid;
-// response keys for catch trials. 32 is SPACE; "miss" is triggered by code
-//var catchRespKeys = {32: "hit", miss: "miss"};
-// indicates whether keyboard input should be handled by catch trial handler
-//var keyCaptureCatch = false;
-// height of video, in pixels (TODO: should be set by code)
-var vidHeight = 288;
-// cumulative exposure trials at which catch video will be shown.
-// set randomly for each block.
-//var catchTrials = [];
-// which stimulus to show on each trial (only really necessary for conditions where there
-// are multiple different exposure stimuli).
-//var exposureStims = [];
-
-var exposureBlock;
-
+/*
+ * Author: Dave F. Kleinschmidt
+ *
+ *    Copyright 2012 Dave Kleinschmidt and
+ *        the University of Rochester BCS Department
+ *
+ *    This program is free software: you can redistribute it and/or modify
+ *    it under the terms of the GNU Lesser General Public License version 2.1 as
+ *    published by the Free Software Foundation.
+ *
+ *    This program is distributed in the hope that it will be useful,
+ *    but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *    GNU Lesser General Public License for more details.
+ *
+ *    You should have received a copy of the GNU Lesser General Public License
+ *    along with this program.
+ *    If not, see <http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html>.
+ *
+ */
 
 function ExposureBlock(params) {
     var stimObj, catchStimObj, testStimObj, testReps, namespace, css_stim_class, exposures, testITI;
