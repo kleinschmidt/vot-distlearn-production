@@ -41,7 +41,7 @@ def filter_outliers(arr):
     twosigup = nparr.mean() + nparr.std() *2
     twosigdown = nparr.mean() - nparr.std() *2
 
-    return filter(lambda x: (x < twosigup) and (x > twosigdown), nparr)
+    return [x for x in nparr if (x < twosigup) and (x > twosigdown)]
 
 parser = argparse.ArgumentParser(description='Calculate the min, max, mean, and'
                                               'median time workers took to do a'
