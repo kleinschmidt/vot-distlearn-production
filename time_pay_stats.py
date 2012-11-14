@@ -43,6 +43,31 @@ def filter_outliers(arr):
 
     return [x for x in nparr if (x < twosigup) and (x > twosigdown)]
 
+def submit_time_histogram(arr):
+    """
+    Use Matplotlib to plot a normalized histogram of submit times
+    """
+    from math import ceil, log
+    try:
+        import matplotlib.mlab as mlab
+        import matplotlib.pyplot as plt
+    except ImportError:
+        print('You must have Matplotlib installed to plot a histogram.')
+
+    # Use Sturges' formula for number of bins: k = ceiling(log2 n + 1)
+    k = ceil(log(len(arr), 2) + 1)
+    n, bins, patches = plt.hist(arr, k, normed=1, facecolor='green', alpha=0.75)
+    # throw a PDF plot on top of it
+    y = mlab.normpdf(bins, np.mean(arr), np.std(arr))
+    l = plt.plot(bins, y, 'r--', linewidth=1)
+
+    plt.xlabel('Submit Times (in Seconds)')
+    plt.ylabel('Probability')
+    plt.title('Histogram of Worker submit times')
+    plt.grid(True)
+
+    plt.show()
+
 parser = argparse.ArgumentParser(description='Calculate the min, max, mean, and'
                                               'median time workers took to do a'
                                               'particular HIT and what the'
@@ -51,6 +76,8 @@ parser.add_argument('-resultsfile', required=True, help='(required) Results file
 parser.add_argument('-pay', type=float, required=True, help='Pay per HIT')
 parser.add_argument('-removeoutliers', required=False, action="store_true",
                     default=False, help='Remove outlier values?')
+parser.add_argument('-plot', required=False, action="store_true",
+                    default=False, help='Plot a histogram of submit times')
 args = parser.parse_args()
 
 results = []
@@ -82,3 +109,6 @@ medpay = (HOUR / medsubmit) * args.pay
 print("Median hourly pay: ${:.2f}".format(medpay))
 maxpay = (HOUR / minsubmit) * args.pay
 print("Maximum hourly pay: ${:.2f}".format(maxpay))
+
+if args.plot:
+    submit_time_histogram(deltas)
