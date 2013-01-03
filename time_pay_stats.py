@@ -61,6 +61,12 @@ def submit_time_histogram(arr):
     y = mlab.normpdf(bins, np.mean(arr), np.std(arr))
     l = plt.plot(bins, y, 'r--', linewidth=1)
 
+    # drop a line in at the mean for fun
+    plt.axvline(np.mean(arr), color='blue', alpha=0.5)
+
+    #FIXME: come up with better legend names
+    plt.legend(('Normal Curve', 'Mean'))
+
     plt.xlabel('Submit Times (in Seconds)')
     plt.ylabel('Probability')
     plt.title('Histogram of Worker submit times')
@@ -76,6 +82,8 @@ parser.add_argument('-resultsfile', required=True, help='(required) Results file
 parser.add_argument('-pay', type=float, required=True, help='Pay per HIT')
 parser.add_argument('-removeoutliers', required=False, action="store_true",
                     default=False, help='Remove outlier values?')
+parser.add_argument('-removerejected', required=False, action="store_true",
+                    default=False, help='Remove rejected workers?')
 parser.add_argument('-plot', required=False, action="store_true",
                     default=False, help='Plot a histogram of submit times')
 args = parser.parse_args()
@@ -84,13 +92,20 @@ results = []
 with open(args.resultsfile, 'r') as resfile:
     results = list(DictReader(resfile, delimiter='\t'))
 
+if args.removerejected:
+    print("Workers before filtering rejected: {}".format(len(results)))
+    results = [x for x in results if x['assignmentstatus'] != 'Rejected']
+    print("Workers after filtering rejected: {}".format(len(results)))
+
 deltas = []
 for row in results:
     delta = parse(row['assignmentsubmittime']) - parse(row['assignmentaccepttime'])
     deltas.append(delta.total_seconds())
 
 if args.removeoutliers:
+    print("Workers before filtering outliers: {}".format(len(deltas)))
     deltas = filter_outliers(deltas)
+    print("Workers after filtering outliers: {}".format(len(deltas)))
 
 minsubmit = np.min(deltas)
 print("\nFastest time: {} seconds".format(minsubmit))
