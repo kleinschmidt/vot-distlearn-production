@@ -1,27 +1,43 @@
 # JS Adapt Demo
 
-This is a fully worked replication of an audio-visual speech adaptation study (with some extensions), which we ran over Mechanical Turk [and presented at CogSci 2012](http://www.academia.edu/1532335/Kleinschmidt_D._F._and_Jaeger_T._F._2012_._A_continuum_of_phonetic_adaptation_Evaluating_an_incremental_belief-updating_model_of_recalibration_and_selective_adaptation._In_CogSci12).  With these files you should be able to get off the ground with similar web-based speech perception experiments.  
+This is a fully worked replication of an audio-visual speech adaptation study (with some extensions), which we ran over [Amazon Mechanical Turk](http://www.mturk.com) and [presented at CogSci 2012](http://www.academia.edu/1532335/Kleinschmidt_D._F._and_Jaeger_T._F._2012_._A_continuum_of_phonetic_adaptation_Evaluating_an_incremental_belief-updating_model_of_recalibration_and_selective_adaptation._In_CogSci12).  With these files you should be able to get off the ground with similar web-based speech perception experiments.  
 
-## Quickstart
+There are three parts of this package: the code for specifying the details of this particular experiment (`expt_vroomen_replication.*`), the code for deploying this experiment on Mechanical Turk (configuration files in `hits/` and scripts in `mturk-utils`), and the core JavaScript code for implementing a range of different experiments (scripts in `js-adapt/`).
 
-To just run the demo of the experiment for yourself, download the source and point your browser to your local copy of `file:///path/to/mtadapt-demo/expt_vroomen_replication.html?condition=ambig`
+## Quickstart experiment demo
 
-## Workflow
+To just run the demo of the experiment for yourself, download the source and point your browser to your local copy of `file:///path/to/mtadapt-demo/expt_vroomen_replication.html?condition=ambig`.  
 
-This repository also contains all the files necessary for using Mechanical Turk to recruit participants and collect and retrieve data.  In order to do this, you need to host the HTML, JavaScript, and CSS files from the demo somewhere with a publicly visible URL.  The easiest way to do this is probably via a service like Dropbox, where you can drop the whole `mtadapt-demo` directory in and make it publicly visible.  Once you have an `http://` URL for the experiment HTML file, the workflow for running the experiment has NNN steps:
+## Workflow for running an experiment on Mechanical Turk
 
-1. Create the input files for the Amazon MT command line interface.  Examples are found in the `hits` subdirectory.  
+This repository also contains all the files necessary for using Mechanical Turk to recruit participants and collect and retrieve data.  In order to do this, you first need to install the set of shell scripts from Amazon which provide a command-line interface for Mechanical Turk.
+
+You also need to host the HTML, JavaScript, and CSS files for the demo somewhere with a publicly visible URL.  The easiest way to do this is probably via a service like Dropbox, where you can drop the whole `mtadapt-demo` directory in and make it publicly visible.  Once you have an `http://` URL for the experiment HTML file, the workflow for running the experiment has NNN steps:
+
+1. **Create the input files** for the Amazon MT command line interface.  Examples are found in the `hits` subdirectory.  
   * The `[experiment_name].properties` file specifies all the information visible to Turkers, including the title and description of the experiment HIT, the payment amount, and the amount of time they will have to complete the HIT.  The `.properties` file also specifies the number of assignments requested per HIT.
   * The `[experiment_name].input` file specifies the parameters of each HIT to be run, one on each line.  The first line gives the names of the parameters.
   * The `[experiment_name].question` file specifies how the parameters in the `.input` file are converted into something Mechanical Turk can actually display.  In this example, this is just a template for combining the parameters in the `.input` file into a URL, which Mechanical Turk automatically embeds in an `<iframe>` on the HIT's page.
 
-2. Post the batch of HITs to Mechanical Turk, using the `mturk-utils/run.sh` script.  This script takes the prefix of the files described above (the `[experiment name]` part), and optional flags for running on the Sandbox (rather than the production, recommended for debugging), `-sandbox`, or doing nothing at all but echoing the commands that would be run (useful to check that the right input files are being used), `-n`
-    mtadapt-demo $ mturk-utils/run.sh hits/vroomen-replication [-sandbox] [-n]
+2. **Post the batch of HITs to Mechanical Turk**, using the `mturk-utils/run.sh` script.  This script takes the prefix of the files described above (the `[experiment name]` part), and optional flags for running on the Sandbox (rather than the production, recommended for debugging), `-sandbox`, or doing nothing at all but echoing the commands that would be run (useful to check that the right input files are being used), `-n`
+
+        $ mturk-utils/run.sh hits/vroomen-replication [-sandbox] [-n]
+
+    Assuming that the HITs are successfully posted to Mechanical Turk, this results in a file listing the IDs of the HITs created, with the same prefix as the input files with an added date/time stamp and the `.success` suffix, as well as a `.log` file.  These files are symbolically linked to `[prefix]-LATEST.success` and `[prefix]-LATEST.log` files for convenience.
+
+3. **Retrieve and parse results**. When results are available, they can be fetched using the `mturk-utils/retrieve.sh` script, and then parsed with `mturk-utils/parseResults2.py`
+
+        $ mturk-utils/retrieve.sh hits/vroomen-replication-LATEST.success
+        $ mturk-utils/parseResults2.py hits/vroomen-replication-LATEST.results hits/vroomen_repl_results.cfg
     
-3. When results are available, they can be fetched using the `mturk-utils/retrieve.sh` script.  The resulting `.results` file can be parsed into `.csv` files, concatenating data from all subjects together by section and creating one file for each section (as specified in a configuration file).
+    The `.cfg` file specifies which sections of the experiment should be written to which `.csv` files and what the headers for each file are.  The resulting `.csv` files can be read into whatever software you like for analysis.
 
-
+    
 # Core library
 
 The core `js-adapt` javascript library orders and displays the stimuli, coordinates the various blocks of the experiment, excludes people who fail the pretest, collects the responses, and sends everything back to Amazon at the end.  It's included in this project (as a [subtree](http://psionides.eu/2010/02/04/sharing-code-between-projects-with-git-subtree/)), and is a separate repository that can be cloned [here](https://bitbucket.org/dkleinschmidt/jadapt) in case you want to include it in another project.  
+
+The documentation is sparse at the moment, but this library is designed to make extending the existing types of experimental blocks relatively easy.  Right now there are two types of blocks:  `LabelingBlock`, which collects classification responses to audio/visual stimuli, and `ExposureBlock` which shows series of passively viewed/listened to adaptor stimuli with interposed test blocks and optional catch trials.
+
+There are two extensions of the general `LabelingBlock` class, which demonstrate how you might extend this framework for your own purposes.  `CalibrationBlock` tests participants on a phonetic continuum, and then excludes participants with unacceptable performance.  `TestBlock` is a `LabelingBlock` which is interspersed throughout an `ExposureBlock` and which makes the appropriate callbacks when completed.
 

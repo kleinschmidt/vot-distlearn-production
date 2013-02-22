@@ -6,8 +6,9 @@ if [ $# -lt 1 ]; then
     exit 1
 fi 
 
-# store current directory to convert local to absolute paths and switch back to at end
-DIR="$( cd "$( dirname "$0" )" && pwd )"
+# use the directory that the script was called from, to be robust to changes in directory
+# structure of the mturk-utils and hits directories
+DIR="${PWD}"
 
 # you must specify the environment variable MTURK_CMD_HOME to point to the
 # directory where the AWS MTurk command lines tools have been installd.
@@ -66,6 +67,7 @@ fi
 # get line from properties files specifying number of assignments to print later
 assignments=`cat $DIR/$properties | grep assignments`
 
+echo ""
 echo "Loading HITs from $DIR"
 echo "  question: $question"
 echo "  properties: $properties (per-HIT $assignments)"
@@ -81,31 +83,46 @@ echo ""
 
 # concatenate prefix/timestamp/sandbox label into output filename base
 output=$prefix$optsuffix-$timestamp$sandbox
+echo "Writing output files with prefix"
+echo "  $output"
 
 # run the CLT command.
-$dryrun ./loadHITs.sh -label $DIR$output -question $DIR/$question -properties $DIR/$properties -input $DIR/$input $additionalFlags $@ > $DIR/$output.log
+loadCommand="./loadHITs.sh -label $DIR/$output -question $DIR/$question -properties $DIR/$properties -input $DIR/$input $additionalFlags $@ > $DIR/$output.log"
+$dryrun $loadCommand
 
 cd $DIR
 
 # show the output log.
-cat $output.log
+$dryrun cat $output.log
 
 # link the newly created output files to a stable symbolic link (prefix-LATEST.*)
-ln -fs $output.success $prefix$sandbox-LATEST.success
-ln -fs $output.log $prefix$sandbox-LATEST.log
+echo ""
+echo "Linking -LATEST success and log files..."
+$dryrun ln -fs $output.success $prefix$sandbox-LATEST.success
+$dryrun ln -fs $output.log $prefix$sandbox-LATEST.log
 
-# concatenate all output/input files together
+# concatenate all success/input files together, stripping off header if the -ALL file already exists.
+
+echo ""
 if [ ! -f $prefix$sandbox-ALL.success ]
 then
-    cat $output.success > $prefix$sandbox-ALL.success
+    echo "Appending to existing .success file $prefix$sandbox-ALL.success..."
+    successCatCommand="cat $output.success > $prefix$sandbox-ALL.success"
 else
-    tail -n+2 $output.success >> $prefix$sandbox-ALL.success
+    echo "Creating new -ALL.success file for this prefix: $prefix$sandbox-ALL.success..."
+    successCatCommand="tail -n+2 $output.success >> $prefix$sandbox-ALL.success"
 fi
+$dryrun $successCatCommand
 
+echo ""
 if [ ! -f $prefix$sandbox-ALL.input ]
 then
-    cat $input > $prefix$sandbox-ALL.input
+    echo "Appending to existing .input file $prefix$sandbox-ALL.input..."
+    inputCatCommand="cat $input > $prefix$sandbox-ALL.input"
 else
-    tail -n+2 $intput >> $prefix$sandbox-ALL.input
+    echo "Creating new -ALL.input file for this prefix: $prefix$sandbox-ALL.input..."
+    inputCatCommand="tail -n+2 $intput >> $prefix$sandbox-ALL.input"
 fi
+$dryrun $inputCatCommand
 
+echo ""
