@@ -6,7 +6,10 @@ if [ $# -lt 1 ]; then
     exit 1
 fi
 
-DIR="$( cd "$( dirname "$0" )" && pwd )"
+#DIR="$( cd "$( dirname "$0" )" && pwd )"
+# use the directory that the script was called from, to be robust to changes in directory
+# structure of the mturk-utils and hits directories
+DIR=${PWD}
 
 # you must specify the environment variable MTURK_CMD_HOME to point to the
 # directory where the AWS MTurk command lines tools have been installd.
