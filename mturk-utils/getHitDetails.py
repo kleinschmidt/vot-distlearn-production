@@ -57,13 +57,13 @@ for h in all_hits:
         break
 
 for c in currhits:
-        print('HITId: {}'.format(c.HITId))
-        print('HITTypeId: {}'.format(c.HITTypeId))
-        print('Title: {}'.format(c.Title))
-        print('Description: {}'.format(c.Description))
-        print('keywords: {}'.format(c.Keywords))
-        print('Reward: {}'.format(c.FormattedPrice))
-        print('Max Assignments: {}'.format(c.MaxAssignments))
-        print('Available: {}'.format(c.NumberOfAssignmentsAvailable))
-        print('Pending: {}'.format(c.NumberOfAssignmentsPending))
-        print('Complete: {}'.format(c.NumberOfAssignmentsCompleted))
+    print('HITId: {}'.format(c.HITId))
+    print('HITTypeId: {}'.format(c.HITTypeId))
+    print('Title: {}'.format(c.Title))
+    print('Description: {}'.format(c.Description))
+    print('keywords: {}'.format(c.Keywords))
+    print('Reward: {}'.format(c.FormattedPrice))
+    print('Max Assignments: {}'.format(c.MaxAssignments))
+    print('Available: {}'.format(c.NumberOfAssignmentsAvailable))
+    print('Pending: {}'.format(c.NumberOfAssignmentsPending))
+    print('Complete: {}'.format(c.NumberOfAssignmentsCompleted))

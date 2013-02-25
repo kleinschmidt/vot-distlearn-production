@@ -29,5 +29,6 @@ mtc = MTurkConnection(is_secure=True)
 all_hits = mtc.get_all_hits()
 
 for h in all_hits:
-    print("ID: {}, Title: {}, Available: {}, Completed: {}, Pending: {}".format(h.HITId, h.Title, h.NumberOfAssignmentsAvailable, h.NumberOfAssignmentsCompleted, h.NumberOfAssignmentsPending))
-
+    print("ID: {}, Title: {}, Available: {}, Completed: {}, Pending: {}".format(
+        h.HITId, h.Title, h.NumberOfAssignmentsAvailable,
+        h.NumberOfAssignmentsCompleted, h.NumberOfAssignmentsPending))
