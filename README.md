@@ -12,7 +12,7 @@ To just run the demo of the experiment for yourself, download the source and poi
 
 This repository also contains all the files necessary for using Mechanical Turk to recruit participants and collect and retrieve data.  In order to do this, you first need to install the set of shell scripts from Amazon which provide a command-line interface for Mechanical Turk.
 
-You also need to host the HTML, JavaScript, and CSS files for the demo somewhere with a publicly visible URL.  The easiest way to do this is probably via a service like Dropbox, where you can drop the whole `mtadapt-demo` directory in and make it publicly visible.  Once you have an `http://` URL for the experiment HTML file, the workflow for running the experiment has NNN steps:
+You also need to host the HTML, JavaScript, and CSS files for the demo somewhere with a publicly visible URL.  The easiest way to do this is probably via a service like Dropbox, where you can drop the whole `mtadapt-demo` directory in and make it publicly visible.  Once you have an `http://` URL for the experiment HTML file, the workflow for running the experiment has three steps:
 
 1. **Create the input files** for the Amazon MT command line interface.  Examples are found in the `hits` subdirectory.  
     * The `[experiment_name].properties` file specifies all the information visible to Turkers, including the title and description of the experiment HIT, the payment amount, and the amount of time they will have to complete the HIT.  The `.properties` file also specifies the number of assignments requested per HIT.
