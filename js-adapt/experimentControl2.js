@@ -156,9 +156,23 @@ Experiment.prototype = {
     wrapup: function(why) {
         if (typeof(why)==='undefined') {
             // success
+            // no error reported to callback
+            $("#instructions").html("<h3>Thanks for participating!</h3>" +
+                                    "<p>That's the end of the experiment!  Just a few more things for you to answer.</p>")
+                .show();
         } else {
             // error?
+            // any parameter not undefined is assumed to be an error, so record it and then wrap up.
+            $("#experimentStatus").append("wrapup called: " + why + "<br />");
+            $("#errors").val($("#errors").val() + why + respDelim);
+            $("#instructions").html("<h3>Experiment is over</h3>" +
+                                    "<p>Unfortunately, we were not able to calibrate the experiment to your hearing and audio system, and this is the end of the experiment.  If you have any comments, please write them in the box below before submitting this HIT.  Thank you for participating.</p>")
+                .show();
         }
+        
+        // mturk_end_surveys_and_submit() is a function in js-adapt/mturk-helpers.js
+        // which steps through the demographics/audio equipment surveys and then submits.
+        continueButton(mturk_end_surveys_and_submit);
     }
 };
 
