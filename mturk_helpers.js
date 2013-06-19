@@ -160,6 +160,24 @@ $(document).ready(function() {
                       
                   });
 
+// function to run through RSRB demographic and audio/comments forms and then submit
+var mturk_end_surveys_and_submit = function() {
+    $("#instructions").hide();
+    $('#mturk_form #rsrb').show();
+    $('#mturk_form #rsrb *').show();
+    continueButton(function() {
+                       $('#mturk_form #rsrb').hide();
+                       $('#mturk_form #endForm').show();
+                       $('#mturk_form #endForm *').show();
+                       
+                       // post back to amazon
+                       $("#contText").text('Submit');
+                       continueButton(function() {
+                                          $("#mturk_form").submit();
+                                      });
+                   });
+
+}
 
 // python style string formatting.  Replace {0} with first argument, {1} with second, etc.
 String.prototype.format = function() {
