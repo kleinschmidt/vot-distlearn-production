@@ -146,7 +146,7 @@ form#mturk_form * {
     display: none;
 }
 
-div#endForm {
+div.survey {
     width: 100%;
     border: 5px solid #cccccc;
     background-color: #eeeeee;
@@ -155,8 +155,20 @@ div#endForm {
     font-size: 14pt;
 }
 
-div#endForm * {
+div.survey * {
     margin: 10px;
+}
+
+div.survey ul {
+    list-style-type: none;
+}
+
+div.survey ul > li {
+    margin: 0px;
+}
+
+div.survey#rsrb > button {
+    height: 0px;
 }
 
 select#audioEquip {
