@@ -1,3 +1,29 @@
+/*
+ * Author: Dave Kleinschmidt
+ * 
+ * Design based on the experiment reported by Vroomen, J., Van Linden, S., 
+ * De Gelder, B., & Bertelson, P. (2007). Visual recalibration and selective 
+ * adaptation in auditory-visual speech perception: Contrasting build-up courses. 
+ * Neuropsychologia, 45(3), 572–7. doi:10.1016/j.neuropsychologia.2006.01.031)
+ * 
+ * Stimuli and advice were graciously provided to us by Jean Vroomen.
+ * 
+ *    Copyright 2012 Dave Kleinschmidt and
+ *        the University of Rochester BCS Department
+ *
+ *    This program is free software: you can redistribute it and/or modify
+ *    it under the terms of the GNU Lesser General Public License version 2.1 as
+ *    published by the Free Software Foundation.
+ *
+ *    This program is distributed in the hope that it will be useful,
+ *    but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *    GNU Lesser General Public License for more details.
+ *
+ *    You should have received a copy of the GNU Lesser General Public License
+ *    along with this program.
+ *    If not, see <http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html>.
+ */
 
 // delimiter which separates (comma-delimited) records in data fields.
 var respDelim = ';';
