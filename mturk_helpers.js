@@ -138,13 +138,28 @@ function checkDebug(params) {
 var logoDiv = '<div id="logo"><img src="logo.png" /></div>';
 
 // consent and consent form
-var consentFormDiv = '<div id="consent">By accepting this HIT, you confirm that you have read and understood the <a target="_blank" href="http://www.hlp.rochester.edu/consent/English_2013-05-13.pdf">consent form</a>, that you are willing to participate in this experiment, and that you agree that the data you provide by participating can be used in scientific publications (no identifying information will be used). Sometimes it is necessary to share the data elicited from you &mdash; including sound files &mdash; with other researchers for scientific purposes (for replication purposes). That is the only reason for which we will share data and we will only share data with other researchers and only if it is for non-commercial use. Identifying information will <span style="font-weight:bold;">never</span> be shared (your MTurk ID will be replaced with an arbitrary alphanumeric code).</div>';
+var consentFormDiv = '<div id="consent">By accepting this HIT, you confirm that you have read and understood the <a target="_blank" href="http://www.hlp.rochester.edu/consent/English_2014-05-13.pdf">consent form</a>, that you are willing to participate in this experiment, and that you agree that the data you provide by participating can be used in scientific publications (no identifying information will be used). Sometimes it is necessary to share the data elicited from you &mdash; including sound files &mdash; with other researchers for scientific purposes (for replication purposes). That is the only reason for which we will share data and we will only share data with other researchers and only if it is for non-commercial use. Identifying information will <span style="font-weight:bold;">never</span> be shared (your MTurk ID will be replaced with an arbitrary alphanumeric code).</div>';
 
 // technical difficulty
 var techDiffDiv = '<p id="techdifd">Sometimes it can happen that technical difficulties cause experimental scripts to freeze so that you will not be able to submit a HIT. We are trying our best to avoid these problems. Should they nevertheless occur, we urge you to contact us.</p>';
 
 // follow-up and blog link
 var blogLinkDiv = '<div id="blogLink">If you are interested in hearing how the experiments you are participating in help us to understand the human brain, feel free to subscribe to our <a href="http://hlplab.wordpress.com/">lab blog</a> on which we announce new findings. Note that typically about one year passes before an experiment is published.</div>';
+
+// load end-of-experiment surveys
+$(document).ready(function() {
+                      // load demographic survey into div in form
+                      $('form#mturk_form')
+                          .append($('<div id="rsrb" class="survey">')
+                                  .load('js-adapt/rsrb_survey.html #rsrb > *'));
+
+                      // load audio equipment/comment survey into div in form
+                      $('form#mturk_form')
+                          .append($('<div id="endForm" class="survey"></div>')
+                                  .load('js-adapt/audio_comments_form.html #endForm > *'));
+                      
+                  });
+
 
 // python style string formatting.  Replace {0} with first argument, {1} with second, etc.
 String.prototype.format = function() {
