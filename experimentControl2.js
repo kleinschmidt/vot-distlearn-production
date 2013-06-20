@@ -76,7 +76,6 @@ Experiment.prototype = {
             this.wrapup();
         } else {
             // if the block is given as a function, evaluate that function to create real block
-            // handle blocks in format of function.
             if (typeof this_block.block === 'function') {
                 // functions should take a callback as first argument.
                 this_block.blockfcn = this_block.block;
