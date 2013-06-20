@@ -28,13 +28,13 @@
  *      is added initially.
  */
 
-function VisworldBlock(params) {
+function MyNewBlock(params) {
     if (typeof(params['text'] !== 'undefined')) {
         this.text = params['text'];        
     }
 }
 
-VisworldBlock.prototype = {
+MyNewBlock.prototype = {
     text: 'Hello, world!',
     run: function() {
         $("#instructions").text(this.text);
