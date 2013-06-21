@@ -1,0 +1,50 @@
+div#visworldContainer {
+    width: 750px;
+    height: 750px;
+    border: 5px solid #dddddd;
+    position: relative;
+}
+
+div#visworldContainer > div#readyWaitContainer {
+    position: absolute;
+    width: 100px;
+    height: 100px;
+    margin-left: -50px;
+    margin-top: -50px;
+    top: 50%;
+    left: 50%;
+}
+
+
+/* top-left */
+[vw_pos="0"] {
+    border: 5px solid red;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+/* top-right */
+[vw_pos="1"] {
+    border: 5px solid blue;
+    position: absolute;
+    top:0;
+    right:0;
+}
+
+/* bottom-right */
+[vw_pos="2"] {
+    border: 5px solid green;
+    position: absolute;
+    bottom:0;
+    right:0;
+}
+
+/* bottom-left */
+[vw_pos="3"] {
+    border: 5px solid orange;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+}
+
