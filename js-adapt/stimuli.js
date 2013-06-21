@@ -21,12 +21,17 @@
 
 var vidSuffix, audSuffix;
 
+// constructor: just copy JSON properties into this object
 function Stimuli(baseobj) {
     $.extend(this, baseobj);
 };
 
 // default values
 Stimuli.prototype = {
+    // default value of calibReps is empty array
+    calibReps: [],
+    
+    // create a new object which is a subset of these stimuli
     subset: function(subinds) {
         // deep copy of original object
         var newstims = $.extend(true, {}, this);
@@ -51,9 +56,12 @@ Stimuli.prototype = {
         // check to see if indices are specified in object; if not, create them as range...
         var indices = typeof(this.indices)==='undefined' ? range(this.continuum.length) : this.indices;
 
+        // if stimuli are already installed, can skip this (see else below) 
         if (typeof(this.installed) == 'undefined') {
             var _self = this;
             // create temporary class to pick out stimuli installed right now.
+            // (this is necessary because other stimuli might share the same css_class, especially
+            // if doing a concatenate_stimuli_and_install for multiple sets)
             var tmp_css_class = 'tmpclass' + Math.floor(Math.random() * 1000000);
             // handle audio and video separately (default to audio if type not specified)
             switch(typeof(this.mediaType) != 'undefined' ? this.mediaType : 'audio')
@@ -86,10 +94,12 @@ Stimuli.prototype = {
                                        height(0).
                                        load();
                                });
-                break;
+                break; 
             }
 
+            // gather up the DOM elements for the new stimuli and add them to the object
             this.installed = $.makeArray($('.' + tmp_css_class));
+            // ...then remove the temporary CSS class.
             $(this.installed).removeClass(tmp_css_class);
         } else {
             // already installed. just add css class
@@ -99,7 +109,11 @@ Stimuli.prototype = {
         }
 
         return(this.installed);
+    },
 
+    // default file name formatter just indexes stored filenames.
+    filenameFormatter: function(n, prefix) {
+        return(prefix + this.filenames[n]);
     }
 };
 
