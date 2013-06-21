@@ -84,7 +84,7 @@ function LabelingBlock(params) {
     
     // create responses form element and append to form
     this.respField = $('<textArea id="' + namespace + 'Resp" ' +
-                       'name="' + namespace + 'Resp" ></textArea').appendTo('#mturk_form');
+                       'name="' + namespace + 'Resp" ></textArea>').appendTo('#mturk_form');
     $('#mturk_form').append('<br />');
     
 }
