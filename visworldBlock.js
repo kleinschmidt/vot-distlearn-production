@@ -131,10 +131,7 @@ VisworldBlock.prototype = {
     run: function() {
         var _self = this;
         this.init();
-        continueButton(function() {
-                           $("#instructions").hide();
-                           _self.next();
-                       });
+        this.familiarize();
     },
 
     init: function() {
@@ -180,6 +177,7 @@ VisworldBlock.prototype = {
     },
     next: function() {
         var _self = this;
+        $('#readyWaitContainer img#wait').show();
         // after ITI, turn on "ready" light, and display images
         setTimeout(function() {
                        $('#readyWaitContainer img#wait').hide().siblings('img#ready').show();
@@ -222,7 +220,6 @@ VisworldBlock.prototype = {
         if (this.clickCapture) {
             this.tResp = Date.now();
             this.clickCapture = false;
-            console.log(e.target.id);
             this.end(e);
         }
     },
@@ -296,6 +293,12 @@ VisworldBlock.prototype = {
         
         // iterate over images in random order, assigning handlers
         var imgs = shuffle($('img.' + this.namespace + 'image'));
+
+        $("#progressBar").hide();
+        $('#visworldContainer').hide();
+        $('#instructions')
+            .html('<h3>Pictures and names</h3><p>Before you start the experiment, familiarize yourself with the pictures you\'ll be clicking on and their names.  After reading its name, click on each picture to continue to the next one.</p>')
+            .show();
         
         $(imgs)
             .addClass('familiarizationImage')
@@ -319,6 +322,8 @@ VisworldBlock.prototype = {
 
         // on continue click, start familiarization by showing first stim
         continueButton(function() {
+                           $("#instructions").hide();
+                           $("#visworldContainer").show();
                            $(imgs[0]).show();
                            $('<div id="familiarizationText"></div>')
                                .html(imgs[0].id)
@@ -328,5 +333,19 @@ VisworldBlock.prototype = {
 
     endFamiliarize: function() {
         if (console) console.log('Familiarization completed');
+        $("#visworldContainer").hide();
+        $("#instructions")
+            .html('<h3>Start of experiment</h3>'+
+                  '<p>Now that you know the names of all the pictures, you can start the main experiment.  On each trial, you will see four pictures, and a green light in the center.  Click the light to start the trial, and then click on the picture that is named.</p>' + 
+                  '<p>  There are {0} trials, and you will have a chance to take breaks every {1} trials</p>'.format(this.itemOrder.length, this.breakEvery))
+            .show();
+
+        var _self = this;
+        continueButton(function() {
+                           $("#progressBar").show();
+                           $("#instructions").hide();
+                           $("#visworldContainer").show();
+                           _self.next();
+                       });
     }
 };
