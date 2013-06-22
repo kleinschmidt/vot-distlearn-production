@@ -122,6 +122,7 @@ VisworldBlock.prototype = {
     itemOrder: undefined,       // replaces this.stims in LabelingBlock, indexed by n, indexes stimuli
     n: 0,
     stimuli: undefined,         // information about stimuli (incl. image names and actual DOM objects
+    imagePosition: 'random',
     ITI: 1000,
     clickCapture: false,
     onEndedBlock: function() {},
@@ -180,12 +181,18 @@ VisworldBlock.prototype = {
 
     showStimImages: function() {
         var _self = this;
+        var positions;
+        if (this.imagePosition == 'random') {
+            positions = shuffle([0, 1, 2, 3]);
+        } else {
+            positions = [0, 1, 2, 3];
+        }
         $.map(this.stimuli.images[this.itemOrder[this.n]],
               function(image, i) {
                   $('img#' + image + '.' + _self.namespace + 'image')
                       .addClass('vw_trialimage')
-                      .attr('vw_pos', i)
-                      .show();                  
+                      .attr('vw_pos', positions[i])
+                      .show();
               });
     },
     waitForResp: function() {
