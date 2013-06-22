@@ -124,8 +124,9 @@ VisworldBlock.prototype = {
     stimuli: undefined,         // information about stimuli (incl. image names and actual DOM objects
     imagePosition: 'random',
     ITI: 1000,
+    breakEvery: 100,            // number of trials between breaks
     clickCapture: false,
-    onEndedBlock: function() {},
+    onEndedBlock: undefined,
 
     run: function() {
         var _self = this;
@@ -135,6 +136,7 @@ VisworldBlock.prototype = {
                            _self.next();
                        });
     },
+
     init: function() {
         var _self = this;
 
@@ -157,8 +159,24 @@ VisworldBlock.prototype = {
         // install click handler on the stimulus images
         $('img.' + this.namespace + 'image').click(function(e) {_self.handleResp(e);});
         
-                       
+        // install, initialize, and show a progress bar (progressBar.js)
+        installPB("progressBar");
+        resetPB("progressBar");
+        $("#progressBar").show();
+        this.pbIncrement = 1.0 / this.itemOrder.length;
+
+        
                    
+    },
+    takeBreak: function() {
+        var _self = this;
+        $("#visworldContainer").hide();
+        $("#instructions").html('<h3>Break Time!</h3><p>If you\'d like to take a break, you can do that now.  Keep in mind that you have a limited amount of time to complete this task.</p>').show();
+        continueButton(function() {
+                           $("#instructions").hide();
+                           $("#visworldContainer").show();
+                           _self.next();
+                       });
     },
     next: function() {
         var _self = this;
@@ -195,6 +213,7 @@ VisworldBlock.prototype = {
                       .show();
               });
     },
+
     waitForResp: function() {
         // if collecting a keyboard response, would turn on listening here
         this.clickCapture = true;
@@ -214,16 +233,22 @@ VisworldBlock.prototype = {
                 this.n, this.itemOrder[this.n], curStimSrc].join();
     },
     recordResp: function(e) {
-        var clickResp = e.target.id;
-        var resp = [this.info(), clickResp,
+        var clickID, clickVWPos, clickVWx, clickVWy;
+        clickID = e.target.id;                   // ID of element clicked
+        clickVWPos = $(e.target).attr('vw_pos'); // vw_pos attr value of element clicked
+        clickVWx = e.pageX - $("#visworldContainer")[0].offsetLeft;
+        clickVWy = e.pageY - $("#visworldContainer")[0].offsetTop;
+        var resp = [this.info(), clickID, clickVWPos, clickVWx, clickVWy,
                     this.tStart, this.tResp, this.tResp-this.tStart].join();
         if (console) console.log(resp);
         $(this.respField).val($(this.respField).val() + resp + respDelim);
     },
     end: function(e) {
         // update progress bar
+        plusPB("progressBar", this.pbIncrement);
 
         // record response
+        this.recordResp(e);
 
         // hide images and scrub of identifiers
         $('img.vw_trialimage')
@@ -233,12 +258,29 @@ VisworldBlock.prototype = {
 
         // next trial, or end
         if (++this.n < this.itemOrder.length) {
-            this.next();
+            if (this.n % this.breakEvery == 0) {
+                this.takeBreak();
+            } else {
+                this.next();
+            }
         } else {
             this.endBlock();
         }
     },
     endBlock: function() {
-        this.onEndedBlock();
+        $("#visworldContainer").hide();
+        $("#progressBar").hide();
+        
+        // finally: hand control back to whatever called this
+        if (this.practiceMode && typeof(this.onEndedPractice) === 'function') {
+            // handle callback provided for end of practice phase
+            this.onEndedPractice();
+        } else if (typeof(this.onEndedBlock) === 'function') {
+            // will be set by Experiment if added as block
+            this.onEndedBlock();
+        } else {
+            // otherwise, write warning to console.
+            if (console) console.log('WARNING: End of block reached but no callback found');
+        }
     }
 };
