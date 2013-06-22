@@ -282,5 +282,51 @@ VisworldBlock.prototype = {
             // otherwise, write warning to console.
             if (console) console.log('WARNING: End of block reached but no callback found');
         }
+    },
+
+    // run a familiarization block with the images+labels
+    familiarize: function() {
+        // show image + name, wait for click, then do next.
+        // add a click handler to each image, which
+        //   1) removes the handler
+        //   2) hides the image
+        //   3) shows the next image
+
+        var _self = this;
+        
+        // iterate over images in random order, assigning handlers
+        var imgs = shuffle($('img.' + this.namespace + 'image'));
+        
+        $(imgs)
+            .addClass('familiarizationImage')
+            .map(function(i, img) {
+                        $(imgs[i]).bind('click.familiarization',
+                                        function(e) {
+                                            $(this).hide();
+                                            // deal with final image
+                                            if (i+1==imgs.length) {
+                                                $(imgs)
+                                                    .removeClass('familiarizationImage')
+                                                    .unbind('.familiarization');
+                                                $('#familiarizationText').remove();
+                                                _self.endFamiliarize();
+                                            } else {
+                                                $(imgs[i+1]).show();
+                                                $('#familiarizationText').html(imgs[i+1].id);
+                                            }
+                                        });                        
+                    });
+
+        // on continue click, start familiarization by showing first stim
+        continueButton(function() {
+                           $(imgs[0]).show();
+                           $('<div id="familiarizationText"></div>')
+                               .html(imgs[0].id)
+                               .appendTo("#visworldContainer");
+                       });
+    },
+
+    endFamiliarize: function() {
+        if (console) console.log('Familiarization completed');
     }
 };

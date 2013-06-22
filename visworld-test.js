@@ -160,5 +160,6 @@ $(document).ready(function() {
                                                images: stim_images});
 
                       vwb.init();
-                      vwb.next();
+                      vwb.familiarize();
+                      // vwb.next();
                   });

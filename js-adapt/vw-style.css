@@ -45,3 +45,21 @@ div#visworldContainer > img.vw_trialimage {
     right: 0;
 }
 
+/* styling of familiarization images */
+div#visworldContainer > img.familiarizationImage {
+    position: absolute;
+    margin-left: -125px;
+    left: 50%;
+    top: 250px;
+    z-index: 1000;
+}
+
+div#visworldContainer > div#familiarizationText {
+    position: absolute;
+    width: 250px;
+    margin-left: -125px;
+    left: 50%;
+    top: 500px;
+    padding-top: 20px;
+    text-align: center;
+}
