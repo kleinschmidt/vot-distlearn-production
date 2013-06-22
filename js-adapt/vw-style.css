@@ -34,14 +34,14 @@ div#visworldContainer > img.vw_trialimage {
     top:0;
     right:0;
 }
-/* bottom-right */
+/* bottom-left */
 [vw_pos="2"] {
     bottom:0;
-    right:0;
+    left:0;
 }
-/* bottom-left */
+/* bottom-right */
 [vw_pos="3"] {
     bottom: 0;
-    left: 0;
+    right: 0;
 }
 

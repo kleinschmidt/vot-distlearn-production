@@ -1,3 +1,5 @@
+var respDelim = ';';
+
 var e;
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -147,13 +149,15 @@ var lists = [
     }
 ];
 
+var vwb;
+
 $(document).ready(function() {
 
                       e = new Experiment();
                       e.init();
                       
-                      var vwb = new VisworldBlock({lists: lists,
-                                                   images: stim_images});
+                      vwb = new VisworldBlock({lists: lists,
+                                               images: stim_images});
 
                       vwb.init();
                       vwb.next();
