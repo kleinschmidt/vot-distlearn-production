@@ -159,7 +159,8 @@ $(document).ready(function() {
                       vwb = new VisworldBlock({lists: lists,
                                                images: stim_images});
 
-                      vwb.init();
-                      vwb.familiarize();
+                      // vwb.init();
+                      // vwb.familiarize();
                       // vwb.next();
+                      vwb.run();
                   });
