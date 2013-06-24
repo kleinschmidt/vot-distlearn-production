@@ -542,9 +542,12 @@ function valToKey(obj, v) {
     return(keys);
 }
 
+// DEPRECATED: now lives in "utilities.js"  will run w/ warning
 // function to pseduo-randomize stimuli lists.  takes either vector of repetitions for
 // each item, or (scalar) number of repetitions for each item and the length of the continuum.
 function pseudoRandomOrder(reps, n, method) {
+    if (console) console.log('WARNING: labelingblock.js:pseduoRandomOrder is deprecated.  use utilities.js:pseudoRandomOrder instead');
+
     // if reps is specified as a constant, convert to an array
     if (typeof(reps) === "number" || reps.length == 1) {
         if (typeof(n) !== "undefined") {

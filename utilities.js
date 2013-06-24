@@ -1,3 +1,24 @@
+// function to create a truly random (shuffled) item order, either from an array
+// of repetition numbers or from a uniform number of repetitions and number of items n.
+function randomOrder(reps, n) {
+    // if reps is specified as a constant, convert to an array
+    if (typeof(reps) === "number" || reps.length == 1) {
+        if (typeof(n) !== "undefined") {
+            reps = (function(N) {var x=[]; for (var i=0; i<N; i++) {x[i] = reps;}; return(x);})(n);
+        } else {
+            throw "Must provide either vector of repetitions or number of stimuli";
+        }
+    }
+
+    var itemOrder = [];
+    for (var i=0; i<reps.length; i++) {
+        for (var j=0; j<reps[i]; j++) {
+            itemOrder.push(i);
+        }
+    }
+
+    return shuffle(itemOrder);
+}
 
 // function to pseduo-randomize stimuli lists.  takes either vector of repetitions for
 // each item, or (scalar) number of repetitions for each item and the length of the continuum.
@@ -13,7 +34,11 @@ function pseudoRandomOrder(reps, n, method) {
 
     // method of pseudorandomization
     if (typeof(method) === 'undefined') {
+        // default to extreme_early
         method = 'extreme_early';
+    } else if (method == 'shuffle') {
+        // if specifying "shuffle", do a full randomization.
+        return randomOrder(reps, n);
     }
 
     // pseudo-random order for stimuli: create blocks with one of
@@ -49,7 +74,7 @@ function pseudoRandomOrder(reps, n, method) {
             stims = stims.concat(blocks[i-1]);
         }
         break;
-    case 'shuffle':
+    case 'shuffle_blocks':
         blocks = shuffle(blocks);
         for (var i=0; i<blocks.length; i++) {
             stims = stims.concat(blocks[i]);
