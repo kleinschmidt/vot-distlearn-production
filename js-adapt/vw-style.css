@@ -9,12 +9,17 @@ div#visworldContainer {
 
 div#visworldContainer > div#readyWaitContainer {
     position: absolute;
-    width: 100px;
-    height: 100px;
-    margin-left: -50px;
-    margin-top: -50px;
+    width: 80px;
+    height: 80px;
+    margin-left: -40px;
+    margin-top: -40px;
     top: 50%;
     left: 50%;
+}
+
+div#visworldContainer > div#readyWaitContainer > img {
+    height: 80px;
+    width: 80px;
 }
 
 /* positioning of items in the visual world for the current trial:
@@ -23,6 +28,8 @@ div#visworldContainer > div#readyWaitContainer {
  */
 div#visworldContainer > img.vw_trialimage {
     position: absolute;
+    width: 200px;
+    height: 200px;
 }
 /* top-left item */
 [vw_pos="0"] {
