@@ -5,72 +5,43 @@ var e;
 ////////////////////////////////////////////////////////////////////////////////
 // Stimulus definitions
 
-var stim_beach_peach = new Stimuli(
-    {
-        prefix: 'stimuli_vot/',
-        continuum: range(-30, 81, 10),
-        maxAmbigRange: [10, 40],
-        mediaType: 'audio',
-        filenameFormatter: function(n, prefix)
+// critical (VOT continuum) items
+var vot_continuum_word = function(word) {
+    return(new Stimuli(
+               {
+                   prefix: 'stimuli_vot/',
+                   continuum: range(-30, 81, 10),
+                   maxAmbigRange: [10, 40],
+                   mediaType: 'audio',
+                   filenameFormatter: function(n, prefix)
+                   {
+                       return(this.prefix + word + this.continuum[n]);
+                   }
+               }
+           ));
+}
+
+var stim_beach_peach = vot_continuum_word('BEACH');
+var stim_bees_peas = vot_continuum_word('BEES');
+var stim_beak_peak = vot_continuum_word('BEAK');
+
+// Distractor items 
+var rl_continuum_word = function(word) {
+    return new Stimuli(
         {
-            return(prefix + 'BEACH' + this.continuum[n]);
+            prefix: 'stimuli_vot/',
+            continuum: [NaN, NaN],
+            mediaType: 'audio',
+            filenames: [word+'1', word+'9']
         }
-    }
-);
+    );
+}
 
-var stim_bees_peas = new Stimuli(
-    {
-        prefix: 'stimuli_vot/',
-        continuum: range(-30, 81, 10),
-        maxAmbigRange: [10, 40],
-        mediaType: 'audio',
-        filenameFormatter: function(n, prefix)
-        {
-            return(prefix + 'BEES' + this.continuum[n]);
-        }
-    }
-);
+var stim_race_lace = rl_continuum_word('LACE');
+var stim_ray_lei = rl_continuum_word('LEI');
+var stim_rake_lake = rl_continuum_word('LAKE');
 
-var stim_beak_peak = new Stimuli(
-    {
-        prefix: 'stimuli_vot/',
-        continuum: range(-30, 81, 10),
-        maxAmbigRange: [10, 40],
-        mediaType: 'audio',
-        filenameFormatter: function(n, prefix)
-        {
-            return(prefix + 'BEAK' + this.continuum[n]);
-        }
-    }
-);
-
-var stim_race_lace = new Stimuli(
-    {
-        prefix: 'stimuli_vot/',
-        continuum: [NaN, NaN],
-        mediaType: 'audio',
-        filenames: ['LACE1', 'LACE9']
-    }
-)
-
-var stim_ray_lei = new Stimuli(
-    {
-        prefix: 'stimuli_vot/',
-        continuum: [NaN, NaN],
-        mediaType: 'audio',
-        filenames: ['LEI1', 'LEI9']
-    }
-)
-
-var stim_rake_lake = new Stimuli(
-    {
-        prefix: 'stimuli_vot/',
-        continuum: [NaN, NaN],
-        mediaType: 'audio',
-        filenames: ['LAKE1', 'LAKE9']
-    }
-)
-
+// stimulus images and their corresponding words
 var stim_images = {
     race: 'stimuli_images/race.png',
     lace: 'stimuli_images/lace.png',
