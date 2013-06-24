@@ -1,6 +1,6 @@
 div#visworldContainer {
-    width: 750px;
-    height: 750px;
+    width: 600px;
+    height: 600px;
     margin-left: auto;
     margin-right: auto;
     border: 5px solid #dddddd;
@@ -49,8 +49,9 @@ div#visworldContainer > img.vw_trialimage {
 div#visworldContainer > img.familiarizationImage {
     position: absolute;
     margin-left: -125px;
+    margin-top: -125px;
     left: 50%;
-    top: 250px;
+    top: 50%;
     z-index: 1000;
 }
 
@@ -59,7 +60,17 @@ div#visworldContainer > div#familiarizationText {
     width: 250px;
     margin-left: -125px;
     left: 50%;
-    top: 500px;
+    top: 66%;
     padding-top: 20px;
     text-align: center;
+    font-size: 40pt;
+}
+
+div#visworldContainer > div#familiarizationInstructions {
+    position: absolute;
+    width: 100%;
+    left: 0;
+    top: 10%;
+    text-align: center;
+    font-size: 16pt;
 }

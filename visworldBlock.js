@@ -299,7 +299,7 @@ VisworldBlock.prototype = {
         $('#instructions')
             .html('<h3>Pictures and names</h3><p>Before you start the experiment, familiarize yourself with the pictures you\'ll be clicking on and their names.  After reading its name, click on each picture to continue to the next one.</p>')
             .show();
-        
+                
         $(imgs)
             .addClass('familiarizationImage')
             .map(function(i, img) {
@@ -312,6 +312,7 @@ VisworldBlock.prototype = {
                                                     .removeClass('familiarizationImage')
                                                     .unbind('.familiarization');
                                                 $('#familiarizationText').remove();
+                                                $('#familiarizationInstructions').remove();
                                                 _self.endFamiliarize();
                                             } else {
                                                 $(imgs[i+1]).show();
@@ -325,6 +326,9 @@ VisworldBlock.prototype = {
                            $("#instructions").hide();
                            $("#visworldContainer").show();
                            $(imgs[0]).show();
+                           $('<div id="familiarizationInstructions"></div>')
+                               .html('<p>Read the name, then click the image to advance</p>')
+                               .prependTo('#visworldContainer');
                            $('<div id="familiarizationText"></div>')
                                .html(imgs[0].id)
                                .appendTo("#visworldContainer");
