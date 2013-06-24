@@ -54,6 +54,8 @@ function VisworldBlock(params) {
     // the class that the stimuli are assigned
     if (typeof(namespace) === 'undefined') {
         this.namespace = 'visworld';
+    } else {
+        this.namespace = namespace;
     }
     css_stim_class = this.namespace + 'stim';
     css_image_class = this.namespace + 'image';
