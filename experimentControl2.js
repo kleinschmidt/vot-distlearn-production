@@ -52,7 +52,18 @@ function Experiment() {
 
 Experiment.prototype = {
 
-    addBlock: function(block, instructions, endedHandler, practiceParameters) {
+    // addBlock: function(block, instructions, endedHandler, practiceParameters) {
+    addBlock: function(obj) {
+        var block, instructions, endedHandler, practiceParameters, onPreview;
+        block = obj['block'];
+        instructions = obj['instructions'];
+        endedHandler = obj['endedHandler'];
+        practiceParameters = obj['practiceParameters'];
+        // show block during preview?
+        onPreview = typeof(obj['onPreview']) === 'undefined' ?
+            false :
+            obj['onPreview'];
+        
         // add onEndedBlock handler function to block (block object MUST
         // call its onEndedBlock method  when it has truly ended...)
         var _self = this;
@@ -65,7 +76,8 @@ Experiment.prototype = {
         this.blocks.push({block: block,
                           instructions: instructions,
                           practiceParameters: practiceParameters && practiceParameters.substring ?
-                                                 {instructions: practiceParameters} : practiceParameters}); // gracefully handle bare instructions strings
+                          {instructions: practiceParameters} : practiceParameters,
+                          onPreview: onPreview}); // gracefully handle bare instructions strings
     },
 
     nextBlock: function() {
@@ -75,6 +87,13 @@ Experiment.prototype = {
             // no more blocks, so finish up
             this.wrapup();
         } else {
+            // check for preview mode, and stop if not ready.
+            if (e.previewMode && !this_block.onPreview) {
+                $("#continue").hide();
+                $("#instructions").html('<h3>End of preview </h3><p>You must accept this HIT before continuing</p>').show();
+                return false;
+            }
+            
             // if the block is given as a function, evaluate that function to create real block
             // handle blocks in format of function.
             if (typeof this_block.block === 'function') {
@@ -197,6 +216,131 @@ InstructionsBlock.prototype = {
     }
 };
 
+
+// show instructions with subsections which open and close
+// argument instrObj should be an object with two fields:
+//   instrObj.title, text to be shown as a (sticky) title
+//   instrObj.mainInstructions, HTML/text that will always appear (sticky)
+//   instrObj.subsections, an array with the subsections.
+//     each subjects must have fields for the content of the instructions, and the title
+//     can also have "checkbox text"
+//     can have "optional" flag
+function InstructionsSubsectionsBlock(instrObj) {
+    this.title = typeof(instrObj.title) === 'undefined' ? 'Experiment instructions' : instrObj.title;
+    this.mainInstructions = instrObj.mainInstructions;
+    this.subsections = instrObj.subsections;
+    this.onEndedBlock = function() {return this;};
+}
+
+InstructionsSubsectionsBlock.prototype = {
+    run: function() {
+        // clear previous content
+        $("#instructions").html('');
+        // add title
+        $("<h2></h2>")
+            .addClass('instructionsTitle instrSubsContent')
+            .html(this.title)
+            .appendTo("#instructions");
+        // add "sticky" main instructions, of present
+        if (typeof(this.mainInstructions) !== 'undefined' ) {
+            $("<div></div>")
+                .addClass('mainInstructions instrSubsContent')
+                .html(this.mainInstructions)
+                .appendTo("#instructions");
+        }
+
+        // add subsections
+        // first add contianing unordered list
+        var instList = $("<ul></ul>")
+            .addClass('instructionlist')
+            .appendTo('#instructions');
+        // iterate over key-value pairs
+        $.each(this.subsections, function(i) {
+                   // object is referred to w/ this inside $.each
+                   // create li element to hold this subsection
+                   var thisLi = $("<li></li>").addClass('instructionlistitem');
+                   // add title element
+                   $("<h3></h3>").text(this.title).appendTo(thisLi);
+                   // create continue element (checkbox w/ label if provided, otherwise generic button)
+                   var contElem =
+                       typeof(this.checkboxText)==='undefined'
+                       ? '<button type="button" class="instructionbutton">Take me to the next section</button>'
+                       : '<label><input type="checkbox" />' + this.checkboxText + '</label>';
+                   // div element to hold all the content (not the title)
+                   $("<div></div>")
+                       .addClass('listcontent')
+                       .append('<p>' + this.content + '</p>')
+                       .append(contElem)
+                       .appendTo(thisLi);
+                   $(thisLi).appendTo(instList);
+               });
+        
+        // add final div w/ end instructions button
+        var finalLi = $("<li></li>").addClass('instructionlistitem').attr('id', 'endInstructions')
+            .append('<h3>Begin the experiment</h3>')
+            .append($('<div></div>')
+                    .addClass('listcontent')
+                    .append('<p>Once you press Start, these instructions will disappear, so make sure you understand them fully before you start</p>')
+                    .append('<button type="button" id="endinstr">I confirm that I meet the eligibility and computer requirements, that I have read and understood the instructions, the consent and that I want to start the experiment.</button>'))
+            .appendTo(instList);
+        
+
+        // start by hiding all listcontent divs
+        $('div.listcontent').css('display', 'none');
+
+        // set up interaction behaviors:
+        // clicking anywhere in list item toggles its display
+        $('.instructionlistitem').on('click', function(){
+                                         $(this).children('.listcontent').toggle(500);
+                                     });
+        // clicking the "next" button hides the current section and shows the next
+        $('.instructionbutton')
+            .on('click', function(e){
+                    e.stopPropagation();
+                    $(this).parents('.listcontent').hide(500);
+                    $(this).parents('.instructionlistitem').next().children('.listcontent')
+                        .show(500, function(){
+                                  var pos = $(this).offset();
+                                  $('html,body').animate({scrollTop: pos.top}, 500);
+                              });
+                });
+        // same as button for checkbox
+        $('div :checkbox')
+            .on('click', function(e){
+                    e.stopPropagation();
+                    $(this).parents('.listcontent').hide(500);
+                    $(this).parents('.instructionlistitem').next().children('.listcontent')
+                        .show(500, function(){
+                                  var pos = $(this).offset();
+                                  $('html,body').animate({scrollTop: pos.top}, 500);
+                              });
+                });
+        // apply clicks anywhere in the checkbox label to the checkbox.
+        $('#instructions label').on('click', function(e){
+                              $(this).children('button').first().click();
+                          });
+
+        // when "end instructions" button is click, validate everything
+        var _self = this;
+        $('button#endinstr')
+            .click(function(){
+                       var instructionsDone = true;
+                       // look for uncheck boxes, and change their parent h3 elements to red
+                       // if there are any, length will be > 0, so throw an alert
+                       if ($('#instructions input:checkbox:not(:checked)')
+                           .parents('li.instructionlistitem')
+                           .children('h3')
+                           .css('color', 'red')
+                           .length)
+                       {
+                           alert('Please read and check the necessary items before you continue.');
+                       } else {
+                           _self.onEndedBlock();
+                       }
+                   });
+
+    }
+}
 
 
 ////////////////////////////////////////////////////////////////////////////////
