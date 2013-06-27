@@ -5,6 +5,7 @@ div#visworldContainer {
     margin-right: auto;
     border: 5px solid #dddddd;
     position: relative;
+    display: none;
 }
 
 div#visworldContainer > div#readyWaitContainer {

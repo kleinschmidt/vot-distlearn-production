@@ -299,7 +299,7 @@ VisworldBlock.prototype = {
         $("#progressBar").hide();
         $('#visworldContainer').hide();
         $('#instructions')
-            .html('<h3>Pictures and names</h3><p>Before you start the experiment, familiarize yourself with the pictures you\'ll be clicking on and their names.  After reading its name, click on each picture to continue to the next one.</p>')
+            .html('<h3>Pictures and names</h3><p>Welcome to the experiment. First there will be a short familiarization phase. You will see a picture and its name.</p> <p>Please read the name and then click on the picture to see the next picture.</p>')
             .show();
                 
         $(imgs)
@@ -342,8 +342,8 @@ VisworldBlock.prototype = {
         $("#visworldContainer").hide();
         $("#instructions")
             .html('<h3>Start of experiment</h3>'+
-                  '<p>Now that you know the names of all the pictures, you can start the main experiment.  On each trial, you will see four pictures, and a green light in the center.  Click the light to start the trial, and then click on the picture that is named.</p>' + 
-                  '<p>  There are {0} trials, and you will have a chance to take breaks every {1} trials</p>'.format(this.itemOrder.length, this.breakEvery))
+                  '<p>These pictures and words will be used in the next phase of the experiment. First you will see four pictures and a green circle. When the green circle lights up, click on the circle. You will then hear a word. Please click on the picture that you hear.</p><p><strong>Please respond as quickly and as accurately as possible.</strong>  If you\'re not sure, please take your best guess. ' + 
+                  '<p>  There are {0} trials, and you will have a chance to take breaks every {1} trials.  This part of the experiment should take an hour or less.  The progress bar at the top will show you how much you have done and how much remains.</p>'.format(this.itemOrder.length, this.breakEvery))
             .show();
 
         var _self = this;
