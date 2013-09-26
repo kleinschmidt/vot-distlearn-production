@@ -34,3 +34,7 @@ Stimuli were synthesized using Klattworks.  VOT continua vary from -30ms to +80m
 Based on eyeballing things in Praat, taking the first 350 ms of each token seems to get the onset C and the vowel no problem.  Everything is aligned such that the release is at the same time in each consonant (at 100ms).  The vowel is 240ms long.
 
 I decided to go with the "beach"-"peach" continuum because it ends in a alveolar stop and has relatively little movement of the formants (compared to "beak"), and because it ends in a voiceless stop (unlike "bees") so it's easy to identify the end of the vowel.
+
+## Serving locally for testing
+
+I've had a lot of success with using a node.js server.  In particular, the [http-server](https://npmjs.org/package/http-server) package makes the whole process very simple.
