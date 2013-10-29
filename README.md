@@ -10,6 +10,7 @@ The relevant files for creating your own visual world experiment are:
 * `js-adapt/vw-style.css`: additional stylesheet information for the visual world task, which defines the world div and the positions of the images.
 
 Right now, the code shows images in the four corners of the visual world `div`.  The data structure which specifies the actual experiment and stimuli has three parts.
+
 1. The acoustic stimuli to be played, which are specified in a `Stimuli` object (see `js-adapt/stimuli.js`).
 2. The images to be display, which are stored in a json object whose values are the (local) path to each image file and the keys are used as shorthand names later on.  For instance, for the Clayards et al. (2008) replication (below), the images are defined as
 
@@ -27,7 +28,6 @@ Right now, the code shows images in the four corners of the visual world `div`. 
             beak: 'stimuli_images/beak.png',
             peak: 'stimuli_images/peak.png'
         };
-
 3. The actual experimental lists, which are specified as an array of json objects.  Each list object has three fields: 
 
         var lists = [
@@ -37,7 +37,6 @@ Right now, the code shows images in the four corners of the visual world `div`. 
                 reps: bp_reps
             },
         ...
-
 The `reps` field is an array of how many repetitions for each continuum item in the `stimuli` field.
 
 # Clayards (2008) replication
