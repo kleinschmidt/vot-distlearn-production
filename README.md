@@ -2,6 +2,46 @@
 
 This experiment is an attempt to replicate the results of Clayards et al. (2008) using a more selective adaptation-like paradigm, over MTurk.  
 
+# Visual world documentation
+
+The relevant files for creating your own visual world experiment are:
+* `expt_clayards08.js`: the experiment-specific logic, lists, etc.
+* `js-adapt/visworldBlock.js`: the definition of the `VisworldBlock` class, which dispalys images, plays stimuli, and collects responses.  There's also a built-in familiarization practice section which displays the images with their names, which people click through.
+* `js-adapt/vw-style.css`: additional stylesheet information for the visual world task, which defines the world div and the positions of the images.
+
+Right now, the code shows images in the four corners of the visual world `div`.  The data structure which specifies the actual experiment and stimuli has three parts.
+
+1. The acoustic stimuli to be played, which are specified in a `Stimuli` object (see `js-adapt/stimuli.js`).
+2. The images to be display, which are stored in a json object whose values are the (local) path to each image file and the keys are used as shorthand names later on.  For instance, for the Clayards et al. (2008) replication (below), the images are defined as
+
+        :::javascript
+        var stim_images = {
+            race: 'stimuli_images/race.png',
+            lace: 'stimuli_images/lace.png',
+            ray: 'stimuli_images/ray.png',
+            lei: 'stimuli_images/lei.png',
+            rake: 'stimuli_images/rake.png',
+            lake: 'stimuli_images/lake.png',
+            beach: 'stimuli_images/beach.png',
+            peach: 'stimuli_images/peach.png',
+            bees: 'stimuli_images/bees.png',
+            peas: 'stimuli_images/peas.png',
+            beak: 'stimuli_images/beak.png',
+            peak: 'stimuli_images/peak.png'
+        };
+
+3. The actual experimental lists, which are specified as an array of json objects.  Each list object has three fields: 
+
+        :::javascript
+        var lists = [
+            {
+                stimuli: stim_beach_peach,
+                images: ['beach', 'peach', 'race', 'lace'],
+                reps: bp_reps
+            },
+        ...
+The `reps` field is an array of how many repetitions for each continuum item in the `stimuli` field.
+
 # Clayards (2008) replication
 
 Before doing the selective adaptation-like paradigm, we want to make sure that we can replicated the original findings using the original visual world paradigm.
