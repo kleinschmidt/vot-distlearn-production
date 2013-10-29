@@ -29,6 +29,7 @@ Right now, the code shows images in the four corners of the visual world `div`. 
             beak: 'stimuli_images/beak.png',
             peak: 'stimuli_images/peak.png'
         };
+
 3. The actual experimental lists, which are specified as an array of json objects.  Each list object has three fields: 
 
         :::javascript
