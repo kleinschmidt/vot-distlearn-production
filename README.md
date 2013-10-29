@@ -5,6 +5,7 @@ This experiment is an attempt to replicate the results of Clayards et al. (2008)
 # Visual world documentation
 
 The relevant files for creating your own visual world experiment are:
+
 * `expt_clayards08.js`: the experiment-specific logic, lists, etc.
 * `js-adapt/visworldBlock.js`: the definition of the `VisworldBlock` class, which dispalys images, plays stimuli, and collects responses.  There's also a built-in familiarization practice section which displays the images with their names, which people click through.
 * `js-adapt/vw-style.css`: additional stylesheet information for the visual world task, which defines the world div and the positions of the images.
