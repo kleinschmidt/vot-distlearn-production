@@ -155,8 +155,21 @@ $(document).ready(
                     },
                     {
                         title: 'yet another section',
-                        content: 'blah blah blah',
+                        content: ['here\'s a paragraph.',
+                                  'here is another paragraph!'],
                         checkboxText: 'here click again'
+                    },
+                    {
+                        title: 'I heard you like subsections',
+                        content: [{subtitle: 'so I put some subsections', content: 'in your subsections!'},
+                                  'just for kicks, a naked paragraph!',
+                                  {subtitle: 'like this one', content: 'says some stuff'}],
+                        checkboxText: 'click here if you got all that'
+                    },
+                    {
+                        title: 'Is anyone still reading?',
+                        content: 'comes after everything else so probably not that important',
+                        finallyInfo: true
                     }
                 ]
             }

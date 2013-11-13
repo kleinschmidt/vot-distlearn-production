@@ -254,27 +254,7 @@ InstructionsSubsectionsBlock.prototype = {
         var instList = $("<ul></ul>")
             .addClass('instructionlist')
             .appendTo('#instructions');
-        // iterate over key-value pairs
-        $.each(this.subsections, function(i) {
-                   // object is referred to w/ this inside $.each
-                   // create li element to hold this subsection
-                   var thisLi = $("<li></li>").addClass('instructionlistitem');
-                   // add title element
-                   $("<h3></h3>").text(this.title).appendTo(thisLi);
-                   // create continue element (checkbox w/ label if provided, otherwise generic button)
-                   var contElem =
-                       typeof(this.checkboxText)==='undefined'
-                       ? '<button type="button" class="instructionbutton">Take me to the next section</button>'
-                       : '<label><input type="checkbox" />' + this.checkboxText + '</label>';
-                   // div element to hold all the content (not the title)
-                   $("<div></div>")
-                       .addClass('listcontent')
-                       .append('<p>' + this.content + '</p>')
-                       .append(contElem)
-                       .appendTo(thisLi);
-                   $(thisLi).appendTo(instList);
-               });
-        
+
         // add final div w/ end instructions button
         var finalLi = $("<li></li>").addClass('instructionlistitem').attr('id', 'endInstructions')
             .append('<h3>Begin the experiment</h3>')
@@ -283,7 +263,54 @@ InstructionsSubsectionsBlock.prototype = {
                     .append('<p>Once you press Start, these instructions will disappear, so make sure you understand them fully before you start</p>')
                     .append('<button type="button" id="endinstr">I confirm that I meet the eligibility and computer requirements, that I have read and understood the instructions, the consent and that I want to start the experiment.</button>'))
             .appendTo(instList);
-        
+
+        // iterate over subsections
+        $.each(this.subsections, function(i) {
+                   // object is referred to w/ this inside $.each
+                   // check to make sure this isn't a "finally": 
+                   var isFinally = typeof(this.finallyInfo) !== 'undefined' && this.finallyInfo;
+                   // create li element to hold this subsection
+                   var thisLi = $("<li></li>").addClass('instructionlistitem');
+                   // add title element
+                   $("<h3></h3>").text(this.title).appendTo(thisLi);
+                   // create continue element (checkbox w/ label if provided, otherwise generic button)
+                   var contElem =
+                       isFinally ? '' : 
+                       typeof(this.checkboxText)==='undefined'
+                       ? '<button type="button" class="instructionbutton">Take me to the next section</button>'
+                       : '<label><input type="checkbox" />' + this.checkboxText + '</label>';
+                   var contentArr = [].concat(this.content);
+                   var contentHTML = $.map(contentArr, function(item) {
+                                                // check to see if it has subtitle and content attributes
+                                                if (typeof(item.content) !== 'undefined' && typeof(item.subtitle) !== 'undefined') {
+                                                    // if so, wrap in h4 and p
+                                                    return('<h4>' + item.subtitle + '</h4>' +
+                                                           '<p>' + item.content + '</p>');
+                                                } else {
+                                                    // if not, just wrap in p
+                                                    return('<p>' + item + '</p>');
+                                                }
+                                            });
+                   // var contentHTML = 
+                   //     typeof(this.contentHTML) === 'undefined'
+                   //     ? '<p>' + this.content + '</p>'
+                   //     : this.contentHTML;
+                   // div element to hold all the content (not the title)
+                   $("<div></div>")
+                       .addClass('listcontent')
+                       .append(contentHTML)
+                       .append(contElem)
+                       .appendTo(thisLi);
+                   // add to list element
+                   if (isFinally) {
+                       // if this is a "finally" element, add after final item
+                       $(thisLi).addClass('finallyInfo').appendTo(instList);
+                   } else {
+                       // if not (aka normal instructions) add before
+                       $(instList).children('#endInstructions').before(thisLi);
+                   }
+               });
+                
 
         // start by hiding all listcontent divs
         $('div.listcontent').css('display', 'none');
@@ -304,8 +331,8 @@ InstructionsSubsectionsBlock.prototype = {
                                   $('html,body').animate({scrollTop: pos.top}, 500);
                               });
                 });
-        // same as button for checkbox
-        $('div :checkbox')
+        // click on checkbox advances to next item
+        $('.instructionlist :checkbox')
             .on('click', function(e){
                     e.stopPropagation();
                     $(this).parents('.listcontent').hide(500);
@@ -315,6 +342,7 @@ InstructionsSubsectionsBlock.prototype = {
                                   $('html,body').animate({scrollTop: pos.top}, 500);
                               });
                 });
+        
         // apply clicks anywhere in the checkbox label to the checkbox.
         $('#instructions label').on('click', function(e){
                               $(this).children('button').first().click();
