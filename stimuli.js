@@ -103,6 +103,76 @@ Stimuli.prototype = {
     }
 };
 
+/*
+ * Stimuli objects
+ *   prefix: appended to filenames returned by formatter (if you want to avoid typing)
+ *   continuum: array of values which give x-coordinate on stimulus continuum
+ *   maxAmbigRange: [min, max] acceptable continuum range for boundary
+ *   calibReps: number (or array of numbers) which gives default number of repetitions during calibration phase
+ *   mediaType: 'audio' or 'video'
+ *   filenameFormatter: function(n), where n is in 1..continuum.length, and returns nth filename
+ *   catchFilenameFormatter: same as filenameFormatter 
+ */
+
+/*
+ * StimuliList objects
+ *   prefix: 
+ *   filenames: array of file names (without prefix).
+ *   (that's it. everything else will be computed from those.)
+ */
+
+
+function StimuliFileList(baseobj) {
+    $.extend(this, baseobj);
+    var numstims = this.filenames.length;
+    // make sure file name list is provided and formatter is not
+    // filename list
+    if (typeof(baseobj.filenames) === 'undefined') {
+        throw('Must provide list of filenames to StimuliFileList');
+    }
+    // check for filename formatter, warn if present
+    if (typeof(baseobj.filenameFormatter) !== 'undefined') {
+        if (console) console.log('filenameFormatter specified for a StimuliFileList object. Are you sure you didn\'t actually want to create a Stimuli object?');
+    }
+
+
+    // check for whether baseobj contains the right stuff; if not, fill in
+    if (typeof(this.continuum) === 'undefined') {
+        // make continuum 1:numstims
+        this.continuum = range(numstims);
+    } else {
+        // make sure continuum is right length
+        if (this.continuum.length != this.filenames.length) {
+            throw('Continuum length != number of filenames');
+        }
+    }
+
+    // check for maxambig range
+    if (typeof(this.maxAmbigRange) === 'undefined') {
+        this.maxAmbigRange = [1, numstims];
+    }
+
+    // check for calibreps
+    if (typeof(this.calibReps) === 'undefined') {
+        this.calibReps = 1;
+    }
+
+    // check for media type
+    if (typeof(this.mediaType) === 'undefined') {
+        throw('Must specify media type as \'audio\' or \'video\'');
+    }    
+}
+
+StimuliFileList.prototype = {
+    filenameFormatter: function(n, prefix) {
+        // default formatter is just going to pick out the nth filename
+        return(prefix + this.filenames[n]); 
+    },
+    prefix: ''
+};
+
+extend(StimuliFileList, Stimuli);
+
 ////////////////////////////////////////////////////////////////////////////////
 // File name formatter functions.  These convert from continuum index to
 // the URL for the actual media file.
@@ -116,7 +186,7 @@ var mediaFilenameFormatter_An = function(n, prefix) {
 
 var mediaFilenameFormatter_AnCatch = function(n, prefix) {
     return(prefix + 'a' + (n+1) + 'C');
-}
+};
 
 var mediaFilenameFormatter_CAn = function(n, prefix) {
     return(prefix + 'CA' + (n+1));
@@ -214,3 +284,10 @@ Array.prototype.getSubset = function(subset) {
                                          return _self[j];
                                      }));
 };
+
+// classical-esque class inheritance: sets prototype of prototype to superclass prototype
+function extend(child, supertype)
+{
+    child.prototype.__proto__ = supertype.prototype;
+    child.prototype.__super__ = supertype.prototype;
+}
