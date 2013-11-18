@@ -50,6 +50,7 @@ The format for `Stimuli` input is
 
 Because everyone loves examples, here are the Stimuli objects used in the adaptation demo (`expt_vroomen_replication.js`) and their filename formatters: 
 
+    :::javascript
     var mediaFilenameFormatter_An = function(n, prefix) {
         return(prefix + 'A' + (n+1));
     };
@@ -88,4 +89,16 @@ The format for `StimuliFileList` input is simpler:
 * `prefix`: (optional) string path which is appended to each filename
 * `mediaType`: 'audio' or 'video'
 
-You can also provide any of the things that you would for a normal `Stimuli` object, except for the filename formatter functions (because the whole point of passing an array of filenames is to avoid having to write the formatter function)
+You can also provide any of the things that you would for a normal `Stimuli` object, except for the filename formatter functions (because the whole point of passing an array of filenames is to avoid having to write the formatter function).  Here's an example that produces basically the same thing as those above: 
+
+    :::javascript
+    var stimuli_fn_list_vroomen = new StimuliFileList(
+        {
+            prefix: 'http://www.hlp.rochester.edu/mturk/mtadapt/videos/',
+            continuum: [1,2,3,4,5,6,7,8,9],
+            maxAmbigRange: [4,6],
+            mediaType: 'audio',
+            filenames: ['A1', 'A2', 'A3', 'A4', 'A5', 'A6', 'A7', 'A8', 'A9']
+        }
+    );
+
