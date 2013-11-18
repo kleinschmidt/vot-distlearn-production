@@ -223,6 +223,14 @@ var stimuli_vroomen = new Stimuli({
     catchFilenameFormatter: mediaFilenameFormatter_AnCatch
 });
 
+var stimuli_fn_list_vroomen = new StimuliFileList(
+    {
+        filenames: ['A1', 'A2', 'A3', 'A4', 'A5', 'A6', 'A7', 'A8', 'A9'],
+        prefix: 'http://www.hlp.rochester.edu/mturk/mtadapt/videos/',
+        mediaType: 'audio'
+    }
+);
+
 // Audio continuum dubbed over /b/ videos
 var stimuli_vroomen_vb = new Stimuli({
     prefix: 'http://www.hlp.rochester.edu/mturk/mtadapt/videos/Vb',

@@ -332,7 +332,7 @@ LabelingBlock.prototype = {
         
     },
 
-    practice: function(additionalInstructions, callback) {
+    practice: function(parameters, callback) {
         // start a short practice "block"
         this.init({practiceMode: true});
         this.onEndedPractice = callback;
@@ -342,7 +342,7 @@ LabelingBlock.prototype = {
         this.stims = [0,contMax,0,contMax];
 
         $("#instructions").html('<h3>Labeling task: practice</h3>' +
-                                (typeof additionalInstructions === 'undefined' ? '' : additionalInstructions) + 
+                                (typeof parameters['instructions'] === 'undefined' ? '' : parameters['instructions']) + 
                                 '<p>In this task, you will listen to words, and be asked to decide if they contain a "' + this.categories[0] + '" or a "' + this.categories[1] + '".  Press <span class="respKey">' + valToKey(this.respKeys, this.categories[0]) + '</span> for ' + this.categories[0] + ' and <span class="respKey">' + valToKey(this.respKeys, this.categories[1]) + '</span> for ' + this.categories[1] + '.</p>').show();
 
         var _self = this;
