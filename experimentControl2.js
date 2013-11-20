@@ -69,7 +69,8 @@ Experiment.prototype = {
         var _self = this;
         block.onEndedBlock =
             typeof(endedHandler) === 'undefined' ?
-            function() {_self.nextBlock();} : endedHandler;
+            function() {_self.nextBlock();} :
+            endedHandler;
         // and link back to this experiment object to block object...
         block.parent = _self;
         // add block object and its associated instructions to the blocks array
@@ -229,6 +230,7 @@ function InstructionsSubsectionsBlock(instrObj) {
     this.title = typeof(instrObj.title) === 'undefined' ? 'Experiment instructions' : instrObj.title;
     this.mainInstructions = instrObj.mainInstructions;
     this.subsections = instrObj.subsections;
+    this.logoImg = instrObj.logoImg;
     this.onEndedBlock = function() {return this;};
 }
 
@@ -236,16 +238,28 @@ InstructionsSubsectionsBlock.prototype = {
     run: function() {
         // clear previous content
         $("#instructions").html('');
+
+        // add logo if specified
+        if (typeof(this.logoImg) !== 'undefined') {
+            $('<img />')
+                .attr('src', this.logoImg)
+                .appendTo('#instructions')
+                .wrap('<div id="logo"></div>');
+        }
+
         // add title
         $("<h2></h2>")
             .addClass('instructionsTitle instrSubsContent')
             .html(this.title)
             .appendTo("#instructions");
-        // add "sticky" main instructions, of present
+
+        // add "sticky" main instructions
         if (typeof(this.mainInstructions) !== 'undefined' ) {
             $("<div></div>")
                 .addClass('mainInstructions instrSubsContent')
-                .html(this.mainInstructions)
+                .append($.map([].concat(this.mainInstructions), function(instp) {
+                                  return('<p>' + instp + '</p>');
+                              }))
                 .appendTo("#instructions");
         }
 
@@ -264,9 +278,9 @@ InstructionsSubsectionsBlock.prototype = {
                     .append('<button type="button" id="endinstr">I confirm that I meet the eligibility and computer requirements, that I have read and understood the instructions, the consent and that I want to start the experiment.</button>'))
             .appendTo(instList);
 
-        // iterate over subsections
+        // iterate over subsections, parsing, formatting, and adding each
         $.each(this.subsections, function(i) {
-                   // object is referred to w/ this inside $.each
+                   // [object is referred to w/ this inside $.each]
                    // check to make sure this isn't a "finally": 
                    var isFinally = typeof(this.finallyInfo) !== 'undefined' && this.finallyInfo;
                    // create li element to hold this subsection
@@ -279,7 +293,11 @@ InstructionsSubsectionsBlock.prototype = {
                        typeof(this.checkboxText)==='undefined'
                        ? '<button type="button" class="instructionbutton">Take me to the next section</button>'
                        : '<label><input type="checkbox" />' + this.checkboxText + '</label>';
+                   // create content.
+                   // first, coerce to array.  this wraps naked strings and does nothing to arrays
                    var contentArr = [].concat(this.content);
+                   // for each piece of the content, parse and add.
+                   // pieces can be naked strings or objects with key-value pairs (subtitle and content)
                    var contentHTML = $.map(contentArr, function(item) {
                                                 // check to see if it has subtitle and content attributes
                                                 if (typeof(item.content) !== 'undefined' && typeof(item.subtitle) !== 'undefined') {
@@ -291,17 +309,15 @@ InstructionsSubsectionsBlock.prototype = {
                                                     return('<p>' + item + '</p>');
                                                 }
                                             });
-                   // var contentHTML = 
-                   //     typeof(this.contentHTML) === 'undefined'
-                   //     ? '<p>' + this.content + '</p>'
-                   //     : this.contentHTML;
-                   // div element to hold all the content (not the title)
+
+                   // concatenate everything together in this list item
                    $("<div></div>")
                        .addClass('listcontent')
                        .append(contentHTML)
                        .append(contElem)
                        .appendTo(thisLi);
-                   // add to list element
+                   
+                   // add to list parent element
                    if (isFinally) {
                        // if this is a "finally" element, add after final item
                        $(thisLi).addClass('finallyInfo').appendTo(instList);
@@ -320,25 +336,16 @@ InstructionsSubsectionsBlock.prototype = {
         $('.instructionlistitem').on('click', function(){
                                          $(this).children('.listcontent').toggle(500);
                                      });
+
         // clicking the "next" button hides the current section and shows the next
-        $('.instructionbutton')
-            .on('click', function(e){
-                    e.stopPropagation();
-                    $(this).parents('.listcontent').hide(500);
-                    $(this).parents('.instructionlistitem').next().children('.listcontent')
-                        .show(500, function(){
-                                  var pos = $(this).offset();
-                                  $('html,body').animate({scrollTop: pos.top}, 500);
-                              });
-                });
         // click on checkbox advances to next item
-        $('.instructionlist :checkbox')
+        $('.instructionlist :checkbox, .instructionbutton')
             .on('click', function(e){
                     e.stopPropagation();
                     $(this).parents('.listcontent').hide(500);
                     $(this).parents('.instructionlistitem').next().children('.listcontent')
                         .show(500, function(){
-                                  var pos = $(this).offset();
+                                  var pos = $(this).parents('.instructionlistitem').offset();
                                   $('html,body').animate({scrollTop: pos.top}, 500);
                               });
                 });
@@ -355,13 +362,14 @@ InstructionsSubsectionsBlock.prototype = {
                        var instructionsDone = true;
                        // look for uncheck boxes, and change their parent h3 elements to red
                        // if there are any, length will be > 0, so throw an alert
-                       if ($('#instructions input:checkbox:not(:checked)')
+                       var uncheckedItems = $('#instructions input:checkbox:not(:checked)')
                            .parents('li.instructionlistitem')
                            .children('h3')
-                           .css('color', 'red')
-                           .length)
+                           .css('color', 'red');
+                       if (uncheckedItems.length)
                        {
                            alert('Please read and check the necessary items before you continue.');
+                           $(uncheckedItems).parents('.listcontent').show();
                        } else {
                            _self.onEndedBlock();
                        }
