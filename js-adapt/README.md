@@ -27,6 +27,7 @@ Because everyone likes examples:
     :::javascript
     var instructions = new InstructionsSubsectionsBlock(
         {
+            logoImg: 'logo.png',
             title: 'the title of the instructions!',
             mainInstructions: 'Here\'s some text describing the instructions that should always appear',
             subsections: [
