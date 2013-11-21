@@ -102,7 +102,7 @@ function checkPreview(params) {
 var sandboxMode;
 function checkSandbox(params) {
     if (document.referrer && ( document.referrer.indexOf('workersandbox') != -1) ) {
-        $("#mturk_form").attr("action", "http://workersandbox.mturk.com/mturk/externalSubmit");
+        $("#mturk_form").attr("action", "https://workersandbox.mturk.com/mturk/externalSubmit");
         sandboxMode = true;
         return true;
     } else {
