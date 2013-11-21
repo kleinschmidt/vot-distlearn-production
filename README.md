@@ -10,7 +10,9 @@ This code is designed to be flexible and extensible with a bit of Javascript hac
 
 **Design** You want to collect 2AFC (possibly nAFC, but hasn't been tested) responses to some audio or video stimuli.
 
-Use `expt_template.js` as a skeleton.  
+Clone the [demo repository](https://bitbucket.org/dkleinschmidt/mtadapt-demo), and use `expt_template.js` as a skeleton.  Put your stimuli in a subdirectory, and create a `StimuliFileList` object based on the names of the files (as described below).  
+
+If your stimuli filenames are rather repetitive and you feel like writing a few javascript functions, you can specify a `Stimuli` object based on a function that turns a file index (starting at 0) into the corresponding filename string.  See below or `stimuli.js` for some examples.
 
 # Block interfaces
 
@@ -104,7 +106,14 @@ You can also provide any of the things that you would for a normal `Stimuli` obj
 
 ## Experiment control and instructions blocks
 
-## `InstructionSubsectionsBlock`
+## InstructionsBlock
+
+Very simple: show text and a button to advance to the next block.
+
+    var ib = new(InstructionsBlock('This is an experiment, you know that though'));
+
+
+## InstructionSubsectionsBlock
 
 This shows information (text, images, etc.) in an interactive way, organized into subsections.  Each subsection starts off collapsed (just headline visible), and each has a button or checkbox to advance to the next subsection.  Checkboxes must all be checked to advance to the next block.
 
