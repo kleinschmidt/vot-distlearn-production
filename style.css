@@ -205,3 +205,35 @@ div#buttons {
 span.respKey {
     font-weight: bold;
 }
+
+
+/* Sound check styles */
+input.soundcheckPlay {
+    color: white;
+    background-color: green;
+    padding: 5px;
+    font-size: 16pt;
+    font-weight: bold;
+    cursor: pointer;
+    -moz-border-radius: 0px;
+    -webkit-border-radius: 0px;
+    border-radius: 0px;
+    border: none;
+}
+
+input.soundcheckAnswer {
+    font-size: 16pt;
+    padding: 5px;
+    border: 1px solid #ddd;
+}
+
+input.soundcheckAnswer.correct {
+    background-color: #efe;
+    border: 1px solid #fff;
+}
+
+input.soundcheckAnswer.fixme {
+    background-color: #fee;
+    border: 1px solid #fff;
+}
+    
