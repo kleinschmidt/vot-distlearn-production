@@ -56,10 +56,14 @@ Experiment.prototype = {
     addBlock: function(obj) {
         var block, instructions, endedHandler, practiceParameters, onPreview;
         // detect "naked block" vs. object with block info
-        if (typeof(obj.run) === 'function') {
-            // input object has "run" method, so it's a naked block
+        if (typeof(obj.run) === 'function' || typeof(obj) === 'function') {
+            // naked block cases: 
+            // naked blocks are either objects with a .run() method (first case)
+            // or functions themselves (which are called by Experiment.nextBlock()
+            // and return a block object)
             block = obj;            
         } else {
+            // block + parameters objects, with fields:
             block = obj['block'];
             instructions = obj['instructions'];
             endedHandler = obj['endedHandler'];
