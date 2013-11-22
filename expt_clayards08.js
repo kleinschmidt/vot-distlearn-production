@@ -128,7 +128,29 @@ $(document).ready(
             }
         ];
         
-        
+        var soundcheck = new SoundcheckBlock(
+            {
+                items: [
+                    {
+                        filename: 'stimuli_vot/LAKE9',
+                        answer: 'rake'
+                    },
+                    {
+                        filename: 'stimuli_vot/BEACH80',
+                        answer: 'peach'
+                    },
+                    {
+                        filename: 'stimuli_vot/BEAK0',
+                        answer: 'beak'
+                    },
+                    {
+                        filename: 'stimuli_vot/LACE1',
+                        answer: 'lace'
+                    }
+                ]
+            }
+        );
+
         vwb = new VisworldBlock({lists: lists,
                                  images: stim_images,
                                  namespace: 'visworld_clayards08_'+condition});
@@ -197,6 +219,8 @@ $(document).ready(
         );
         
         e.addBlock({block: instructions,
+                    onPreview: true});
+        e.addBlock({block: soundcheck,
                     onPreview: true});
         e.addBlock({block: vwb,
                     onPreview: false});
