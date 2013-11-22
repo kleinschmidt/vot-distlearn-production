@@ -166,11 +166,6 @@ function StimuliFileList(baseobj) {
         this.maxAmbigRange = [1, numstims];
     }
 
-    // check for calibreps
-    if (typeof(this.calibReps) === 'undefined') {
-        this.calibReps = 1;
-    }
-
     // check for media type
     if (typeof(this.mediaType) === 'undefined') {
         throw('Must specify media type as \'audio\' or \'video\'');
@@ -182,7 +177,8 @@ StimuliFileList.prototype = {
         // default formatter is just going to pick out the nth filename
         return(prefix + this.filenames[n]); 
     },
-    prefix: ''
+    prefix: '',
+    calibReps: 1
 };
 
 extend(StimuliFileList, Stimuli);
