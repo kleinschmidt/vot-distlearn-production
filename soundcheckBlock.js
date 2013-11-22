@@ -75,7 +75,6 @@ SoundcheckBlock.prototype = {
                   var wordAudio = $('<audio></audio>')
                       .attr('src', item.filename+audSuffix)
                       .addClass('soundcheckAudio')
-                      .show();
                   $(itemLI)
                       .append(playButton)
                       .append(answerText)
@@ -83,6 +82,9 @@ SoundcheckBlock.prototype = {
                       .appendTo($('#soundcheckItems'));
               });
 
+        // explicitly preload audio so they will play more than once.
+        $('audio.soundcheckAudio').each(function() {this.load();});
+        
         // listen for button clicks and play sound
         $('input.soundcheckPlay')
             .click(function() {
