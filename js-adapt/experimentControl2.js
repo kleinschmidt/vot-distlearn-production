@@ -55,14 +55,24 @@ Experiment.prototype = {
     // addBlock: function(block, instructions, endedHandler, practiceParameters) {
     addBlock: function(obj) {
         var block, instructions, endedHandler, practiceParameters, onPreview;
-        block = obj['block'];
-        instructions = obj['instructions'];
-        endedHandler = obj['endedHandler'];
-        practiceParameters = obj['practiceParameters'];
-        // show block during preview?
-        onPreview = typeof(obj['onPreview']) === 'undefined' ?
-            false :
-            obj['onPreview'];
+        // detect "naked block" vs. object with block info
+        if (typeof(obj.run) === 'function' || typeof(obj) === 'function') {
+            // naked block cases: 
+            // naked blocks are either objects with a .run() method (first case)
+            // or functions themselves (which are called by Experiment.nextBlock()
+            // and return a block object)
+            block = obj;            
+        } else {
+            // block + parameters objects, with fields:
+            block = obj['block'];
+            instructions = obj['instructions'];
+            endedHandler = obj['endedHandler'];
+            practiceParameters = obj['practiceParameters'];
+            // show block during preview?
+            onPreview = typeof(obj['onPreview']) === 'undefined' ?
+                false :
+                obj['onPreview'];
+        }
         
         // add onEndedBlock handler function to block (block object MUST
         // call its onEndedBlock method  when it has truly ended...)
@@ -382,13 +392,21 @@ InstructionsSubsectionsBlock.prototype = {
 // GUI/helper things
 
 // display a "continue" button which executes the given function
-function continueButton(fcn) {
-    $("#continue").show().unbind('click.cont').bind('click.cont', function() {
-        $(this).unbind('click.cont');
-        $(this).hide();
-        fcn();
-    });
+function continueButton(fcn, validateFcn) {
+    $("#continue")
+        .show()
+        .unbind('click.cont')
+        .bind('click.cont', function() {
+                  if (typeof(validateFcn) !== 'function' || 
+                      typeof(validateFcn) === 'function' && validateFcn()) 
+                  {
+                      $(this).unbind('click.cont');
+                      $(this).hide();
+                      fcn();
+                  }
+              });
 }
+
 
 // collect a keyboard response, with optional timeout
 function collect_keyboard_resp(fcn, keys, to, tofcn) {
