@@ -18,18 +18,10 @@
  *    along with this program.
  *    If not, see <http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html>.
  *
- * 
- * Skeleton javascript for a new block type.  The demands of the experimentControl2.js
- * are only that 
- *   1) The block object have a run() method, which will be called to start the block
- *      and needs to show the instructions and initialize the block
- *   2) When done, the block hands control back to the Experiment by calling its own
- *      onEndedBlock() method, which will be provided by Experiment when the block 
- *      is added initially.
  */
 
 // Block to carry out a sound check by playing one or more sound files and checking
-// transcriptions.  Takes input of the form 
+// transcriptions.  Takes input of the form { items:
 // [ 
 //   { 
 //     filename: 'sound1',
@@ -56,16 +48,21 @@ function SoundcheckBlock(params) {
 }
 
 SoundcheckBlock.prototype = {
+    parentDiv: '#textContainer',
     items: undefined,
     instructions: '<h3>Sound check</h3>' + 
         '<p>You should complete this experiment in a quiet environment without any distractions, using headphones (preferred) or speakers set to the highest comfortable volume.</p>' +
         '<p>To ensure that your audio is working properly, you must complete the following sound test. Click on each button below to play a word, and type the words in the boxes provided. You can play the soundfiles as many times as you need to to set your volume to the right level. Please type the words in all <b>lowercase</b> letters, and press the start button to proceed. If you enter one of the words incorrectly, you will be prompted to retry until you have entered them correctly.</p>',
     init: function() {
-        // add instructions
         var _self = this;
-        $('#instructions').html(_self.instructions).show();
-        // create DOM elements (div and list)
-        $('<div></div>').attr('id', 'soundcheck').insertBefore($('#continue'));
+        // create DOM elements (container div, instructions div, and items list)
+        $('<div></div>')
+            .attr('id', 'soundcheck')
+            .appendTo(this.parentDiv);
+        $('<div></div>')
+            .attr('id', 'soundcheckInstructions')
+            .html(this.instructions)
+            .appendTo('#soundcheck');
         $('<ol></ol>').attr('id', 'soundcheckItems').appendTo('#soundcheck');
         // for each item, create list item
         $.map(this.items, function(item) {
@@ -74,7 +71,7 @@ SoundcheckBlock.prototype = {
                   var answerText = $('<input type="text" class="soundcheckAnswer"></input>');
                   var wordAudio = $('<audio></audio>')
                       .attr('src', item.filename+audSuffix)
-                      .addClass('soundcheckAudio')
+                      .addClass('soundcheckAudio');
                   $(itemLI)
                       .append(playButton)
                       .append(answerText)
