@@ -112,6 +112,13 @@ SoundcheckBlock.prototype = {
                         .prop('checked', 
                               (! $('input.soundcheckAnswer:not(.correct)').length));
                 })
+            .on('change', function() {
+                    // change triggers after focus is changed (I think)
+                    // mark incorrect ones RED after change if they are wrong
+                    if (! $(this).hasClass('correct')) {
+                        $(this).addClass('fixme');
+                    }
+                })
             .on('focus', function() {
                     // remove read "fix me" background on focus
                     $(this).removeClass('fixme');
