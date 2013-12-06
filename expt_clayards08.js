@@ -177,19 +177,19 @@ $(document).ready(
                                                   {
                                                       filename: 'stimuli_vot/LAKE9',
                                                       answer: 'rake'
-                                                  }// ,
-                                                  // {
-                                                  //     filename: 'stimuli_vot/BEACH80',
-                                                  //     answer: 'peach'
-                                                  // },
-                                                  // {
-                                                  //     filename: 'stimuli_vot/BEAK0',
-                                                  //     answer: 'beak'
-                                                  // },
-                                                  // {
-                                                  //     filename: 'stimuli_vot/LACE1',
-                                                  //     answer: 'lace'
-                                                  // }
+                                                  },
+                                                  {
+                                                      filename: 'stimuli_vot/BEACH80',
+                                                      answer: 'peach'
+                                                  },
+                                                  {
+                                                      filename: 'stimuli_vot/BEAK0',
+                                                      answer: 'beak'
+                                                  },
+                                                  {
+                                                      filename: 'stimuli_vot/LACE1',
+                                                      answer: 'lace'
+                                                  }
                                               ],
                                               instructions: ''
                                           }
