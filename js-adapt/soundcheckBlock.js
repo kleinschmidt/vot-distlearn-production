@@ -64,6 +64,12 @@ SoundcheckBlock.prototype = {
             .html(this.instructions)
             .appendTo('#soundcheck');
         $('<ol></ol>').attr('id', 'soundcheckItems').appendTo('#soundcheck');
+        // add validation checkbox for easy validation checking
+        $('<input type="checkbox" />')
+            .css('display', 'none')
+            .addClass('validation')
+            .attr('id', 'soundcheckValidationFlag')
+            .appendTo('#soundcheck');
         // for each item, create list item
         $.map(this.items, function(item) {
                   var itemLI = $('<li class="soundcheckItem"></li>').attr('item', item.answer);
@@ -99,6 +105,12 @@ SoundcheckBlock.prototype = {
                     } else {
                         $(this).removeClass('correct');
                     }
+                    // check validation box if all correct
+                    // (0 is false-y and >0 is truth-y, so negating length of
+                    // incorrect items gives an "all okay" truth value)
+                    $('#soundcheckValidationFlag')
+                        .prop('checked', 
+                              (! $('input.soundcheckAnswer:not(.correct)').length));
                 })
             .on('focus', function() {
                     // remove read "fix me" background on focus
