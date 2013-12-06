@@ -313,6 +313,9 @@ InstructionsSubsectionsBlock.prototype = {
                                                     // if so, wrap in h4 and p
                                                     return('<h4>' + item.subtitle + '</h4>' +
                                                            '<p>' + item.content + '</p>');
+                                                } else if (typeof(item) === 'function') {
+                                                    // if this item is a function, evaluate and return the results
+                                                    return(item());
                                                 } else {
                                                     // if not, just wrap in p
                                                     return('<p>' + item + '</p>');
@@ -364,7 +367,7 @@ InstructionsSubsectionsBlock.prototype = {
                               $(this).children('button').first().click();
                           });
 
-        // when "end instructions" button is click, validate everything
+        // when "end instructions" button is clicked, validate everything
         var _self = this;
         $('button#endinstr')
             .click(function(){

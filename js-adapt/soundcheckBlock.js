@@ -117,6 +117,9 @@ SoundcheckBlock.prototype = {
                     $(this).removeClass('fixme');
                 });
 
+        // return top-level div to allow chaining/embedding
+        return($('#soundcheck'));
+
     },
     check: function() {
         // make sure all are correct (look for ones without "correct" class)

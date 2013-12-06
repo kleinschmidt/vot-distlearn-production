@@ -128,40 +128,12 @@ $(document).ready(
             }
         ];
         
-        var soundcheck = new SoundcheckBlock(
-            {
-                items: [
-                    {
-                        filename: 'stimuli_vot/LAKE9',
-                        answer: 'rake'
-                    },
-                    {
-                        filename: 'stimuli_vot/BEACH80',
-                        answer: 'peach'
-                    },
-                    {
-                        filename: 'stimuli_vot/BEAK0',
-                        answer: 'beak'
-                    },
-                    {
-                        filename: 'stimuli_vot/LACE1',
-                        answer: 'lace'
-                    }
-                ]
-            }
-        );
 
         vwb = new VisworldBlock({lists: lists,
                                  images: stim_images,
                                  namespace: 'visworld_clayards08_'+condition});
 
-        // overall instructions
-        $("#instructions").html(logoDiv +
-                                '<p>Thanks for your interest in our study!  This HIT is a psychology experiment, about how people understand speech.  Your task will be to listen to words, and click on pictures.</p>' +
-                                '<p>Please read through each of the following items that will inform you about the study and its requirements. You can click the names below to expand or close each section. <span style="font-weight:bold;">You must read the eligibility requirements, the instructions, and the informed consent sections.</span></p>' +
-                                techDiffDiv +
-                                consentFormDiv);
-
+        // experiment intro and overall instructions
         var instructions = new InstructionsSubsectionsBlock(
             {
                 logoImg: 'logo.png',
@@ -195,6 +167,37 @@ $(document).ready(
                         checkboxText: 'I have read and understand the requirements.'
                     },
                     {
+                        title: 'Sound check',
+                        content: ['You should complete this experiment in a quiet environment without any distractions, using headphones (preferred) or speakers set to the highest comfortable volume.', 
+                                  'To ensure that your audio is working properly, you must complete the following sound test. Click on each button below to play a word, and type the words in the boxes provided. You can play the soundfiles as many times as you need to to set your volume to the right level. Please type the words in all <b>lowercase</b> letters, and press the start button to proceed. If you enter one of the words incorrectly, you will be prompted to retry until you have entered them correctly.',
+                                  function() {
+                                      var soundcheck = new SoundcheckBlock(
+                                          {
+                                              items: [
+                                                  {
+                                                      filename: 'stimuli_vot/LAKE9',
+                                                      answer: 'rake'
+                                                  }// ,
+                                                  // {
+                                                  //     filename: 'stimuli_vot/BEACH80',
+                                                  //     answer: 'peach'
+                                                  // },
+                                                  // {
+                                                  //     filename: 'stimuli_vot/BEAK0',
+                                                  //     answer: 'beak'
+                                                  // },
+                                                  // {
+                                                  //     filename: 'stimuli_vot/LACE1',
+                                                  //     answer: 'lace'
+                                                  // }
+                                              ],
+                                              instructions: ''
+                                          }
+                                      );
+                                      return(soundcheck.init());
+                                  }]
+                    },
+                    {
                         title: 'Experiment instructions', 
                         content: ['In this experiment, you will hear words and click on matching pictures.',
                                   'On each trial, there will be four pictures on the screen.',
@@ -218,16 +221,16 @@ $(document).ready(
             }
         );
         
+        // add all the blocks to the experiment
         e.addBlock({block: instructions,
                     onPreview: true});
-        e.addBlock({block: soundcheck,
-                    onPreview: true});
+        // e.addBlock({block: soundcheck,
+        //             onPreview: true});
         e.addBlock({block: vwb,
                     onPreview: false});
 
-        continueButton(function() {
-                               e.nextBlock();
-                       });
+        // run the experiment
+        e.nextBlock();
         
         
     });
