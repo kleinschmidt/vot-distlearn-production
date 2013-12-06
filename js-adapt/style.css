@@ -221,6 +221,12 @@ input.soundcheckPlay {
     border: none;
 }
 
+ol#soundcheckItems {
+    list-style-type: none;
+    padding: 0px 10px;
+    margin-bottom: 25px;
+}
+
 input.soundcheckAnswer {
     font-size: 16pt;
     padding: 5px;
@@ -236,4 +242,37 @@ input.soundcheckAnswer.fixme {
     background-color: #fee;
     border: 1px solid #fff;
 }
-    
+
+
+
+/* instructions subsections styling */
+button.instructionbutton {
+    color: white;
+    background-color: green;
+    padding: 5px 10px;
+    font-size: 16pt;
+    -moz-border-radius: 0px;
+    -webkit-border-radius: 0px;
+    border-radius: 0px;
+    border: none;
+    font-family: Helvetica;
+}
+
+button#endinstr {
+    color: white;
+    background-color: green;
+    padding: 5px 10px;
+    font-size: 14pt;
+    -moz-border-radius: 0px;
+    -webkit-border-radius: 0px;
+    border-radius: 0px;
+    border: none;
+    font-family: Helvetica;
+}
+
+div.listcontent > label {
+    color: white;
+    background-color: green;
+    padding: 5px 10px;
+    font-size: 16pt;
+}

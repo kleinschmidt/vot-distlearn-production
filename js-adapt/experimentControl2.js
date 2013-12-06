@@ -313,6 +313,9 @@ InstructionsSubsectionsBlock.prototype = {
                                                     // if so, wrap in h4 and p
                                                     return('<h4>' + item.subtitle + '</h4>' +
                                                            '<p>' + item.content + '</p>');
+                                                } else if (typeof(item) === 'function') {
+                                                    // if this item is a function, evaluate and return the results
+                                                    return(item());
                                                 } else {
                                                     // if not, just wrap in p
                                                     return('<p>' + item + '</p>');
@@ -341,10 +344,10 @@ InstructionsSubsectionsBlock.prototype = {
         $('div.listcontent').css('display', 'none');
 
         // set up interaction behaviors:
-        // clicking anywhere in list item toggles its display
-        $('.instructionlistitem').on('click', function(){
-                                         $(this).children('.listcontent').toggle(500);
-                                     });
+        // clicking subsection header toggles content display display
+        $('li.instructionlistitem > h3').on('click', function(){
+                                                $(this).parent().children('.listcontent').toggle(500);
+                                            });
 
         // clicking the "next" button hides the current section and shows the next
         // click on checkbox advances to next item
@@ -364,7 +367,7 @@ InstructionsSubsectionsBlock.prototype = {
                               $(this).children('button').first().click();
                           });
 
-        // when "end instructions" button is click, validate everything
+        // when "end instructions" button is clicked, validate everything
         var _self = this;
         $('button#endinstr')
             .click(function(){
