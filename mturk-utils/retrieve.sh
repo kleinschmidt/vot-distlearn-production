@@ -19,10 +19,17 @@ cd $MTURK_CMD_HOME/bin
 prefix=$1
 shift
 
+# sandbox flag for filenames
+sandbox=
+
+# variable to collect all flags (just sandbox here, but for consistency with other scripts)
+additionalFlags=
+
 while [ $# -gt 0 ]
 do
     case "$1" in
         --) shift; break;;          #end of flags
+        -sandbox) sandbox="-SANDBOX"; additionalFlags="$additionalFlags -sandbox";;
 	-*) echo >&2 \
 	    echo "usage: $0 prefix [-n] [-i inputSuffix]"
 	    exit 1;;
@@ -33,4 +40,4 @@ done
 
 
 # retrieve results to temp file
-./getResults.sh -successfile ${DIR}/$prefix.success -outputfile ${DIR}/$prefix.results $@
+./getResults.sh -successfile ${DIR}/$prefix.success -outputfile ${DIR}/$prefix.results $additionalFlags $@
