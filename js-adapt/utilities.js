@@ -1,3 +1,27 @@
+// repeat x, n times
+function repeat(x, n) {
+    if (typeof(n) !== "number") {
+        throw "Number of reps must be numeric";
+    } else {
+        var y=Array(n);
+        for (var i=0; i<n; i++) {
+            y[i] = x;
+        }
+        return(y);
+    }
+}
+
+// repeat Array x until length is n, slicing long arrays to make them length n
+function repeatToLength(x, n) {
+    // put x in an array if it's naked
+    x = [].concat(x);
+    var y = x;
+    while (y.length < n) {
+        y = y.concat(x);
+    }
+    return(y.slice(0,n));
+}
+
 // function to create a truly random (shuffled) item order, either from an array
 // of repetition numbers or from a uniform number of repetitions and number of items n.
 function randomOrder(reps, n) {

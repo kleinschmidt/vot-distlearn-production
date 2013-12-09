@@ -71,7 +71,7 @@ function VisworldBlock(params) {
         // add stimuli object to list, to be installed below
         allStims.push(list.stimuli);
         // concatenate repetitions into a big array
-        $.merge(allReps, list.reps);
+        $.merge(allReps, repeatToLength(list.reps, list.stimuli.continuum.length));
         // add images (one per unique stimulus item) to an array
         // keep track of mapping from list indices to global stimulus indices
         list.globalIndices = [];
