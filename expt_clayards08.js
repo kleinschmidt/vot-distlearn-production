@@ -72,6 +72,8 @@ $(document).ready(
         e.debugMode = checkDebug(e.urlparams);
         var condition = e.urlparams['condition'];
 
+        var shortVersion = typeof e.urlparams['shortVersion'] === 'undefined' ? false : true;
+        
         ////////////////////////////////////////////////////////////////////////////////
         // construct lists
         
@@ -91,6 +93,11 @@ $(document).ready(
             break;
         default:
             throw('Invalid condition: ' + condition);
+        }
+
+        if (shortVersion) {
+            lr_reps = 1;
+            bp_reps = 1;
         }
 
         // construct experimental lists:
