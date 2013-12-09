@@ -284,7 +284,7 @@ InstructionsSubsectionsBlock.prototype = {
             .append($('<div></div>')
                     .addClass('listcontent')
                     .append('<p>Once you press Start, these instructions will disappear, so make sure you understand them fully before you start</p>')
-                    .append('<button type="button" id="endinstr">I confirm that I meet the eligibility and computer requirements, that I have read and understood the instructions, the consent and that I want to start the experiment.</button>'))
+                    .append('<button type="button" id="endinstr">I confirm that I meet the eligibility and computer requirements, that I have read and understood the instructions and the consent form, and that I want to start the experiment.</button>'))
             .appendTo(instList);
 
         // iterate over subsections, parsing, formatting, and adding each
@@ -301,7 +301,7 @@ InstructionsSubsectionsBlock.prototype = {
                        isFinally ? '' : 
                        typeof(this.checkboxText)==='undefined'
                        ? '<button type="button" class="instructionbutton">Take me to the next section</button>'
-                       : '<label><input type="checkbox" />' + this.checkboxText + '</label>';
+                       : '<p class="instructioncheckbox"><input type="checkbox" />' + this.checkboxText + '</p>';
                    // create content.
                    // first, coerce to array.  this wraps naked strings and does nothing to arrays
                    var contentArr = [].concat(this.content);
@@ -363,8 +363,8 @@ InstructionsSubsectionsBlock.prototype = {
                 });
         
         // apply clicks anywhere in the checkbox label to the checkbox.
-        $('#instructions label').on('click', function(e){
-                              $(this).children('button').first().click();
+        $('#instructions p.instructioncheckbox').on('click', function(e){
+                              $(this).children('input').first().click();
                           });
 
         // when "end instructions" button is clicked, validate everything
