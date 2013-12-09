@@ -148,12 +148,12 @@ $(document).ready(
                     {
                         title: 'Eligibility requirements',
                         content: ['Please complete this HIT in a quiet room, away from other noise ' +
-                                  '(preferably while wearing headphones).  Please do not look at other' +
+                                  'and wearing headphones.  Please do not look at other' +
                                   ' web pages or other programs while completing this HIT, as it is very' +
                                   ' important that you give it your full attention.',
                                   {
                                       subtitle: 'Language requirements',
-                                      content: '<span style="font-weight:bold;">You must be a native speaker of American English.</span>  If you have not spent almost all of your time until the age of 10 in the United States, you cannot participate.'
+                                      content: '<span style="font-weight:bold;">You must be a native speaker of American English.</span>  If you have not spent almost all of your time until the age of 10 speaking English and living in the United States, you cannot participate.'
                                   },
                                   {
                                       subtitle: 'Repeats/multiple HITs',
@@ -161,15 +161,15 @@ $(document).ready(
                                   },
                                   {
                                       subtitle: 'Computer requirements',
-                                      content: 'This experiment requires that your browser support javascript and that you have working speakers or headphones. If you have a mouse, please use it (instead of a laptop trackpad).'
+                                      content: 'This experiment requires that your browser support javascript and that you have working headphones and a mouse (instead of a laptop trackpad).'
                                   }
                                  ],
                         checkboxText: 'I have read and understand the requirements.'
                     },
                     {
                         title: 'Sound check',
-                        content: ['You should complete this experiment in a quiet environment without any distractions, using headphones (preferred) or speakers set to the highest comfortable volume.', 
-                                  'To ensure that your audio is working properly, you must complete the following sound test. Click on each button below to play a word, and type the words in the boxes provided. You can play the soundfiles as many times as you need to to set your volume to the right level. Please type the words in all <b>lowercase</b> letters, and press the start button to proceed. If you enter one of the words incorrectly, you will be prompted to retry until you have entered them correctly.',
+                        content: ['Please complete the following sound test to make sure your browser is compatible with this experiment, and that your headphones are set to a comfortable volume.', 
+                                  'Click on each button below to play a word, and type each word in the box provided. You can play the soundfiles as many times as you need to to set your volume to the right level. Please type the words in all <b>lowercase</b> letters.  If you enter one of the words incorrectly, the box will turn red to prompt you to retry until you have entered them correctly.',
                                   function() {
                                       var soundcheck = new SoundcheckBlock(
                                           {
@@ -202,9 +202,9 @@ $(document).ready(
                         content: ['In this experiment, you will hear words and click on matching pictures.',
                                   'On each trial, there will be four pictures on the screen.',
                                   'When the green light in the center lights up, click on it to hear the word.',
-                                  'Click on the matching picture as quickly and accurately as possible.',
-                                  '<span style="font-weight:bold;">If you click randomly or make too many mistakes, your work will be rejected, so try your best to click on the matching picture.</span>'],
-                        checkboxText: 'I have read and understood the instructions.'
+                                  'Click on the matching picture as quickly as possible.',
+                                  {subtitle: 'Reasons work can be rejected:', content: 'There are two reasons that your work can be rejected.  First, <span style="font-weight:bold;">clicking randomly, or making too many mistakes</span> (clicking on the wrong picture).  Try your best to click on the matching picture, even though some of the words may be confusing.  Second, <span style="font-weight:bold;">waiting an unreasonably long time before clicking</span> (for instance because you are away from the computer).  Please make sure to give yourself enough time to finish the entire experiment in one session.  There will be chances to take breaks throughout the experiment.'}],
+                        checkboxText: 'I have read and understood the instructions, and why work can be rejected.'
                     },
                     {
                         title: 'Informed consent',
@@ -213,8 +213,8 @@ $(document).ready(
                     },
                     {
                         title: 'Further (optional) information',
-                        content: ['Sometimes it can happen that technical difficulties cause experimental scripts to freeze so that you will not be able to submit a HIT. We are trying our best to avoid these problems. Should they nevertheless occur, we urge you to <a href="mailto:hlplab@bcs.rochester.edu">contact us</a>.', 
-                                  'If you are interested in hearing how the experiments you are participating in help us to understand the human brain, feel free to subscribe to our <a href="http://hlplab.wordpress.com/">lab blog</a> on which we announce new findings. Note that typically about one year passes before an experiment is published.'],
+                        content: ['Sometimes it can happen that technical difficulties cause experimental scripts to freeze so that you will not be able to submit a HIT. We are trying our best to avoid these problems. Should they nevertheless occur, we urge you to <a href="mailto:hlplab@gmail.com">contact us</a>, and include the HIT ID number and your worker ID.', 
+                                  'If you are interested in hearing how the experiments you are participating in help us to understand the human brain, feel free to subscribe to our <a href="http://hlplab.wordpress.com/">lab blog</a> where we announce new findings. Note that typically about one year passes before an experiment is published.'],
                         finallyInfo: true
                     }
                 ]
