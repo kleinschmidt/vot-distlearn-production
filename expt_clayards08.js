@@ -182,20 +182,12 @@ $(document).ready(
                                           {
                                               items: [
                                                   {
-                                                      filename: 'stimuli_vot/LAKE9',
-                                                      answer: 'rake'
+                                                      filename: 'stimuli_soundcheck/cabbage',
+                                                      answer: 'cabbage'
                                                   },
                                                   {
-                                                      filename: 'stimuli_vot/BEACH80',
-                                                      answer: 'peach'
-                                                  },
-                                                  {
-                                                      filename: 'stimuli_vot/BEAK0',
-                                                      answer: 'beak'
-                                                  },
-                                                  {
-                                                      filename: 'stimuli_vot/LACE1',
-                                                      answer: 'lace'
+                                                      filename: 'stimuli_soundcheck/lemonade',
+                                                      answer: 'lemonade'
                                                   }
                                               ],
                                               instructions: ''
