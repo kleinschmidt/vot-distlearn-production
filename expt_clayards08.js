@@ -72,6 +72,8 @@ $(document).ready(
         e.debugMode = checkDebug(e.urlparams);
         var condition = e.urlparams['condition'];
 
+        var shortVersion = typeof e.urlparams['shortVersion'] === 'undefined' ? false : true;
+        
         ////////////////////////////////////////////////////////////////////////////////
         // construct lists
         
@@ -91,6 +93,11 @@ $(document).ready(
             break;
         default:
             throw('Invalid condition: ' + condition);
+        }
+
+        if (shortVersion) {
+            lr_reps = 1;
+            bp_reps = 1;
         }
 
         // construct experimental lists:
@@ -175,20 +182,12 @@ $(document).ready(
                                           {
                                               items: [
                                                   {
-                                                      filename: 'stimuli_vot/LAKE9',
-                                                      answer: 'rake'
+                                                      filename: 'stimuli_soundcheck/cabbage',
+                                                      answer: 'cabbage'
                                                   },
                                                   {
-                                                      filename: 'stimuli_vot/BEACH80',
-                                                      answer: 'peach'
-                                                  },
-                                                  {
-                                                      filename: 'stimuli_vot/BEAK0',
-                                                      answer: 'beak'
-                                                  },
-                                                  {
-                                                      filename: 'stimuli_vot/LACE1',
-                                                      answer: 'lace'
+                                                      filename: 'stimuli_soundcheck/lemonade',
+                                                      answer: 'lemonade'
                                                   }
                                               ],
                                               instructions: ''
