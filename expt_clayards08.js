@@ -221,12 +221,12 @@ $(document).ready(
         );
         
         // add all the blocks to the experiment
-        e.addBlock({block: instructions,
-                    onPreview: true});
-        // e.addBlock({block: soundcheck,
+        // e.addBlock({block: instructions,
         //             onPreview: true});
-        e.addBlock({block: vwb,
-                    onPreview: false});
+        // // e.addBlock({block: soundcheck,
+        // //             onPreview: true});
+        // e.addBlock({block: vwb,
+        //             onPreview: false});
 
         // run the experiment
         e.nextBlock();
