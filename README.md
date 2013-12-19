@@ -62,7 +62,7 @@ with the /r/-/l/ pairs acting as controls and exhibiting no variability.  76 tok
 
 The stimulus image arrays were three unique arrays: beach+race, bees+rake, and beak+ray, with the positions of the four images randomly set on each trial.  The trials were randomly ordered (based on the lists Mehgan sent, and the Methods section of the paper).
 
-Breaks were provided every 100 trials.  Images were introduced by a passive viewing familiarization task with written labels (TODO).  For the MTurk version, we'll probably want to add some kind of test to make sure people aren't being idiots (TODO).  We'll also probably want to add some kind of phonetic validation (TODO).
+Breaks were provided every 100 trials.  Images were introduced by a passive viewing familiarization task with written labels.  For the MTurk version, I've added a sound check.  We'll have to check boundaries after the fact...
 
 ## Stimuli
 
