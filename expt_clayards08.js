@@ -146,11 +146,12 @@ $(document).ready(
                 logoImg: 'logo.png',
                 title: 'Listen and click',
                 mainInstructions: ['Thanks for your interest in our study!  This HIT is a psychology experiment, about how people understand speech.  Your task will be to listen to words, and click on pictures.',
-                                           'Please read through each of the following items that will inform you about the study and its requirements. You can click the names below to expand or close each section. <span style="font-weight:bold;">You must read the eligibility requirements, the instructions, and the informed consent sections.</span>'],
+                                           'Please read through each of the following items that will inform you about the study and its requirements. You can click the names below to expand or close each section. <span style="font-weight:bold;">You must read the eligibility requirements, the instructions, and the informed consent sections.</span>',
+                                           '<span style="font-weight:bold;">Please do not take this experiment more than once!</span>'],
                 subsections: [
                     {
                         title: 'Experiment length', 
-                        content: 'The experiment will take about an hour to complete and you will be paid $6.00.  You will hear a little more than 400 words, many of them very similar.'
+                        content: 'The experiment will take 30-45 minutes to complete and you will be paid $4.50.  You will hear a little more than 400 words, many of them very similar.'
                     },
                     {
                         title: 'Eligibility requirements',
