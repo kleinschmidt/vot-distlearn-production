@@ -68,6 +68,10 @@ Breaks were provided every 100 trials.  Images were introduced by a passive view
 
 Stimuli were synthesized using Klattworks.  VOT continua vary from -30ms to +80ms, with apparent corresponding changes in f0/F1 onset at positive VOTs.  
 
+## Timing and payment: 
+
+Based on my testing, looks like the instructions will take like 5-6 minutes, and each block of 100 trials takes 5-6 minutes, for about 30 minutes overall.  45 minutes for the whole thing should be fine.
+
 # Follow up: from words to syllables
 
 ## Extracting /bi/-/pi/ continuum
