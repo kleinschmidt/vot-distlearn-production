@@ -151,7 +151,7 @@ $(document).ready(
                 subsections: [
                     {
                         title: 'Experiment length', 
-                        content: 'The experiment will take 30-45 minutes to complete and you will be paid $4.50.  You will hear a little more than 400 words, many of them very similar.'
+                        content: 'The experiment will take 30-40 minutes to complete and you will be paid $4.00.  You will hear a little more than 400 words, many of them very similar.'
                     },
                     {
                         title: 'Eligibility requirements',
