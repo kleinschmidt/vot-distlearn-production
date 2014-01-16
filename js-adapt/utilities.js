@@ -111,3 +111,16 @@ function pseudoRandomOrder(reps, n, method) {
 
     return(stims);
 }
+
+
+
+// python style string formatting.  Replace {0} with first argument, {1} with second, etc.
+String.prototype.format = function() {
+  var args = arguments;
+  return this.replace(/{(\d+)}/g, function(match, number) { 
+    return typeof args[number] != 'undefined'
+      ? args[number]
+      : match
+    ;
+  });
+};

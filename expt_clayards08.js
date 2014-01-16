@@ -61,8 +61,14 @@ var vwb;
 $(document).ready(
     function() {
         
+        // create an experiment object with the necessary RSRB metadata
+        e = new Experiment(
+            {
+                rsrbProtocolNumber: 'RSRB00045955',
+                rsrbConsentFormURL: 'http://www.hlp.rochester.edu/consent/RSRB45955_Consent_2014-02-10.pdf'    
+            }
+        );
 
-        e = new Experiment();
         e.init();
 
         ///////////////////////////////////////////////////////////
@@ -208,7 +214,7 @@ $(document).ready(
                     },
                     {
                         title: 'Informed consent',
-                        content: consentFormDiv,
+                        content: e.consentFormDiv,
                         checkboxText: 'I consent to participating in this experiment'
                     },
                     {
