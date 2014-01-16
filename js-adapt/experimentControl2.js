@@ -27,11 +27,9 @@ var vidSuffix, audSuffix;
 // convenience variable for debugging (block of experiment currently being executed)
 var _curBlock;
 
-function Experiment() {
-    this.blocks = [];
-    this.blockn = undefined;
-
-    return this;
+function Experiment(baseobj) {
+    // add any properties passed as object to this, overriding defaults
+    $.extend(this, baseobj);
 }
 
 // functionality needed for this object:
@@ -51,7 +49,12 @@ function Experiment() {
 // e.addBlock(exp
 
 Experiment.prototype = {
-
+    blocks: [],
+    blockn: undefined,
+    rsrbProtocolNumber: 'RSRB00045955',
+    rsrbConsentFormURL: 'http://www.hlp.rochester.edu/consent/RSRB45955_Consent_2014-02-10.pdf',
+    consentFormDiv: '<div id="consent">By accepting this HIT, you confirm that you have read and understood the <a target="_blank" href="{0}">consent form</a>, that you are willing to participate in this experiment, and that you agree that the data you provide by participating can be used in scientific publications (no identifying information will be used). Sometimes it is necessary to share the data elicited from you &mdash; including sound files &mdash; with other researchers for scientific purposes (for replication purposes). That is the only reason for which we will share data and we will only share data with other researchers and only if it is for non-commercial use. Identifying information will <span style="font-weight:bold;">never</span> be shared (your MTurk ID will be replaced with an arbitrary alphanumeric code).</div>',
+    
     // addBlock: function(block, instructions, endedHandler, practiceParameters) {
     addBlock: function(obj) {
         var block, instructions, endedHandler, practiceParameters, onPreview;
@@ -180,6 +183,27 @@ Experiment.prototype = {
         } else {
             return false;
         }
+
+        // format consent form div with appropriate link to consent form.
+        this.consentFormDiv = this.consentFormDiv.format(this.rsrbConsentFormURL);
+
+        // set up form for end of experiment with demographic and other info
+        // load demographic survey into div in form
+        var rsrbNum = this.rsrbProtocolNumber;
+        $('form#mturk_form')
+            .append($('<div id="rsrb" class="survey">')
+                    .load('js-adapt/rsrb_survey.html #rsrb > *', function() {
+                        console.log($('input[name="rsrb.protocol"]').val());
+                        // set protocol number
+                        $('input[name="rsrb.protocol"]:hidden').val(rsrbNum);
+                        console.log($('input[name="rsrb.protocol"]').val());
+                    }));
+
+        // load audio equipment/comment survey into div in form
+        $('form#mturk_form')
+            .append($('<div id="endForm" class="survey"></div>')
+                    .load('js-adapt/audio_comments_form.html #endForm > *'));
+
     },
 
     wrapup: function(why) {
