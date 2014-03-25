@@ -1,7 +1,3 @@
-# VOT variance experiment
-
-This experiment is an attempt to replicate the results of Clayards et al. (2008) using a more selective adaptation-like paradigm, over MTurk.  
-
 # Visual world documentation
 
 The relevant files for creating your own visual world experiment are:
@@ -45,7 +41,9 @@ The `reps` field is an array of how many repetitions for each continuum item in 
 
 # Demo: Clayards (2008) replication
 
-Before doing the selective adaptation-like paradigm, we want to make sure that we can replicated the original findings using the original visual world paradigm.
+There is a demo experiment that uses a visual world paradigm, a replication of
+
+*  Clayards, M. A., Tanenhaus, M. K., Aslin, R. N., & Jacobs, R. A. (2008). Perception of speech reflects optimal use of probabilistic speech cues. _Cognition, 108(3)_, 804–9. [doi:10.1016/j.cognition.2008.04.004](http://dx.doi.org/10.1016/j.cognition.2008.04.004)
 
 ## Design
 
