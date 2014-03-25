@@ -43,7 +43,7 @@ Right now, the code shows images in the four corners of the visual world `div`. 
         ...
 The `reps` field is an array of how many repetitions for each continuum item in the `stimuli` field.
 
-# Clayards (2008) replication
+# Demo: Clayards (2008) replication
 
 Before doing the selective adaptation-like paradigm, we want to make sure that we can replicated the original findings using the original visual world paradigm.
 
@@ -71,15 +71,3 @@ Stimuli were synthesized using Klattworks.  VOT continua vary from -30ms to +80m
 ## Timing and payment: 
 
 Based on my testing, looks like the instructions will take like 5-6 minutes, and each block of 100 trials takes 5-6 minutes, for about 30 minutes overall.  45 minutes for the whole thing should be fine.
-
-# Follow up: from words to syllables
-
-## Extracting /bi/-/pi/ continuum
-
-Based on eyeballing things in Praat, taking the first 350 ms of each token seems to get the onset C and the vowel no problem.  Everything is aligned such that the release is at the same time in each consonant (at 100ms).  The vowel is 240ms long.
-
-I decided to go with the "beach"-"peach" continuum because it ends in a alveolar stop and has relatively little movement of the formants (compared to "beak"), and because it ends in a voiceless stop (unlike "bees") so it's easy to identify the end of the vowel.
-
-## Serving locally for testing
-
-I've had a lot of success with using a node.js server.  In particular, the [http-server](https://npmjs.org/package/http-server) package makes the whole process very simple.
