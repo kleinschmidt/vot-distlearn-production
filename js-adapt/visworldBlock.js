@@ -44,6 +44,9 @@ function VisworldBlock(params) {
         case 'images':
             this.images = params[p];
             break;
+        case 'imagePositions':
+            this.imagePositions = params[p];
+            break;
         default:
             if(console) console.log('Warning: unknown parameter passed to VisworldBlock: ' + p);
             break;
@@ -124,7 +127,8 @@ VisworldBlock.prototype = {
     itemOrder: undefined,       // replaces this.stims in LabelingBlock, indexed by n, indexes stimuli
     n: 0,
     stimuli: undefined,         // information about stimuli (incl. image names and actual DOM objects
-    imagePosition: 'random',
+    randomizeImagePositions: true,
+    imagePositions: ['topleft', 'topright', 'bottomleft', 'bottomright'],
     ITI: 1000,
     breakEvery: 100,            // number of trials between breaks
     clickCapture: false,
@@ -200,10 +204,10 @@ VisworldBlock.prototype = {
     showStimImages: function() {
         var _self = this;
         var positions;
-        if (this.imagePosition == 'random') {
-            positions = shuffle([0, 1, 2, 3]);
+        if (this.randomizeImagePositions) {
+            positions = shuffle(this.imagePositions);
         } else {
-            positions = [0, 1, 2, 3];
+            positions = this.imagePositions;
         }
         $.map(this.stimuli.images[this.itemOrder[this.n]],
               function(image, i) {
