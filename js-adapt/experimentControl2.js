@@ -193,7 +193,6 @@ Experiment.prototype = {
         $('form#mturk_form')
             .append($('<div id="rsrb" class="survey">')
                     .load('js-adapt/rsrb_survey.html #rsrb > *', function() {
-                        console.log($('input[name="rsrb.protocol"]').val());
                         // set protocol number
                         $('input[name="rsrb.protocol"]:hidden').val(rsrbNum);
                         console.log($('input[name="rsrb.protocol"]').val());
