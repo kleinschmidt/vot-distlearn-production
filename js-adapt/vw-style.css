@@ -53,6 +53,18 @@ div#visworldContainer > img.vw_trialimage {
     right: 0;
 }
 
+[vw_pos='left'] {
+    margin-top: -100px;
+    top: 50%;
+    left: 0;
+}
+
+[vw_pos='right'] {
+    margin-top: -100px;
+    top: 50%;
+    right: 0;
+}
+
 /* styling of familiarization images */
 div#visworldContainer > img.familiarizationImage {
     position: absolute;

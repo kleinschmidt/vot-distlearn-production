@@ -160,7 +160,7 @@ $(document).ready(
         vwb = new VisworldBlock({lists: items,
                                  images: stim_images,
                                  namespace: 'visworld_' + sup_unsup_condition,
-                                 imagePositions: ['topleft', 'topright']});
+                                 imagePositions: ['left', 'right']});
 
         e.addBlock({block: vwb,
                     onPreview: false});
