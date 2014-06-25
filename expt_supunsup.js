@@ -75,13 +75,14 @@ $(document).ready(
         e.sandboxmode = checkSandbox(e.urlparams);
         e.previewMode = checkPreview(e.urlparams);
         e.debugMode = checkDebug(e.urlparams);
+
         // there are three condition variables:
         // 1) mean VOTs (10/50 or 30/70; TODO-could)
-        var mean_vots = [10, 50];
+        var mean_vots = {'b': 10, 'p': 50};
+        var categories = _.keys(mean_vots);
         // 2) up/down shift (TODO)
         var shift_direction = 'up'
         var shift = {'up': 10, 'down': -10}[shift_direction];
-        var shifted_mean_vots = _.map(mean_vots, function(vot) { return vot + shift; });
         // 3) supervised/unsupervised (TODO)
         var sup_unsup_condition = 'supervised'
 
@@ -90,22 +91,55 @@ $(document).ready(
         // how much of an offset from the category mean VOT for supervised and unsupervised trials
         var offsets = {'supervised': [-20, 0, 20],
                        'unsupervised': [-10, 10]};
+        var trial_types = _.keys(offsets);
         // how many repetitions of each word/VOT?
         var reps = {'supervised': [1, 17, 1],
                     'unsupervised': [9, 9]};
         // images for each word. each value is a list of two image
         // lists: first one for low VOT (/b/) version, second one for
         // high VOT (/p/) version of the spoken words
-        var images = {'unsupervised': {'BEACH': [['beach', 'peach'], ['beach', 'peach']],
-                                       'BEES':  [['bees',  'peas'],  ['bees',  'peas']],
-                                       'BEAK':  [['beak',  'peak'],  ['beak',  'peak']]},
-                      'supervised': {'BEACH':   [['beach', 'peas'],  ['beak',  'peach']],
-                                     'BEES':    [['bees',  'peak'],  ['beach', 'peas']],
-                                     'BEAK':    [['beak',  'peach'], ['bees',  'peak']]}
+        var images = {'unsupervised': {'BEACH': {'b': ['beach', 'peach'],   // all minimal pairs
+                                                 'p': ['beach', 'peach']},
+                                       'BEES':  {'b': ['bees',  'peas'],
+                                                 'p': ['bees',  'peas']},
+                                       'BEAK':  {'b': ['beak',  'peak'],
+                                                 'p': ['beak',  'peak']}},
+                      'supervised': {'BEACH':   {'b': ['beach', 'peas'],    // all non-minimal pairs
+                                                 'p': ['beak',  'peach']},
+                                     'BEES':    {'b': ['bees',  'peak'],
+                                                 'p': ['beach', 'peas']},
+                                     'BEAK':    {'b': ['beak',  'peach'],
+                                                 'p': ['bees',  'peak']}}
                      };
+        
+        // for the unsupervised CONDITION, make all the images minimal pairs
+        if (sup_unsup_condition == 'unsupervised') {
+            images['supervised'] = images['unsupervised'];
+        }
 
         // assemble lists:
         // iterate over words, and mean VOTs within words, and supervised/unsup within mean VOTs.
         // for each combination, generate stimuli object, pull out appropriate images, and pull out reps, then put into object.
         // return list of list item objects.
+        var make_list_item = function(word, sup_unsup, category) {
+            return {'stimuli': make_vot_stims(word,
+                                              mean_vots[category]+shift,
+                                              offsets[sup_unsup]),
+                    'images': images[sup_unsup][word][category],
+                    'reps': reps[sup_unsup]
+                   };
+        }
+        
+        var items = _.map(words, function(word) {
+            return _.map(trial_types,
+                         function(sup_unsup) {
+                             return _.map(categories,
+                                          function(category) {
+                                              return make_list_item(word, sup_unsup, category);
+                                          });
+                         });
+        })
+
+        items = _.flatten(items);
+        
     });
