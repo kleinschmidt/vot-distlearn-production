@@ -80,12 +80,22 @@ $(document).ready(
         // 1) mean VOTs (10/50 or 30/70; TODO-could)
         var mean_vots = {'b': 10, 'p': 50};
         var categories = _.keys(mean_vots);
-        // 2) up/down shift (TODO)
-        var shift_direction = 'up'
-        var shift = {'up': 10, 'down': -10}[shift_direction];
-        // 3) supervised/unsupervised (TODO)
-        var sup_unsup_condition = 'supervised'
 
+        // 2) up/down shift (TODO)
+        var shift_direction = e.urlparams['shift'];
+        var shift = {'up': 10, 'down': -10}[shift_direction];
+        if (! shift) {
+            throw "Invalid shift condition: " + shift_direction;
+        }
+
+        // 3) supervised/unsupervised
+        var valid_sup_unsup_conditions = ['supervised', 'unsupervised']
+        var sup_unsup_condition = e.urlparams['supunsup'];
+        if (! _(valid_sup_unsup_conditions).contains(sup_unsup_condition)) {
+            throw "Invalid supervised/unsupervised condition value: " + sup_unsup_condition;
+        }
+
+        ////////////////////////////////////////////////////////////////////////
         // generate lists
         var words = ['BEACH', 'BEES', 'BEAK'];
         // how much of an offset from the category mean VOT for supervised and unsupervised trials
@@ -145,5 +155,17 @@ $(document).ready(
         });
 
         items = _.flatten(items);
+
+        // create the visual world block object
+        vwb = new VisworldBlock({lists: items,
+                                 images: stim_images,
+                                 namespace: 'visworld_' + sup_unsup_condition});
+
+        e.addBlock({block: vwb,
+                    onPreview: false});
+
+        // run the experiment
+        e.nextBlock();
+
         
     });
