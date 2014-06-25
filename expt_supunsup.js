@@ -54,7 +54,7 @@ var stim_images = {
     peak: 'stimuli_images/peak.png'
 };
 
-
+// create a global variable for the visual world block object
 var vwb;
 
 $(document).ready(
@@ -70,7 +70,7 @@ $(document).ready(
 
         e.init();
 
-        ///////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////
         // parse relevant URL parameters
         e.sandboxmode = checkSandbox(e.urlparams);
         e.previewMode = checkPreview(e.urlparams);
@@ -95,9 +95,7 @@ $(document).ready(
         // how many repetitions of each word/VOT?
         var reps = {'supervised': [1, 17, 1],
                     'unsupervised': [9, 9]};
-        // images for each word. each value is a list of two image
-        // lists: first one for low VOT (/b/) version, second one for
-        // high VOT (/p/) version of the spoken words
+        // images for each trial type, word class, and category
         var images = {'unsupervised': {'BEACH': {'b': ['beach', 'peach'],   // all minimal pairs
                                                  'p': ['beach', 'peach']},
                                        'BEES':  {'b': ['bees',  'peas'],
@@ -118,18 +116,24 @@ $(document).ready(
         }
 
         // assemble lists:
-        // iterate over words, and mean VOTs within words, and supervised/unsup within mean VOTs.
+        // iterate over words, and categories, and supervised/unsup within mean VOTs.
         // for each combination, generate stimuli object, pull out appropriate images, and pull out reps, then put into object.
         // return list of list item objects.
+
+        // function to generate one list item: 
         var make_list_item = function(word, sup_unsup, category) {
             return {'stimuli': make_vot_stims(word,
                                               mean_vots[category]+shift,
                                               offsets[sup_unsup]),
                     'images': images[sup_unsup][word][category],
-                    'reps': reps[sup_unsup]
+                    'reps': reps[sup_unsup],
+                    'word': word,
+                    'trial_type': sup_unsup,
+                    'category': category
                    };
         }
-        
+
+        // iterate over all the different item variable combinations: 
         var items = _.map(words, function(word) {
             return _.map(trial_types,
                          function(sup_unsup) {
@@ -138,7 +142,7 @@ $(document).ready(
                                               return make_list_item(word, sup_unsup, category);
                                           });
                          });
-        })
+        });
 
         items = _.flatten(items);
         
