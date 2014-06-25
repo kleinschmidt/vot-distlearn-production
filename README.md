@@ -1,4 +1,8 @@
+The live version is [here](https://www.hlp.rochester.edu/mturk/mtadapt/sup-unsup/) (open up the javascript console if you want to see the output).
+
 ## Pilot turk experiment
+
+This is a pilot of the proposed imaging design to see how the synthetic stimuli work with the amount of exposure we're looking to use.
 
 Goal is to see if a "supervised" version where at least the most prototypical items are shown with only one possible answer speeds things up at all.  Category mean stimuli will be shown with only one plausible answer, e.g. "[bp]each" with a picture of a beach and a peak.  The "shoulder" stimuli (mean plus or minus 10ms VOT) will be shown as minimal pairs.  All others will be like the centers (for about 50/50 supervised/unsupervised trials).
 

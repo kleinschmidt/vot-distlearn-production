@@ -159,7 +159,8 @@ $(document).ready(
         // create the visual world block object
         vwb = new VisworldBlock({lists: items,
                                  images: stim_images,
-                                 namespace: 'visworld_' + sup_unsup_condition});
+                                 namespace: 'visworld_' + sup_unsup_condition,
+                                 imagePositions: ['topleft', 'topright']});
 
         e.addBlock({block: vwb,
                     onPreview: false});

@@ -33,22 +33,22 @@ div#visworldContainer > img.vw_trialimage {
     height: 200px;
 }
 /* top-left item */
-[vw_pos="0"] {
+[vw_pos="0"], [vw_pos='topleft'] {
     top: 0;
     left: 0;
 }
 /* top-right */
-[vw_pos="1"] {
+[vw_pos="1"], [vw_pos='topright'] {
     top:0;
     right:0;
 }
 /* bottom-left */
-[vw_pos="2"] {
+[vw_pos="2"], [vw_pos='bottomleft'] {
     bottom:0;
     left:0;
 }
 /* bottom-right */
-[vw_pos="3"] {
+[vw_pos="3"], [vw_pos='bottomright'] {
     bottom: 0;
     right: 0;
 }
