@@ -52,7 +52,7 @@ SoundcheckBlock.prototype = {
     items: undefined,
     instructions: '<h3>Sound check</h3>' + 
         '<p>You should complete this experiment in a quiet environment without any distractions, using headphones (preferred) or speakers set to the highest comfortable volume.</p>' +
-        '<p>To ensure that your audio is working properly, you must complete the following sound test. Click on each button below to play a word, and type the words in the boxes provided. You can play the soundfiles as many times as you need to to set your volume to the right level. Please type the words in all <b>lowercase</b> letters, and press the start button to proceed. If you enter one of the words incorrectly, you will be prompted to retry until you have entered them correctly.</p>',
+        '<p>To ensure that your audio is working properly, you must complete the following sound test. Click on each button below to play a word, and type the words in the boxes provided. You can play the soundfiles as many times as you need to to set your volume to the right level. If you enter one of the words incorrectly, you will be prompted to retry until you have entered them correctly.</p>',
     init: function() {
         var _self = this;
         // create DOM elements (container div, instructions div, and items list)
@@ -100,7 +100,7 @@ SoundcheckBlock.prototype = {
                     // get correct answer.
                     var correctAns = $(this).parent().attr('item');
                     // check for match
-                    if ($(this).val() == correctAns) {
+                    if ($(this).val().toLowerCase() == correctAns) {
                         $(this).addClass('correct');
                     } else {
                         $(this).removeClass('correct');
