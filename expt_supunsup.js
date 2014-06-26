@@ -19,7 +19,7 @@ var make_word_fn_formatter = function(word) {
 // how to tell whether we've generated a bad VOT value anywhere: 
 var bad_vot_detector = function(vot) {
     // legal VOTs in this experiment are divisible by 10
-    return (vot % 10);
+    return (! $.isNumeric(vot)) || (vot % 10);
 }
 
 // create stimuli from VOT continuum
@@ -76,19 +76,15 @@ $(document).ready(
         e.previewMode = checkPreview(e.urlparams);
         e.debugMode = checkDebug(e.urlparams);
 
-        // there are three condition variables:
-        // 1) mean VOTs (10/50 or 30/70; TODO-could)
-        var mean_vots = {'b': 10, 'p': 50};
+        // there are two condition variables:
+        // 1) mean VOTs (0/10/20/30 for /b/, +40 for /p/)
+        var bvot_condition = e.urlparams['bvot'];
+        var bvot = {'0': 0, '10': 10, '20': 20, '30': 30}[bvot_condition];
+        var pboffset = 40;
+        var mean_vots = {'b': bvot, 'p': bvot + pboffset};
         var categories = _.keys(mean_vots);
 
-        // 2) up/down shift (TODO)
-        var shift_direction = e.urlparams['shift'];
-        var shift = {'up': 10, 'down': -10}[shift_direction];
-        if (! shift) {
-            throw "Invalid shift condition: " + shift_direction;
-        }
-
-        // 3) supervised/unsupervised
+        // 2) supervised/unsupervised
         var valid_sup_unsup_conditions = ['supervised', 'unsupervised']
         var sup_unsup_condition = e.urlparams['supunsup'];
         if (! _(valid_sup_unsup_conditions).contains(sup_unsup_condition)) {
@@ -133,7 +129,7 @@ $(document).ready(
         // function to generate one list item: 
         var make_list_item = function(word, sup_unsup, category) {
             return {'stimuli': make_vot_stims(word,
-                                              mean_vots[category]+shift,
+                                              mean_vots[category],
                                               offsets[sup_unsup]),
                     'images': images[sup_unsup][word][category],
                     'reps': reps[sup_unsup],
@@ -159,7 +155,7 @@ $(document).ready(
         // create the visual world block object
         vwb = new VisworldBlock({lists: items,
                                  images: stim_images,
-                                 namespace: 'visworld_' + sup_unsup_condition,
+                                 namespace: 'visworld_' + sup_unsup_condition + '_' + bvot_condition,
                                  imagePositions: ['left', 'right']});
 
         ////////////////////////////////////////////////////////////////////////
