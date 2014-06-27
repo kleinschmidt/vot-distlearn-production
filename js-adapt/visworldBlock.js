@@ -135,6 +135,7 @@ VisworldBlock.prototype = {
     imagePositions: ['topleft', 'topright', 'bottomleft', 'bottomright'],
     ITI: 1000,
     breakEvery: 100,            // number of trials between breaks
+    trialsPerMinute: 12.5,      // number of trials per minute (based on testing, ~500 trials in 40 mins)
     clickCapture: false,
     onEndedBlock: undefined,
 
@@ -352,10 +353,13 @@ VisworldBlock.prototype = {
     endFamiliarize: function() {
         if (console) console.log('Familiarization completed');
         $("#visworldContainer").hide();
+        var numTrials = this.itemOrder.length;
+        // approximate duration of whole section, to nearest five minutes (rounded up)
+        var timeNearestFiveMins = Math.ceil(this.itemOrder.length/this.trialsPerMinute / 5)*5;
         $("#instructions")
             .html('<h3>Start of experiment</h3>'+
                   '<p>These pictures and words will be used in the next phase of the experiment. First you will see four pictures and a green circle. When the green circle lights up, click on the circle. You will then hear a word. Please click on the picture that you hear.</p><p><strong>Please respond as quickly and as accurately as possible.</strong>  If you\'re not sure, please take your best guess. ' + 
-                  '<p>  There are {0} trials, and you will have a chance to take breaks every {1} trials.  This part of the experiment should take an hour or less.  The progress bar at the top will show you how much you have done and how much remains.</p>'.format(this.itemOrder.length, this.breakEvery))
+                  '<p>  There are {0} trials, and you will have a chance to take breaks every {1} trials.  This part of the experiment should take about {2} minutes or less.  The progress bar at the top will show you how much you have done and how much remains.</p>'.format(numTrials, this.breakEvery, timeNearestFiveMins))
             .show();
 
         var _self = this;
