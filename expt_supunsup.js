@@ -133,9 +133,7 @@ $(document).ready(
                                               offsets[sup_unsup]),
                     'images': images[sup_unsup][word][category],
                     'reps': reps[sup_unsup],
-                    'word': word,
-                    'trial_type': sup_unsup,
-                    'category': category
+                    'id': [word, category, sup_unsup].join('_')
                    };
         }
 
@@ -246,10 +244,12 @@ $(document).ready(
 
 
         ////////////////////////////////////////////////////////////////////////
-        // add block and run
-        
-        e.addBlock({block: instructions,
-                    onPreview: true});
+        // add blocks and run
+        // only show instructions on non-debug mode
+        if (! e.debugMode) {
+            e.addBlock({block: instructions,
+                        onPreview: true});
+        }
         e.addBlock({block: vwb,
                     onPreview: false});
 
