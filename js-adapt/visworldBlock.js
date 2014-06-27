@@ -69,12 +69,14 @@ function VisworldBlock(params) {
     var allStims = [];
     var allReps = [];
     var allImgs = [];
+    this.stimListIndex = [];
     for (var i=0; i<this.lists.length; i++) {
         var list = this.lists[i];
         // add stimuli object to list, to be installed below
         allStims.push(list.stimuli);
         // concatenate repetitions into a big array
-        $.merge(allReps, repeatToLength(list.reps, list.stimuli.continuum.length));
+        var numStimsInList = list.stimuli.continuum.length;
+        $.merge(allReps, repeatToLength(list.reps, numStimsInList));
         // add images (one per unique stimulus item) to an array
         // keep track of mapping from list indices to global stimulus indices
         list.globalIndices = [];
@@ -82,6 +84,8 @@ function VisworldBlock(params) {
             allImgs.push(list.images);
             list.globalIndices.push(j);
         }
+        // keep track of inverse mapping (stimulus number to list index)
+        $.merge(this.stimListIndex, repeatToLength(i, numStimsInList));
     }
 
     // add images to DOM
@@ -230,10 +234,14 @@ VisworldBlock.prototype = {
         }
     },
     info: function() {
+        // pull out stimulus file basename for current trial
         var curStimSrc = RegExp("[^/]*$")
             .exec(this.stimuli.installed[this.itemOrder[this.n]].currentSrc);
+        // get list identifier information (if present)
+        var curList = this.lists[this.stimListIndex[this.itemOrder[this.n]]];
         return [this.namespace + (this.practiceMode ? '.practice' : ''),
-                this.n, this.itemOrder[this.n], curStimSrc].join();
+                this.n, this.itemOrder[this.n], curStimSrc,
+                curList['id']].join();
     },
     recordResp: function(e) {
         var clickID, clickVWPos, clickVWx, clickVWy;
