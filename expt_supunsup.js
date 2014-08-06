@@ -85,7 +85,7 @@ $(document).ready(
         var categories = _.keys(mean_vots);
 
         // 2) supervised/unsupervised
-        var valid_sup_unsup_conditions = ['supervised', 'unsupervised']
+        var valid_sup_unsup_conditions = ['supervised', 'unsupervised', 'mixed']
         var sup_unsup_condition = e.urlparams['supunsup'];
         if (! _(valid_sup_unsup_conditions).contains(sup_unsup_condition)) {
             throw "Invalid supervised/unsupervised condition value: " + sup_unsup_condition;
@@ -95,12 +95,24 @@ $(document).ready(
         // generate lists
         var words = ['BEACH', 'BEES', 'BEAK'];
         // how much of an offset from the category mean VOT for supervised and unsupervised trials
-        var offsets = {'supervised': [-20, 0, 20],
+        var offsets, reps;
+        if (! sup_unsup_condition == 'mixed') {
+            // default is for unsupervised to be +/-10, supervised to be +0 and +/-20.
+            offsets = {'supervised': [-20, 0, 20],
                        'unsupervised': [-10, 10]};
+            reps = {'supervised': [1, 17, 1],
+                    'unsupervised': [9, 9]};
+        } else {
+            // for mixed supervised/unsupervised, mixture of supervised/
+            // unsupervised across whole continuum
+            offsets = {'supervised': [-20, -10, 0, 10, 20],
+                       'unsupervised': [-10, 0, 10]};
+            reps = {'supervised': [1, 4, 8, 4, 1],
+                    'unsupervised': [5, 9, 5]};
+        }
+        
         var trial_types = _.keys(offsets);
         // how many repetitions of each word/VOT?
-        var reps = {'supervised': [1, 17, 1],
-                    'unsupervised': [9, 9]};
         // images for each trial type, word class, and category
         var images = {'unsupervised': {'BEACH': {'b': ['beach', 'peach'],   // all minimal pairs
                                                  'p': ['beach', 'peach']},
