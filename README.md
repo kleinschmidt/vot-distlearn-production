@@ -64,3 +64,20 @@ For the unsupervised condition, the images for the "supervised" trials will be r
 ## Timing and payment: 
 
 Based on my testing, looks like the instructions will take like 5-6 minutes, and each block of 100 trials takes 5-6 minutes, for about 10-15 minutes overall.  20 minutes for the whole thing should be fine.
+
+## Follow-up experiments
+
+### Mixing supervised and unsupervised trials at each VOT level
+
+One question that came up in the analysis was whether there's any true stimulus-specific effects in the supervised condition.  This is one possible explanation for why the unsupervised trials didn't show as much of a shift.  So we want to evaluate whether or not there's the same difference between supervised and unsupervised trials across the whole continuum.
+
+To test this, we'll mix supervised and unsupervised trials more-or-less evenly across the continuum.  The exact balance isn't critical, and it would be difficult to get an exact balance given that there's an odd number of repetitions of each word-by-VOT combination.  The closest I can get is:
+
+offset   | -20ms | -10ms | +0ms  | +10ms | +20ms | total
+---------|-------|-------|-------|-------|-------|-------
+sup.     | 1     | 4     | 8     | 4     | 1     | 18
+unsup.   | 0     | 5     | 9     | 5     | 0     | 19
+---------|-------|-------|-------|-------|-------|-------
+total    | 1     | 9     | 17    | 9     | 1     | 37
+
+This provides enough unsupervised trials at the category means to have good power there.
