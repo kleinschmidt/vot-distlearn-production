@@ -25,10 +25,10 @@ Each trial will have two images, one /b/ and one /p/.  On _unsupervised_ trials,
 
 There will be a total of 222 trials, which works out to be about 3/4 of the Munson (2011) design (for one talker over both sessions).  Thus for each category (b/p)/word, there will be the following number of repetitions (where +0ms refers to the category mean):
 
-offset      | -20ms | -10ms | +0ms  | +10ms | +20ms
---------|-------|-------|-------|-------|-------
-category  | 3         | 27       | 51       | 27       | 3
-word       | 1         | 9         | 17       | 9         | 1
+offset   | -20ms | -10ms | +0ms  | +10ms | +20ms
+---------|-------|-------|-------|-------|-------
+category | 3     | 27    | 51    | 27    | 3
+word     | 1     | 9     | 17    | 9     | 1
 
 The /b/ category mean will be 0ms, 10ms, 20ms, or 30ms, depending on the condition, with the /p/ category mean 40ms higher.
 
