@@ -79,7 +79,7 @@ $(document).ready(
         // there are two condition variables:
         // 1) mean VOTs (0/10/20/30 for /b/, +40 for /p/)
         var bvot_condition = e.urlparams['bvot'];
-        var bvot = {'0': 0, '10': 10, '20': 20, '30': 30}[bvot_condition];
+        var bvot = {'-10': -10, '0': 0, '10': 10, '20': 20, '30': 30}[bvot_condition];
         var pboffset = 40;
         var mean_vots = {'b': bvot, 'p': bvot + pboffset};
         var categories = _.keys(mean_vots);
