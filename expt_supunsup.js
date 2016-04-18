@@ -92,7 +92,7 @@ $(document).ready(
         var categories = _.keys(mean_vots);
 
         // 2) supervised/unsupervised
-        var valid_sup_unsup_conditions = ['supervised', 'unsupervised', 'mixed']
+        var valid_sup_unsup_conditions = ['supervised', 'unsupervised', 'mixed'];
         var sup_unsup_condition = e.urlparams['supunsup'];
         if (! _(valid_sup_unsup_conditions).contains(sup_unsup_condition)) {
             throw "Invalid supervised/unsupervised condition value: " + sup_unsup_condition;
