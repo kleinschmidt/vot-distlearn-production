@@ -80,8 +80,15 @@ $(document).ready(
         // 1) mean VOTs (0/10/20/30 for /b/, +40 for /p/)
         var bvot_condition = e.urlparams['bvot'];
         var bvot = {'-10': -10, '0': 0, '10': 10, '20': 20, '30': 30}[bvot_condition];
+        var pvot_condition = e.urlparams['pvot'];
+        var pvot;
+        if (typeof pvot_condition === 'undefined') {
+            pvot = bvot + pboffset;
+        } else {
+            pvot = pvot_condition;
+        }
         var pboffset = 40;
-        var mean_vots = {'b': bvot, 'p': bvot + pboffset};
+        var mean_vots = {'b': bvot, 'p': pvot};
         var categories = _.keys(mean_vots);
 
         // 2) supervised/unsupervised
