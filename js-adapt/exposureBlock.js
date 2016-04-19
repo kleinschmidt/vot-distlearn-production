@@ -19,6 +19,8 @@
  *
  */
 
+var pb = require('./progressBar');
+
 function ExposureBlock(params) {
     var stimObj, catchStimObj, testStimObj, testReps, namespace, css_stim_class, exposures, testITI;
     for (p in params) {
@@ -170,8 +172,8 @@ ExposureBlock.prototype = {
         }
 
         // install, initialize, and show a progress bar (progressBar.js)
-        installPB("progressBar");
-        resetPB("progressBar");
+        pb.installPB("progressBar");
+        pb.resetPB("progressBar");
         $("#progressBar").show();
 
         ////////////////////////////////////////////////////////////////////////////////
@@ -261,7 +263,7 @@ ExposureBlock.prototype = {
             return false;
         }
         // increment progressbar
-        plusPB("progressBar", this.pbIncrement);
+        pb.plusPB("progressBar", this.pbIncrement);
         var _self = this;
 
         // after ITI, start the next trial, or signal the end of a block
@@ -342,7 +344,7 @@ ExposureBlock.prototype = {
 
     recordResp: function(resp, n) {
         var respStr = [this.info(n), resp].join();
-        $(this.respField).val($(this.respField).val() + respStr + respDelim);
+        $(this.respField).val($(this.respField).val() + respStr + window.respDelim);
 
         if (resp=='hit') {
             this.numHits += 1;

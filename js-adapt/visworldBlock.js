@@ -24,10 +24,16 @@
  * stimulus.
  */
 
+var pb = require('./progressBar.js')
+  , ui = require('./ui.js')
+  , utils = require('./utilities.js')
+  , stimuli = require('./stimuli.js')
+  ; 
+
 function VisworldBlock(params) {
     // write parameters to member variabls
     var instructions, namespace, css_stim_class, css_image_class;
-    for (p in params) {
+    for (var p in params) {
         switch(p) {
         case 'lists':
             this.lists = params[p];
@@ -76,7 +82,7 @@ function VisworldBlock(params) {
         allStims.push(list.stimuli);
         // concatenate repetitions into a big array
         var numStimsInList = list.stimuli.continuum.length;
-        $.merge(allReps, repeatToLength(list.reps, numStimsInList));
+        $.merge(allReps, utils.repeatToLength(list.reps, numStimsInList));
         // add images (one per unique stimulus item) to an array
         // keep track of mapping from list indices to global stimulus indices
         list.globalIndices = [];
@@ -85,11 +91,11 @@ function VisworldBlock(params) {
             list.globalIndices.push(j);
         }
         // keep track of inverse mapping (stimulus number to list index)
-        $.merge(this.stimListIndex, repeatToLength(i, numStimsInList));
+        $.merge(this.stimListIndex, utils.repeatToLength(i, numStimsInList));
     }
 
     // add images to DOM
-    for (image_name in this.images) {
+    for (var image_name in this.images) {
         $("<img />")
             .addClass(css_image_class + ' imgStim')
             .attr('id', image_name)
@@ -100,7 +106,7 @@ function VisworldBlock(params) {
     }
     
     // install audio stimuli
-    this.stimuli = concatenate_stimuli_and_install(allStims, css_stim_class);
+    this.stimuli = stimuli.concatenate_stimuli_and_install(allStims, css_stim_class);
     this.stimuli.images = allImgs;
     this.stimuli.reps = allReps;
 
@@ -153,7 +159,7 @@ VisworldBlock.prototype = {
 
         ////////////////////////////////////////////////////////////////////////////////
         // construct list of items and randomize trial order
-        this.itemOrder = pseudoRandomOrder(this.stimuli.reps, undefined, 'shuffle');
+        this.itemOrder = utils.pseudoRandomOrder(this.stimuli.reps, undefined, 'shuffle');
         
         // install "start trial" handler for the "ready" light
         $('#readyWaitContainer img#ready')
@@ -168,8 +174,8 @@ VisworldBlock.prototype = {
         $('img.' + this.namespace + 'image').click(function(e) {_self.handleResp(e);});
         
         // install, initialize, and show a progress bar (progressBar.js)
-        installPB("progressBar");
-        resetPB("progressBar");
+        pb.installPB("progressBar");
+        pb.resetPB("progressBar");
         $("#progressBar").show();
         this.pbIncrement = 1.0 / this.itemOrder.length;
 
@@ -180,11 +186,11 @@ VisworldBlock.prototype = {
         var _self = this;
         $("#visworldContainer").hide();
         $("#instructions").html('<h3>Break Time!</h3><p>If you\'d like to take a break, you can do that now.  Keep in mind that you have a limited amount of time to complete this task.</p>').show();
-        continueButton(function() {
-                           $("#instructions").hide();
-                           $("#visworldContainer").show();
-                           _self.next();
-                       });
+        ui.continueButton(function() {
+            $("#instructions").hide();
+            $("#visworldContainer").show();
+            _self.next();
+        });
     },
     next: function() {
         var _self = this;
@@ -210,7 +216,7 @@ VisworldBlock.prototype = {
         var _self = this;
         var positions;
         if (this.randomizeImagePositions) {
-            positions = shuffle(this.imagePositions);
+            positions = utils.shuffle(this.imagePositions);
         } else {
             positions = this.imagePositions;
         }
@@ -253,11 +259,11 @@ VisworldBlock.prototype = {
         var resp = [this.info(), clickID, clickVWPos, clickVWx, clickVWy,
                     this.tStart, this.tResp, this.tResp-this.tStart].join();
         if (console) console.log(resp);
-        $(this.respField).val($(this.respField).val() + resp + respDelim);
+        $(this.respField).val($(this.respField).val() + resp + window.respDelim);
     },
     end: function(e) {
         // update progress bar
-        plusPB("progressBar", this.pbIncrement);
+        pb.plusPB("progressBar", this.pbIncrement);
 
         // record response
         this.recordResp(e);
@@ -307,7 +313,7 @@ VisworldBlock.prototype = {
         var _self = this;
         
         // iterate over images in random order, assigning handlers
-        var imgs = shuffle($('img.' + this.namespace + 'image'));
+        var imgs = utils.shuffle($('img.' + this.namespace + 'image'));
 
         $("#progressBar").hide();
         $('#visworldContainer').hide();
@@ -318,36 +324,36 @@ VisworldBlock.prototype = {
         $(imgs)
             .addClass('familiarizationImage')
             .map(function(i, img) {
-                        $(imgs[i]).bind('click.familiarization',
-                                        function(e) {
-                                            $(this).hide();
-                                            // deal with final image
-                                            if (i+1==imgs.length) {
-                                                $(imgs)
-                                                    .removeClass('familiarizationImage')
-                                                    .unbind('.familiarization');
-                                                $('#familiarizationText').remove();
-                                                $('#familiarizationInstructions').remove();
-                                                _self.endFamiliarize();
-                                            } else {
-                                                $(imgs[i+1]).show();
-                                                $('#familiarizationText').html(imgs[i+1].id);
-                                            }
-                                        });                        
-                    });
+                $(imgs[i]).bind('click.familiarization',
+                                function(e) {
+                                    $(this).hide();
+                                    // deal with final image
+                                    if (i+1==imgs.length) {
+                                        $(imgs)
+                                            .removeClass('familiarizationImage')
+                                            .unbind('.familiarization');
+                                        $('#familiarizationText').remove();
+                                        $('#familiarizationInstructions').remove();
+                                        _self.endFamiliarize();
+                                    } else {
+                                        $(imgs[i+1]).show();
+                                        $('#familiarizationText').html(imgs[i+1].id);
+                                    }
+                                });                        
+            });
 
         // on continue click, start familiarization by showing first stim
-        continueButton(function() {
-                           $("#instructions").hide();
-                           $("#visworldContainer").show();
-                           $(imgs[0]).show();
-                           $('<div id="familiarizationInstructions"></div>')
-                               .html('<p>Read the name, then click the image to advance</p>')
-                               .prependTo('#visworldContainer');
-                           $('<div id="familiarizationText"></div>')
-                               .html(imgs[0].id)
-                               .appendTo("#visworldContainer");
-                       });
+        ui.continueButton(function() {
+            $("#instructions").hide();
+            $("#visworldContainer").show();
+            $(imgs[0]).show();
+            $('<div id="familiarizationInstructions"></div>')
+                .html('<p>Read the name, then click the image to advance</p>')
+                .prependTo('#visworldContainer');
+            $('<div id="familiarizationText"></div>')
+                .html(imgs[0].id)
+                .appendTo("#visworldContainer");
+        });
     },
 
     endFamiliarize: function() {
@@ -363,11 +369,13 @@ VisworldBlock.prototype = {
             .show();
 
         var _self = this;
-        continueButton(function() {
-                           $("#progressBar").show();
-                           $("#instructions").hide();
-                           $("#visworldContainer").show();
-                           _self.next();
-                       });
+        ui.continueButton(function() {
+            $("#progressBar").show();
+            $("#instructions").hide();
+            $("#visworldContainer").show();
+            _self.next();
+        });
     }
 };
+
+module.exports = VisworldBlock;

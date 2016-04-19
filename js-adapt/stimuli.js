@@ -37,7 +37,7 @@ Stimuli.prototype = {
         var newstims = $.extend(true, {}, this);
 
         // for any properties that are arrays, default to taking the specified subset...
-        for (key in newstims) {
+        for (var key in newstims) {
             if (typeof(newstims[key].getSubset) !== 'undefined') {
                 newstims[key] = newstims[key].getSubset(subinds);    
             }
@@ -71,7 +71,8 @@ Stimuli.prototype = {
                 //$("#audioContainer").html("");
                 for (var j=0; j < indices.length; j++) {
                     $('<audio></audio>').addClass(css_class + ' audStim ' + tmp_css_class).
-                        attr('src', _self.filenameFormatter(indices[j], _self.prefix) + audSuffix).
+                        attr('src', _self.filenameFormatter(indices[j], _self.prefix) + 
+                             window.audSuffix).
                         appendTo("#audioContainer").
                         load();
                 }
@@ -82,7 +83,8 @@ Stimuli.prototype = {
                 //for (var j=0; j < indices.length; j++) {
                 $(indices==0 ? [indices] : indices).map(function(j,index) {
                                    $('<video></video>').addClass(css_class + ' vidStim ' + tmp_css_class).
-                                       attr('src', _self.filenameFormatter(index, _self.prefix) + vidSuffix).
+                                       attr('src', _self.filenameFormatter(index, _self.prefix) + 
+                                            window.vidSuffix).
                                        appendTo("#videoContainer").
                                        bind('playing.default', function() {
                                                 if (debugMode && console) {
@@ -229,3 +231,10 @@ function extend(child, supertype)
     child.prototype.__proto__ = supertype.prototype;
     child.prototype.__super__ = supertype.prototype;
 }
+
+
+module.exports = {
+    Stimuli: Stimuli,
+    StimuliFileList: StimuliFileList,
+    concatenate_stimuli_and_install: concatenate_stimuli_and_install
+};

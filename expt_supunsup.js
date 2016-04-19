@@ -1,4 +1,12 @@
-var respDelim = ';';
+var Experiment = require('./js-adapt/experimentControl2')
+  , stimuli = require('./js-adapt/stimuli')
+  , VisworldBlock = require('./js-adapt/visworldBlock')
+  , SoundcheckBlock = require('./js-adapt/soundcheckBlock')
+  , InstructionsSubsectionsBlock = require('./js-adapt/instructionssubsectionsBlock')
+  , mturk_helpers = require('./js-adapt/mturk_helpers')
+  ;
+
+window.respDelim = ';';
 
 var e;
 
@@ -33,7 +41,7 @@ var make_vot_stims = function(word, center_vot, offsets) {
         throw "Bad VOTs generated (not divisible by 10): " + vots;
     }
     
-    return(new Stimuli(
+    return(new stimuli.Stimuli(
         {
             prefix: 'stimuli_vot/',
             continuum: vots,
@@ -72,14 +80,15 @@ $(document).ready(
 
         ////////////////////////////////////////////////////////////////////////
         // parse relevant URL parameters
-        e.sandboxmode = checkSandbox(e.urlparams);
-        e.previewMode = checkPreview(e.urlparams);
-        e.debugMode = checkDebug(e.urlparams);
+        e.sandboxmode = mturk_helpers.checkSandbox(e.urlparams);
+        e.previewMode = mturk_helpers.checkPreview(e.urlparams);
+        e.debugMode = mturk_helpers.checkDebug(e.urlparams);
 
         // there are two condition variables:
         // 1) mean VOTs (0/10/20/30 for /b/, +40 for /p/)
         var bvot_condition = e.urlparams['bvot'];
         var bvot = {'-10': -10, '0': 0, '10': 10, '20': 20, '30': 30}[bvot_condition];
+        var pboffset = 40;
         var pvot_condition = e.urlparams['pvot'];
         var pvot;
         if (typeof pvot_condition === 'undefined') {
@@ -87,7 +96,6 @@ $(document).ready(
         } else {
             pvot = pvot_condition;
         }
-        var pboffset = 40;
         var mean_vots = {'b': bvot, 'p': pvot};
         var categories = _.keys(mean_vots);
 
@@ -154,7 +162,7 @@ $(document).ready(
                     'reps': reps[sup_unsup],
                     'id': [word, category, sup_unsup].join('_')
                    };
-        }
+        };
 
         // iterate over all the different item variable combinations: 
         var items = _.map(words, function(word) {

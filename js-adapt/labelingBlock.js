@@ -19,10 +19,17 @@
  *
  */
 
+var pb = require('./progressBar.js')
+  , ui = require('./ui.js')
+  , utils = require('./utilities.js')
+  , stimuli = require('./stimuli.js')
+  , LogReg = require('./logreg.js')
+  ;
+
 function LabelingBlock(params) {
     // process parameters
     var stimuliObj, instructions, namespace, css_stim_class;
-    for (p in params) {
+    for (var p in params) {
         switch(p) {
         case 'stimuli':
             stimuliObj = params[p];
@@ -71,9 +78,9 @@ function LabelingBlock(params) {
         // ERROR
     }
 
-    if (isArray(stimuliObj)) {
+    if (utils.isArray(stimuliObj)) {
         // concatenate into one mega-object, and set for this block
-        this.stimuliObj = concatenate_stimuli_and_install(stimuliObj, css_stim_class);
+        this.stimuliObj = stimuli.concatenate_stimuli_and_install(stimuliObj, css_stim_class);
         this.auds = this.stimuliObj.installed;
     } else {
         // set stimuli object for this block
@@ -133,7 +140,7 @@ LabelingBlock.prototype = {
     run: function() {
         var _self = this;
         this.init();
-        continueButton(function() {
+        ui.continueButton(function() {
                            $("#instructions").hide();
                            _self.next();
                        });
@@ -146,7 +153,7 @@ LabelingBlock.prototype = {
         // parse optional arguments object
         this.practiceMode = false;
         
-        for (op in opts) {
+        for (var op in opts) {
             switch (op) {
             case 'practiceMode':
                 this.practiceMode = opts[op];
@@ -177,7 +184,7 @@ LabelingBlock.prototype = {
             // populate the category names from the global vector if it exists, or extract from the resp keys
             if (typeof categories === 'undefined') {
                 this.categories = [];
-                for (k in this.respKeys) {
+                for (var k in this.respKeys) {
                     this.categories.push(this.respKeys[k]);
                 }
             } else {
@@ -200,7 +207,7 @@ LabelingBlock.prototype = {
 
         this.stims = [];
         for (var br = 0; br < this.blockReps; br++) {
-            this.stims = this.stims.concat(pseudoRandomOrder(this.reps, this.stimuliObj.continuum.length, this.blockRandomizationMethod));
+            this.stims = this.stims.concat(utils.pseudoRandomOrder(this.reps, this.stimuliObj.continuum.length, this.blockRandomizationMethod));
         }
 
         this.pbIncrement = 1.0 / this.stims.length;
@@ -217,19 +224,19 @@ LabelingBlock.prototype = {
         // Initialize UI elements
         // set task instructions and response cues
         $("#testInstructions").html('Press <span id="bKey" class="respKey">' + 
-                                    valToKey(this.respKeys, this.categories[0]) + 
+                                    utils.valToKey(this.respKeys, this.categories[0]) + 
                                     '</span> for "' + this.categories[0] + '"<br />' + 
                                     'Press <span id="dKey" class="respKey">' + 
-                                    valToKey(this.respKeys, this.categories[1]) + '</span> for "' + this.categories[1] + '"');
+                                    utils.valToKey(this.respKeys, this.categories[1]) + '</span> for "' + this.categories[1] + '"');
 
         if (!softInit) {
             $('#instructions').html('<h3>Labeling task</h3>' +
-                                    '<p>You will hear ' + this.stims.length + ' words in this block.  Please listen to each word and decide whether it has a ' + this.categories[0] + ' or a ' + this.categories[1] + ' in it.  Press  <span class="respKey">' + valToKey(this.respKeys, this.categories[0]) + '</span> for "' + this.categories[0] + '" and  <span class="respKey">' + valToKey(this.respKeys, this.categories[1]) + '</span> for "' + this.categories[1] + '".</p>' +
+                                    '<p>You will hear ' + this.stims.length + ' words in this block.  Please listen to each word and decide whether it has a ' + this.categories[0] + ' or a ' + this.categories[1] + ' in it.  Press  <span class="respKey">' + utils.valToKey(this.respKeys, this.categories[0]) + '</span> for "' + this.categories[0] + '" and  <span class="respKey">' + utils.valToKey(this.respKeys, this.categories[1]) + '</span> for "' + this.categories[1] + '".</p>' +
                                     '<p>Click continue to begin.</p>').show();
 
             // install, initialize, and show a progress bar (progressBar.js)
-            installPB("progressBar");
-            resetPB("progressBar");
+            pb.installPB("progressBar");
+            pb.resetPB("progressBar");
             $("#progressBar").show();
             // DEBUGGING: add button to force start of calibration block (skip preview)
             $('#buttons').append('<input type="button" onclick="calibrationBlock.next()" value="start calibration"></input>');
@@ -279,7 +286,7 @@ LabelingBlock.prototype = {
     end: function(e) {
         $('#testStatus').html('Trial ended');
         // update progress bar
-        plusPB("progressBar", this.pbIncrement);
+        pb.plusPB("progressBar", this.pbIncrement);
         // record response
         this.recordResp(e);
         // if more trials remain, trigger next trial
@@ -324,7 +331,7 @@ LabelingBlock.prototype = {
                     this.tStart, this.tResp, this.tResp-this.tStart].join();
         // write info to form field            
         //$('#calibrationResp').val($('#calibrationResp').val() + resp + respDelim);
-        $(this.respField).val($(this.respField).val() + resp + respDelim);
+        $(this.respField).val($(this.respField).val() + resp + window.respDelim);
     },
 
     demo: function() {
@@ -343,10 +350,10 @@ LabelingBlock.prototype = {
 
         $("#instructions").html('<h3>Labeling task: practice</h3>' +
                                 (typeof parameters['instructions'] === 'undefined' ? '' : parameters['instructions']) + 
-                                '<p>In this task, you will listen to words, and be asked to decide if they contain a "' + this.categories[0] + '" or a "' + this.categories[1] + '".  Press <span class="respKey">' + valToKey(this.respKeys, this.categories[0]) + '</span> for ' + this.categories[0] + ' and <span class="respKey">' + valToKey(this.respKeys, this.categories[1]) + '</span> for ' + this.categories[1] + '.</p>').show();
+                                '<p>In this task, you will listen to words, and be asked to decide if they contain a "' + this.categories[0] + '" or a "' + this.categories[1] + '".  Press <span class="respKey">' + utils.valToKey(this.respKeys, this.categories[0]) + '</span> for ' + this.categories[0] + ' and <span class="respKey">' + utils.valToKey(this.respKeys, this.categories[1]) + '</span> for ' + this.categories[1] + '.</p>').show();
 
         var _self = this;
-        continueButton(function() {
+        ui.continueButton(function() {
                            $('#instructions').hide();
                            _self.next();
                        });
@@ -503,116 +510,6 @@ TestBlock.prototype = {
 // link up via __super__ to superclass, etc.
 extend(TestBlock, LabelingBlock);
 
-
-
-//+ Jonas Raoni Soares Silva
-//@ http://jsfromhell.com/array/shuffle [rev. #1]
-//  shuffle the input array
-var shuffle = function(v){
-    for(var j, x, i = v.length; i; j = parseInt(Math.random() * i), x = v[--i], v[i] = v[j], v[j] = x);
-    return v;
-};
-
-// Some vector math helper functions (get max, min, range, and sum of a numeric Array)
-Array.max = function( array ){
-    return Math.max.apply( Math, array );
-};
-Array.min = function( array ){
-    return Math.min.apply( Math, array );
-};
-Array.range = function(array) {
-    return Array.max(array) - Array.min(array);
-};
-Array.prototype.sum = function() {
-    var s=0;
-    for (var i=0; i<this.length; i++) {
-        s += this[i];
-    };
-    return(s)
-};
-
-// reverse map lookup (get key given value)
-function valToKey(obj, v) {
-    var keys = [];
-    for (k in obj) {
-        if (obj[k]==v) {
-            keys.push(k);
-        }
-    }
-    return(keys);
-}
-
-// DEPRECATED: now lives in "utilities.js"  will run w/ warning
-// function to pseduo-randomize stimuli lists.  takes either vector of repetitions for
-// each item, or (scalar) number of repetitions for each item and the length of the continuum.
-function pseudoRandomOrder(reps, n, method) {
-    if (console) console.log('WARNING: labelingblock.js:pseduoRandomOrder is deprecated.  use utilities.js:pseudoRandomOrder instead');
-
-    // if reps is specified as a constant, convert to an array
-    if (typeof(reps) === "number" || reps.length == 1) {
-        if (typeof(n) !== "undefined") {
-            reps = (function(N) {var x=[]; for (var i=0; i<N; i++) {x[i] = reps;}; return(x);})(n);
-        } else {
-            throw "Must provide either vector of repetitions or number of stimuli";
-        }
-    }
-
-    // method of pseudorandomization
-    if (typeof(method) === 'undefined') {
-        method = 'extreme_early';
-    }
-
-    // pseudo-random order for stimuli: create blocks with one of
-    // each stimulus, shuffle within each block and shuffle order
-    // of blocks (only necessary because of non-uniform repetitions)
-    var repsRem = reps.slice(0);
-    var block = [];
-    var blocks = [];
-    do {
-        block = [];
-        for (var i=0; i<repsRem.length; i++) {
-            if (repsRem[i] > 0) {
-                block.push(i);
-                repsRem[i]--;
-            }
-        }
-        // randomize order of stimuli in THIS block
-        blocks.push(shuffle(block));
-    } while (block.length > 0);
-
-    // DON'T RANDOMIZE order of blocks, so that extreme stimuli are guaranteed
-    // to be more common early on
-    // ...and concatenate each shuffled block to list of trials
-    var stims = [];
-    switch(method) {
-    case 'extreme_early':
-        for (var i=0; i<blocks.length; i++) {
-            stims = stims.concat(blocks[i]);
-        }
-        break;
-    case 'extreme_late':
-        for (var i=blocks.length; i>0; i--) {
-            stims = stims.concat(blocks[i-1]);
-        }
-        break;
-    case 'shuffle':
-        blocks = shuffle(blocks);
-        for (var i=0; i<blocks.length; i++) {
-            stims = stims.concat(blocks[i]);
-        }
-        break;
-    default:
-        if (console) {console.log('ERROR: bad randomization method: ' + method);}
-        throw('bad randomization method: ' + method);
-    }
-
-    return(stims);
-}
-
-// Function to detect if object is an array, from http://stackoverflow.com/a/1058753
-function isArray(obj) {
-    return Object.prototype.toString.call(obj) === '[object Array]';
-}
 
 // classical-esque class inheritance: sets prototype of prototype to superclass prototype
 function extend(child, supertype)

@@ -34,8 +34,10 @@
 // ]
 //
 
+var ui = require('./ui.js');
+
 // set by Experiment.init() (in experimentControl2.js).
-var audSuffix;
+// var audSuffix = window.audSuffix;
 
 function SoundcheckBlock(params) {
     if (typeof(params['instructions']) !== 'undefined') {
@@ -76,7 +78,7 @@ SoundcheckBlock.prototype = {
                   var playButton = $('<input type="button" class="soundcheckPlay" value="&#9658;"></input>');
                   var answerText = $('<input type="text" class="soundcheckAnswer"></input>');
                   var wordAudio = $('<audio></audio>')
-                      .attr('src', item.filename+audSuffix)
+                      .attr('src', item.filename+window.audSuffix)
                       .addClass('soundcheckAudio');
                   $(itemLI)
                       .append(playButton)
@@ -143,7 +145,9 @@ SoundcheckBlock.prototype = {
     run: function() {
         this.init();
         var _self = this;
-        continueButton(function() {_self.endBlock();},
-                       function() {return(_self.check());});
+        ui.continueButton(function() {_self.endBlock();},
+                          function() {return(_self.check());});
     }
 };
+
+module.exports = SoundcheckBlock;
