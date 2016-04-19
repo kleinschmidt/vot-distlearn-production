@@ -1,0 +1,24 @@
+{
+  "name": "bp-adapt",
+  "version": "0.0.1",
+  "description": "VOT distributional learning experiment",
+  "main": "index.js",
+  "dependencies": {
+    "browsernizr": "^2.1.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@bitbucket.org:dkleinschmidt/mtadapt-bp-sup-unsup.git"
+  },
+  "keywords": [
+    "experiment",
+    "vot",
+    "phonetics"
+  ],
+  "author": "Dave F. Kleinschmidt",
+  "license": "MIT"
+}

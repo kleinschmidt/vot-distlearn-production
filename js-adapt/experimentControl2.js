@@ -19,10 +19,17 @@
  *
  */
 
+// Modernizer tests:
+require('browsernizr/test/audio');
+require('browsernizr/test/video');
+
 var ui = require('./ui')
   , continueButton = ui.continueButton
   , mturk_helpers = require('./mturk_helpers')
+  , Modernizr = require('browsernizr')
   ;
+
+
 
 // update experimental control script.  defines Experiment object.
 
