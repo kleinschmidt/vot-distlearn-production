@@ -180,7 +180,7 @@ $(document).ready(
         // create the visual world block object
         vwb = new VisworldBlock({lists: items,
                                  images: stim_images,
-                                 namespace: 'visworld_' + sup_unsup_condition + '_' + bvot_condition,
+                                 namespace: 'visworld_' + sup_unsup_condition + '_' + bvot_condition + '_' + pvot_condition,
                                  imagePositions: ['left', 'right']});
 
         ////////////////////////////////////////////////////////////////////////
