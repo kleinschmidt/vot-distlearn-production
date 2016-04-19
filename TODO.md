@@ -1,8 +1,10 @@
-# Required fixes
 
-1. Make stimuli fit on small screen (reduce image size? reduce container size?)
-2. Add instructions
-   * General boilerplate (consent, technical difficulty, etc.)
-   * Task-specific instructions (use headphones, use a mouse please, how long it will be)
-3. Add final surveys         
-4. Add instructions during familiarization ('click image to advance')
+# For production
+
+* Little app that balances lists
+* Gulp file or something to run browserify (or browserify middleware on app)
+
+# Browerifying `js-adapt`
+
+* [done] jquery, modernizer, underscore
+* Split out labeling block sub classes

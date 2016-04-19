@@ -5,6 +5,7 @@ var Experiment = require('./js-adapt/experimentControl2')
   , InstructionsSubsectionsBlock = require('./js-adapt/instructionssubsectionsBlock')
   , mturk_helpers = require('./js-adapt/mturk_helpers')
   , $ = require('jquery')
+  , _ = require('underscore')
   ;
 
 window.respDelim = ';';
@@ -23,13 +24,13 @@ var make_word_fn_formatter = function(word) {
         return(this.prefix + word + this.continuum[n]);
     }
     return formatter;
-}
+};
 
 // how to tell whether we've generated a bad VOT value anywhere: 
 var bad_vot_detector = function(vot) {
     // legal VOTs in this experiment are divisible by 10
     return (! $.isNumeric(vot)) || (vot % 10);
-}
+};
 
 // create stimuli from VOT continuum
 var make_vot_stims = function(word, center_vot, offsets) {
