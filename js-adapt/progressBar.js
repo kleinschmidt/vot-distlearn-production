@@ -19,6 +19,9 @@
  *
  */
 
+var $ = require('jquery')
+  ;
+
 module.exports = {
 
     installPB: function(elemID) {

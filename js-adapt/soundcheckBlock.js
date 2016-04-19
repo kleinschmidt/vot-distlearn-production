@@ -34,7 +34,9 @@
 // ]
 //
 
-var ui = require('./ui.js');
+var ui = require('./ui.js')
+  , $ = require('jquery')
+  ;
 
 // set by Experiment.init() (in experimentControl2.js).
 // var audSuffix = window.audSuffix;

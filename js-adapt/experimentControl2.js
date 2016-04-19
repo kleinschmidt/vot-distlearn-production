@@ -27,6 +27,7 @@ var ui = require('./ui')
   , continueButton = ui.continueButton
   , mturk_helpers = require('./mturk_helpers')
   , Modernizr = require('browsernizr')
+  , $ = require('jquery')
   ;
 
 

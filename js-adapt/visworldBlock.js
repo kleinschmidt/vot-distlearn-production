@@ -28,6 +28,7 @@ var pb = require('./progressBar.js')
   , ui = require('./ui.js')
   , utils = require('./utilities.js')
   , stimuli = require('./stimuli.js')
+  , $ = require('jquery')
   ; 
 
 function VisworldBlock(params) {

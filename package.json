@@ -4,7 +4,8 @@
   "description": "VOT distributional learning experiment",
   "main": "index.js",
   "dependencies": {
-    "browsernizr": "^2.1.0"
+    "browsernizr": "^2.1.0",
+    "jquery": "^2.2.3"
   },
   "devDependencies": {},
   "scripts": {

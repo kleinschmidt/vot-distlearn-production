@@ -19,11 +19,13 @@
  *
  */
 
-var pb = require('./progressBar');
+var pb = require('./progressBar')
+  , $ = require('jquery')
+  ;
 
 function ExposureBlock(params) {
     var stimObj, catchStimObj, testStimObj, testReps, namespace, css_stim_class, exposures, testITI;
-    for (p in params) {
+    for (var p in params) {
         switch (p) {
         case 'stimuli':
             stimObj = params[p];

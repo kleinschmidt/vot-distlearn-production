@@ -19,7 +19,9 @@
  *
  */
 
-var ui = require('./ui');
+var ui = require('./ui')
+  , $ = require('jquery')
+  ;
 
 // global variables for some of the things extracted by these functions...
 // (not sure this is really good to put here but whatevs)

@@ -4,6 +4,7 @@ var Experiment = require('./js-adapt/experimentControl2')
   , SoundcheckBlock = require('./js-adapt/soundcheckBlock')
   , InstructionsSubsectionsBlock = require('./js-adapt/instructionssubsectionsBlock')
   , mturk_helpers = require('./js-adapt/mturk_helpers')
+  , $ = require('jquery')
   ;
 
 window.respDelim = ';';

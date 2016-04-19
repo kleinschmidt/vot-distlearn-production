@@ -19,7 +19,8 @@
  *
  */
 
-var vidSuffix, audSuffix;
+var $ = require('jquery')
+  ;
 
 // constructor: just copy JSON properties into this object
 function Stimuli(baseobj) {

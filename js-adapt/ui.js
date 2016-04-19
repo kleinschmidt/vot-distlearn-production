@@ -1,6 +1,9 @@
 ////////////////////////////////////////////////////////////////////////////////
 // GUI/helper things
 
+var $ = require('jquery')
+  ;
+
 // display a "continue" button which executes the given function
 module.exports.continueButton = function continueButton(fcn, validateFcn) {
     $("#continue")
@@ -15,7 +18,7 @@ module.exports.continueButton = function continueButton(fcn, validateFcn) {
                       fcn();
                   }
               });
-}
+};
 
 
 // collect a keyboard response, with optional timeout
@@ -46,5 +49,5 @@ module.exports.collect_keyboard_resp = function collect_keyboard_resp(fcn, keys,
                        $(document).unbind(namespace);
                    }, to);
     }
-}
+};
 

@@ -319,7 +319,7 @@ function LogReg(nC, nR) {
 	    //o = o + ( NL + "-2 Log Likelihood = " + Fmt( LL ) );
             // record LL of null model (on the first iteration)
 	    if( LLp==1e+10 ) {
-                LLn = LL;
+                var LLn = LL;
                 //o = o + " (Null Model)"
             }
 	    //form.output.value = o;
@@ -376,13 +376,14 @@ function testLogReg() {
              1, 1, 1, 1, 0, 0, 0, 0, 1, 0, 1, 0, 0, 1, 1, 0, 1, 0, 1, 1, 1, 1, 0,
              0, 1, 1, 0, 0, 1, 0, 0, 1];
 
-    lr = new LogReg(x0.length, 1);   
+    var lr = new LogReg(x0.length, 1);   
     lr.init(x0);
     
-    for (i = 0; i < x.length; i++) {
+    for (var i = 0; i < x.length; i++) {
         lr.addObs(x[i], y[i]);
     }
     
     lr.fit();
 }
 
+module.exports = LogReg;

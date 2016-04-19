@@ -24,6 +24,7 @@ var pb = require('./progressBar.js')
   , utils = require('./utilities.js')
   , stimuli = require('./stimuli.js')
   , LogReg = require('./logreg.js')
+  , $ = require('jquery')
   ;
 
 function LabelingBlock(params) {

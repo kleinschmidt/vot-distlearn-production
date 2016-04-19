@@ -1,3 +1,7 @@
+var $ = require('jquery')
+  ;
+
+
 // show instructions with subsections which open and close
 // argument instrObj should be an object with two fields:
 //   instrObj.title, text to be shown as a (sticky) title
