@@ -3,6 +3,6 @@
     "startup_file": "server.js",
     // "environment": "development",
     "environment": "production",
-    "port": 8080,
+    "port": 3004,
     "daemonize": true
 }
