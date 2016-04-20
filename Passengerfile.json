@@ -4,5 +4,6 @@
     // "environment": "development",
     "environment": "production",
     "port": 3004,
-    "daemonize": true
+    "daemonize": true,
+    "user": "www-data"
 }
