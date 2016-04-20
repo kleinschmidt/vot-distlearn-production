@@ -2,9 +2,11 @@
   "name": "bp-adapt",
   "version": "0.0.1",
   "description": "VOT distributional learning experiment",
-  "main": "index.js",
+  "main": "server.js",
   "dependencies": {
+    "browserify-middleware": "^7.0.0",
     "browsernizr": "^2.1.0",
+    "express": "^4.13.4",
     "jquery": "^2.2.3",
     "underscore": "^1.8.3"
   },
