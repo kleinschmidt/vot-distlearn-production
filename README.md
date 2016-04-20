@@ -1,4 +1,19 @@
-The live version is [here](https://www.hlp.rochester.edu/mturk/mtadapt/sup-unsup/) (open up the javascript console if you want to see the output).
+The live version is [here](https://www.hlp.rochester.edu/bp_adapt/) (open up the javascript console if you want to see the output). Specify the conditions with the following URL parameters:
+
+* `supunsup=(supervised|unsupervised|mixed)`
+* `bvot=NNN` (multiple of 10).
+* `pvot=NNN` (optional, defaults to `bvot` + 40).
+
+## Deploying locally
+
+Requires [node.js](https://nodejs.org/). Then clone this repo, install dependencies, and run:
+
+```
+$ npm install
+$ node server.js
+```
+
+Then navigate to e.g. [http://localhost:3000/?supcond=supervised&bvot=0].
 
 ## Pilot turk experiment
 
