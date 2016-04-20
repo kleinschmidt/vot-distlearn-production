@@ -24,6 +24,7 @@ require('browsernizr/test/audio');
 require('browsernizr/test/video');
 
 var ui = require('./ui')
+  , utils = require('./utilities.js')
   , continueButton = ui.continueButton
   , mturk_helpers = require('./mturk_helpers')
   , Modernizr = require('browsernizr')
