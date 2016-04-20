@@ -24,7 +24,7 @@ var ui = require('./ui')
   ;
 
 // global variables for some of the things extracted by these functions...
-// (not sure this is really good to put here but whatevs)
+// (not sure this is really good to put here but whatevs. can't hurt)
 var respKeyMap;
 var previewMode;
 var sandboxMode;
@@ -32,36 +32,6 @@ var debugMode;
 
 
 module.exports = {
-
-    //
-    // This method Gets URL Parameters (GUP)
-    //
-    gup: function gup( name )
-    {
-        var regexS = "[\\?&]"+name+"=([^&#]*)";
-        var regex = new RegExp( regexS );
-        var tmpURL = window.location.href;
-        var results = regex.exec( tmpURL );
-        if( results == null )
-            return "";
-        else
-            return results[1];
-    },
-
-    // Get URL Parameters as Object (GUPO)
-    gupo: function gupo() {
-        var urlParams = {};
-        var e,
-            a = /\+/g,  // Regex for replacing addition symbol with a space
-            r = /([^&=]+)=?([^&]*)/g,
-            d = function (s) { return decodeURIComponent(s.replace(a, " ")); },
-            q = window.location.search.substring(1);
-        
-        while (e = r.exec(q))
-            urlParams[d(e[1])] = d(e[2]);
-
-        return urlParams;
-    },
     
     ////////////////////////////////////////////////////////////////////////////////
     // Some handlers for specific URL parameters
@@ -88,7 +58,7 @@ module.exports = {
                                           ', ' + keys[1] + '-->' + categories[1]);}
             } else {
                 $("#errors").val($("#errors").val() + "badRespKeys");
-                if(console) {console.log("bad response key parameter: " + this.gup('respKeys'));}
+                if(console) {console.log("bad response key parameter: " + keys);}
             }
         }
     },

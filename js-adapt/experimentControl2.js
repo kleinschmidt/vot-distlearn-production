@@ -28,6 +28,7 @@ var ui = require('./ui')
   , continueButton = ui.continueButton
   , mturk_helpers = require('./mturk_helpers')
   , Modernizr = require('browsernizr')
+  , querystring = require('querystring')
   , $ = require('jquery')
   ;
 
@@ -168,7 +169,7 @@ Experiment.prototype = {
         this.blockn = 0;
 
         // read in URL parameters
-        this.urlparams = mturk_helpers.gupo();
+        this.urlparams = querystring.parse(window.location.search.substring(1));
 
         // get assignmentID and populate form field
         $("#assignmentId").val(this.urlparams['assignmentId']);
