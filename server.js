@@ -1,5 +1,6 @@
 var express = require('express')
   , browserify = require('browserify-middleware')
+  , mturk_helpers = require('./js-adapt/mturk_helpers.js')
   ;
 
 var app = express();
@@ -16,6 +17,8 @@ app.use(express.static(__dirname + '/static'));
 app.use('/js-adapt', express.static(__dirname + '/js-adapt')); 
 
 app.get('/condition', function(req, res) {
+    console.log('Requested condition with query', req.query);
+    console.log('Preview mode?', mturk_helpers.checkPreview(req.query));
     res.json({
         'mean_vots': {'b': 0, 'p': 60},
         'supunsup': 'unsupervised'

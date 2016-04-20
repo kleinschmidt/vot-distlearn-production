@@ -30,8 +30,10 @@ $(document).ready(
         e.previewMode = mturk_helpers.checkPreview(e.urlparams);
         e.debugMode = mturk_helpers.checkDebug(e.urlparams);
 
-        // there are two condition variables:
-        // 1) mean VOTs (0/10/20/30 for /b/, +40 for /p/)
+
+        // getting the conditions:
+        // method one: URL parameters:
+
         var bvot_condition = e.urlparams['bvot'];
         var bvot = parseInt(bvot_condition);
         var pboffset = 40;
@@ -48,6 +50,18 @@ $(document).ready(
             supunsup: e.urlparams['supunsup']
         };
 
+        // method two: AJAX call to /condition endpoint.
+        $.ajax({
+            dataType: 'json',
+            url: 'condition',
+            data: e.urlparams,
+            success: function(data) {
+                console.log('Received condition:', data);
+            },
+            async: false
+        });
+
+        // either way: pass conditions to visworld block constructor
         var vwb = require('./blocks/visworld.js')(conditions);
         
         ////////////////////////////////////////////////////////////////////////
