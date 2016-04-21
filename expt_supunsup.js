@@ -57,6 +57,7 @@ $(document).ready(
             data: e.urlparams,
             success: function(data) {
                 console.log('Received condition:', data);
+                // conditions = data;
             },
             async: false
         });
