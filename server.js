@@ -17,9 +17,16 @@ app.use(express.static(__dirname + '/static'));
 // for static HTML/css resources
 app.use('/js-adapt', express.static(__dirname + '/js-adapt')); 
 
+// middleware to detect preview mode
+app.use(function (req, res, next) {
+    req.preview_mode = mturk_helpers.checkPreview(req.query);
+    next();
+});
+
 app.get('/condition', function(req, res) {
     console.log('Requested condition with query', req.query);
-    console.log('Preview mode?', mturk_helpers.checkPreview(req.query));
+    // check if preview mode
+    console.log('Preview mode?', req.preview_mode);
     res.json({
         'mean_vots': {'b': 0, 'p': 60},
         'supunsup': 'unsupervised'
