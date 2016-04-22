@@ -1,6 +1,7 @@
 var express = require('express')
   , browserify = require('browserify-middleware')
   , mturk_helpers = require('./js-adapt/mturk_helpers.js')
+  , db = require('./db.js')
   ;
 
 var app = express();
