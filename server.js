@@ -2,6 +2,7 @@ var express = require('express')
   , browserify = require('browserify-middleware')
   , mturk_helpers = require('./js-adapt/mturk_helpers.js')
   , db = require('./server/db.js')
+  , conditions = require('./server/conditions.js');
   ;
 
 var app = express();
@@ -23,15 +24,7 @@ app.use(function (req, res, next) {
     next();
 });
 
-app.get('/condition', function(req, res) {
-    console.log('Requested condition with query', req.query);
-    // check if preview mode
-    console.log('Preview mode?', req.preview_mode);
-    res.json({
-        'mean_vots': {'b': 0, 'p': 60},
-        'supunsup': 'unsupervised'
-    });
-});
+app.get('/condition', conditions);
 
 app.listen(3000, function() {
     console.log('Listening on port 3000');
