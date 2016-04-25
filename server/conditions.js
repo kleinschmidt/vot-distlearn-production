@@ -2,7 +2,8 @@
 // responds with JSON of condition data, or an error.
 
 var db = require('./db.js')
-  , _ = require('underscore')
+  , balancer = require('./list_balancer.js')
+  , R = require('ramda')
   ;
 
 /*
@@ -11,25 +12,25 @@ var db = require('./db.js')
  * 3. If doesn't exist, send JSON with condition and save in db
  */
 
-var conditions = [
-    {
+var conditions = {
+    0: {
         'mean_vots': {'b': 0, 'p': 60},
         'supunsup': 'unsupervised'
     }
-];
+};
 
 // TODO: replace this with bookcase.js Model.extend
 function Assignment(obj) {
-    this.workerId = obj.workerId;
-    this.assignmentId = obj.assignmentId;
-    this.hitId = obj.hitId;
-    this.list_id = obj.list_id;
-    this.startTime = new Date();
+    var a = R.pickAll(['workerId', 'assignmentId', 'hitId', 'list_id'], obj);
+    a.startTime = new Date();
+    return a;
 }
+
+
 
 // given a request with a query string, send a JSON object with condition 
 // information for this assignment
-var assign_condition = function(req, res) {
+module.exports = function condition_middleware(req, res) {
     if (req.preview_mode) {
         res.json({ "preview": true });
     } else {
@@ -55,8 +56,8 @@ var assign_condition = function(req, res) {
                     res.json(conditions[condition_id]);
                     db('assignments')
                         .returning('workerId')
-                        .insert(new Assignment(_.extend({list_id: condition_id}, 
-                                                        req.query)
+                        .insert(new Assignment(R.merge({list_id: condition_id}, 
+                                                       req.query)
                                               ))
                         .then(function(id) {
                             console.log("saved record for worker:", id);
@@ -69,4 +70,4 @@ var assign_condition = function(req, res) {
     }
 };
 
-module.exports = assign_condition;
+
