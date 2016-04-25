@@ -22,7 +22,7 @@ var count_to_go = R.curry(function(db_counts, list) {
     var db_res = R.filter(R.propEq('list_id', list.list_id), db_counts);
     var db_count = db_res[0] ? db_res[0].count : 0;
     var target_count = list.count ? list.count : 0;
-    console.log('Count to go', target_count-db_count, 'list:', list);
+    // console.log('Count to go', target_count-db_count, 'list:', list);
     return target_count - db_count;
 });
 
@@ -44,3 +44,4 @@ module.exports = function list_balancer_factory(lists) {
     };
 };
 
+assignments_per_list_id().then(console.log);

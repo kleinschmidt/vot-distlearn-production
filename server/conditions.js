@@ -45,7 +45,6 @@ function Assignment(obj) {
 }
 
 var list_balancer = ListBalancer(lists);
-list_balancer().then(console.log);
 
 // given a request with a query string, send a JSON object with condition 
 // information for this assignment
@@ -73,14 +72,19 @@ module.exports = function condition_middleware(req, res) {
                     // TODO: pick condition to actually balance lists
                     var list_id = 0;
                     var list = R.filter(R.propEq('list_id', list_id), lists);
-                    res.json(list.condition);
-                    db('assignments')
-                        .returning('workerId')
-                        .insert(new Assignment(R.merge({list_id: list_id}, 
-                                                       req.query)
-                                              ))
-                        .then(function(id) {
-                            console.log("saved record for worker:", id);
+
+                    list_balancer()
+                        .then(function(list) {
+                            res.json(list.condition);
+                            return list.list_id;
+                        })
+                        .then(function(list_id) {
+                            console.log('Worker', req.query.workerId, 'assigned list', list_id);
+                            return db('assignments')
+                                .returning('workerId')
+                                .insert(new Assignment(R.merge({list_id: list_id}, 
+                                                               req.query)
+                                                      ));
                         })
                         .catch(function(err) {
                             console.log("ERROR!!", err);
