@@ -69,17 +69,15 @@ module.exports = function condition_middleware(req, res) {
                                'message': "Existing record for worker"
                               });
                 } else {
-                    // TODO: pick condition to actually balance lists
-                    var list_id = 0;
-                    var list = R.filter(R.propEq('list_id', list_id), lists);
-
                     list_balancer()
                         .then(function(list) {
                             res.json(list.condition);
                             return list.list_id;
                         })
+                        .tap(R.curryN(4, console.log)('Worker',
+                                                      req.query.workerId, 
+                                                      'assigned list'))
                         .then(function(list_id) {
-                            console.log('Worker', req.query.workerId, 'assigned list', list_id);
                             return db('assignments')
                                 .returning('workerId')
                                 .insert(new Assignment(R.merge({list_id: list_id}, 
