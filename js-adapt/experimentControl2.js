@@ -157,11 +157,11 @@ Experiment.prototype = {
                                $("#instructions").hide();
                                //this_block.block.run();
                                //_curBlock = this_block.block;
-                               this_block.block.run();
+                               this_block.block.run(_self);
                            });
         } else {
             // ...otherwise, just run the block.
-            this_block.block.run();
+            this_block.block.run(_self);
         }
     },
 
