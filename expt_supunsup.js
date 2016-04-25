@@ -59,7 +59,7 @@ $(document).ready(
                                 onPreview: false});
                 })
                 .fail(function(err) {
-                    ui.errorMessage(err.responseJSON.message);
+                    ui.errorMessage(err.responseJSON.error);
                 });
         }
         

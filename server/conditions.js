@@ -48,11 +48,14 @@ var list_balancer = ListBalancer(lists);
 
 // given a request with a query string, send a JSON object with condition 
 // information for this assignment
-module.exports = function condition_middleware(req, res) {
+module.exports = function condition_middleware(req, res, next) {
     if (req.preview_mode) {
         res.json({ "preview": true });
     } else {
         // check for existing record for this worker
+        if (! R.has('workerId', (req.query))) {
+            next({ error: 'Missing workerId in request' });
+        }
         db('assignments')
             .select()
             .where('workerId', req.query.workerId)
@@ -63,11 +66,7 @@ module.exports = function condition_middleware(req, res) {
                                 req.query.workerId);
                     // TODO: check whether they've actually STARTED the experiment
                     // (add route to signal that and callback in script)
-                    res
-                        .status(500)
-                        .json({'error': true, 
-                               'message': "Existing record for worker"
-                              });
+                    next({ error: "Existing record for worker" });
                 } else {
                     list_balancer()
                         .then(function(list) {

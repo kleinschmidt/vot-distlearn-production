@@ -26,6 +26,10 @@ app.use(function (req, res, next) {
 
 app.get('/condition', conditions);
 
+app.use(function(err, req, res, next) {
+    res.status(500).send(err);
+});
+
 app.listen(3000, function() {
     console.log('Listening on port 3000');
 });
