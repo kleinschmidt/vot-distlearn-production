@@ -2,7 +2,7 @@
 // responds with JSON of condition data, or an error.
 
 var db = require('./db.js')
-  , balancer = require('./list_balancer.js')
+  , ListBalancer = require('./list_balancer.js')
   , R = require('ramda')
   ;
 
@@ -12,12 +12,30 @@ var db = require('./db.js')
  * 3. If doesn't exist, send JSON with condition and save in db
  */
 
-var conditions = {
-    0: {
-        'mean_vots': {'b': 0, 'p': 60},
-        'supunsup': 'unsupervised'
+var lists = [
+    {
+        'list_id': 0,
+        'condition': {
+            'mean_vots': {'b': 0, 'p': 60},
+            'supunsup': 'unsupervised'
+        }
+    }, 
+    {
+        'list_id': 1,
+        'condition': {
+            'mean_vots': {'b': 10, 'p': 60},
+            'supunsup': 'unsupervised'
+        }
+    }, 
+    {
+        'list_id': 2,
+        'condition': {
+            'mean_vots': {'b': 10, 'p': 70},
+            'supunsup': 'unsupervised'
+        }
     }
-};
+];
+
 
 // TODO: replace this with bookcase.js Model.extend
 function Assignment(obj) {
@@ -26,7 +44,8 @@ function Assignment(obj) {
     return a;
 }
 
-
+var list_balancer = ListBalancer(lists);
+list_balancer().then(console.log);
 
 // given a request with a query string, send a JSON object with condition 
 // information for this assignment
@@ -52,11 +71,12 @@ module.exports = function condition_middleware(req, res) {
                               });
                 } else {
                     // TODO: pick condition to actually balance lists
-                    var condition_id = 0;
-                    res.json(conditions[condition_id]);
+                    var list_id = 0;
+                    var list = R.filter(R.propEq('list_id', list_id), lists);
+                    res.json(list.condition);
                     db('assignments')
                         .returning('workerId')
-                        .insert(new Assignment(R.merge({list_id: condition_id}, 
+                        .insert(new Assignment(R.merge({list_id: list_id}, 
                                                        req.query)
                                               ))
                         .then(function(id) {
