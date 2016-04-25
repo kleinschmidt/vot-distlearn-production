@@ -30,41 +30,6 @@ $(document).ready(
         e.sandboxmode = mturk_helpers.checkSandbox(e.urlparams);
         e.previewMode = mturk_helpers.checkPreview(e.urlparams);
         e.debugMode = mturk_helpers.checkDebug(e.urlparams);
-
-
-        // getting the conditions:
-        // method one: URL parameters:
-
-        var bvot_condition = e.urlparams['bvot'];
-        var bvot = parseInt(bvot_condition);
-        var pboffset = 40;
-        var pvot_condition = e.urlparams['pvot'];
-        var pvot;
-        if (typeof pvot_condition === 'undefined') {
-            pvot = bvot + pboffset;
-        } else {
-            pvot = parseInt(pvot_condition);
-        }
-
-        var conditions = {
-            mean_vots: {'b': bvot, 'p': pvot},
-            supunsup: e.urlparams['supunsup']
-        };
-
-        // method two: AJAX call to /condition endpoint.
-        $.ajax({
-            dataType: 'json',
-            url: 'condition',
-            data: e.urlparams,
-            success: function(data) {
-                console.log('Received condition:', data);
-                // conditions = data;
-            },
-            async: false
-        });
-
-        // either way: pass conditions to visworld block constructor
-        var vwb = require('./blocks/visworld.js')(conditions);
         
         ////////////////////////////////////////////////////////////////////////
         // Instructions
@@ -79,9 +44,25 @@ $(document).ready(
             e.addBlock({block: instructions,
                         onPreview: true});
         }
-        e.addBlock({block: vwb,
-                    onPreview: false});
 
+        if (! e.previewMode) {
+            $.ajax({
+                dataType: 'json',
+                url: 'condition',
+                data: e.urlparams,
+                async: true
+            })
+                .done(function(conditions) {
+                    console.log('Received condition:', conditions);
+                    var vwb = require('./blocks/visworld.js')(conditions);
+                    e.addBlock({block: vwb,
+                                onPreview: false});
+                })
+                .fail(function(err) {
+                    ui.errorMessage(err.responseJSON.message);
+                });
+        }
+        
         // run the experiment
         e.nextBlock();
 
