@@ -1,5 +1,6 @@
 var Experiment = require('./js-adapt/experimentControl2')
   , mturk_helpers = require('./js-adapt/mturk_helpers')
+  , ui = require('./js-adapt/ui.js')
   , $ = require('jquery')
   ;
 

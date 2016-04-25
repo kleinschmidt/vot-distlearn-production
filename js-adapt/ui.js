@@ -51,3 +51,18 @@ module.exports.collect_keyboard_resp = function collect_keyboard_resp(fcn, keys,
     }
 };
 
+// display an error message
+module.exports.errorMessage = function errorMessage(message) {
+    $("#textContainer")
+        .children()
+        .hide();
+
+    $("#textContainer")
+        .append('<div class="error"><h1>Sorry, something went wrong</h1>' +  
+                '<p>Please <a href="mailto:hlplab@gmail.com">let us know</a>'+
+                ' what happened in case the problem is ' +
+                'on our end so we can fix it!</p> </div>')
+        .show();
+
+    console.log('ERROR:', message);
+};
