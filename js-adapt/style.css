@@ -281,6 +281,10 @@ button#endinstr {
     font-family: Helvetica;
 }
 
+button#endinstr:disabled {
+    background-color: #A6D9A6;
+}
+
 div.listcontent > p.instructioncheckbox {
     color: white;
     background-color: green;

@@ -1,25 +1,29 @@
 var $ = require('jquery')
+  , _ = require('underscore')
   ;
 
 
 // show instructions with subsections which open and close
-// argument instrObj should be an object with two fields:
-//   instrObj.title, text to be shown as a (sticky) title
-//   instrObj.mainInstructions, HTML/text that will always appear (sticky)
-//   instrObj.subsections, an array with the subsections.
+// argument instrObj should be an object with these fields:
+//   [title = 'Experiment instructions']: text to be shown as a (sticky) title.
+//   mainInstructions: HTML/text that will always appear (sticky)
+//   subsections: an array with the subsections.
 //     each subjects must have fields for the content of the instructions, and the title
 //     can also have "checkbox text"
 //     can have "optional" flag
+//   [noContinueOnPreview = true]: Whether to disable continue button on preview
 function InstructionsSubsectionsBlock(instrObj) {
-    this.title = typeof(instrObj.title) === 'undefined' ? 'Experiment instructions' : instrObj.title;
-    this.mainInstructions = instrObj.mainInstructions;
-    this.subsections = instrObj.subsections;
-    this.logoImg = instrObj.logoImg;
-    this.onEndedBlock = function() {return this;};
+    _.extend(this, instrObj);
 }
 
 InstructionsSubsectionsBlock.prototype = {
-    run: function() {
+
+    noContinueOnPreview: true,
+    title: 'Experiment instructions',
+    onEndedBlock: function() {return this;},
+
+    run: function(e) {
+
         // clear previous content
         $("#instructions").html('');
 
@@ -62,6 +66,12 @@ InstructionsSubsectionsBlock.prototype = {
                     .append('<button type="button" id="endinstr">I confirm that I meet the eligibility and computer requirements, that I have read and understood the instructions and the consent form, and that I want to start the experiment.</button>'))
             .appendTo(instList);
 
+        if (e.previewMode && this.noContinueOnPreview) {
+            $('button#endinstr')
+                .prop('disabled', true)
+                .after('<p style="font-weight: bold">You must accept this HIT before continuing.</p>');
+        }
+        
         // iterate over subsections, parsing, formatting, and adding each
         $.each(this.subsections, function(i) {
                    // [object is referred to w/ this inside $.each]
@@ -146,7 +156,6 @@ InstructionsSubsectionsBlock.prototype = {
         var _self = this;
         $('button#endinstr')
             .click(function(){
-                       var instructionsDone = true;
                        // look for uncheck boxes, and change their parent h3 elements to red
                        // if there are any, length will be > 0, so throw an alert
                        var uncheckedItems = $('#instructions input:checkbox:not(:checked)')
