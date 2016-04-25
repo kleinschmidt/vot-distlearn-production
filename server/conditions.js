@@ -53,9 +53,8 @@ module.exports = function condition_middleware(req, res, next) {
         res.json({ "preview": true });
     } else {
         // check for existing record for this worker
-        if (! R.has('workerId', (req.query))) {
-            next({ error: 'Missing workerId in request' });
-        }
+        req.query.workerId || next({ error: 'Missing workerId in request' });
+        
         db('assignments')
             .select()
             .where('workerId', req.query.workerId)
@@ -84,7 +83,7 @@ module.exports = function condition_middleware(req, res, next) {
                                                       ));
                         })
                         .catch(function(err) {
-                            console.log("ERROR!!", err);
+                            next(err);
                         });
                 }
             });
