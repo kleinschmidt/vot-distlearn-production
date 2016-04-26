@@ -263,7 +263,14 @@ Experiment.prototype = {
         
         // mturk_end_surveys_and_submit() is a function in js-adapt/mturk-helpers.js
         // which steps through the demographics/audio equipment surveys and then submits.
-        continueButton(mturk_helpers.mturk_end_surveys_and_submit);
+        var sc = this.submit_callback;
+        continueButton(mturk_helpers.mturk_end_surveys_and_submit(sc));
+    },
+
+    submit_callback: function() {
+        $("#mturk_form").submit();
+    },
+
     checkPreview: function checkPreview() {
         if (mturk_helpers.checkPreview(this.urlparams)) {
             this.previewMode = true;
