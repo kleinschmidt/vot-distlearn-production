@@ -2,8 +2,10 @@ var express = require('express')
   , browserify = require('browserify-middleware')
   , mturk_helpers = require('./js-adapt/mturk_helpers.js')
   , db = require('./server/db.js')
-  , conditions = require('./server/conditions.js');
+  , lists = require('./lists')
+  , assign_condition = require('./server/conditions.js')(lists)
   ;
+
 
 var app = express();
 
@@ -24,7 +26,7 @@ app.use(function (req, res, next) {
     next();
 });
 
-app.get('/condition', conditions);
+app.get('/condition', assign_condition);
 
 
 // Error handling

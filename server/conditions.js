@@ -12,30 +12,6 @@ var db = require('./db.js')
  * 3. If doesn't exist, send JSON with condition and save in db
  */
 
-var lists = [
-    {
-        'list_id': 0,
-        'condition': {
-            'mean_vots': {'b': 0, 'p': 60},
-            'supunsup': 'unsupervised'
-        }
-    }, 
-    {
-        'list_id': 1,
-        'condition': {
-            'mean_vots': {'b': 10, 'p': 60},
-            'supunsup': 'unsupervised'
-        }
-    }, 
-    {
-        'list_id': 2,
-        'condition': {
-            'mean_vots': {'b': 10, 'p': 70},
-            'supunsup': 'unsupervised'
-        }
-    }
-];
-
 
 // TODO: replace this with bookcase.js Model.extend
 function Assignment(obj) {
@@ -44,14 +20,11 @@ function Assignment(obj) {
     return a;
 }
 
-var list_balancer = ListBalancer(lists);
-
 // given a request with a query string, send a JSON object with condition 
 // information for this assignment
-module.exports = function condition_middleware(req, res, next) {
-    if (req.preview_mode) {
-        res.json({ "preview": true });
-    } else {
+module.exports = function(lists) {
+    var list_balancer = ListBalancer(lists);
+    return function assign_condition(req, res, next) {
         // check for existing record for this worker
         req.query.workerId || next({ error: 'Missing workerId in request' });
         
@@ -87,7 +60,6 @@ module.exports = function condition_middleware(req, res, next) {
                         });
                 }
             });
-    }
+    };
+
 };
-
-
