@@ -29,6 +29,21 @@ app.use(function (req, res, next) {
 app.get('/condition', assign_condition);
 
 
+// debugging middleware: blow up the database
+if (process.env.NODE_ENV === 'development') {
+    console.log('GET /blammo to delete assignment records' +
+                ' (filtered by query parameters)');
+    app.use('/blammo', function(req, res, next) {
+        db('assignments')
+            .where(req.query)
+            .del()
+            .then(function() {
+                console.log('Blew up assignments table');
+                res.send('blammo');
+            });
+    });
+}
+
 // Error handling
 
 function logErrors(err, req, res, next) {
