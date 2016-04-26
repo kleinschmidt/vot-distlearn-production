@@ -20,46 +20,50 @@ function Assignment(obj) {
     return a;
 }
 
+function check_workers(workers) {
+    if (workers.length) {
+        // TODO: check whether they've actually STARTED the experiment
+        // (add route to signal that and callback in script)
+        throw { error: "Existing record for worker" };
+    } else {
+        return workers;
+    }
+}
+
+var send_condition = R.curry(function(res, list) {res.json(list.condition);});
+
 // given a request with a query string, send a JSON object with condition 
 // information for this assignment
 module.exports = function(lists) {
-    var list_balancer = ListBalancer(lists);
+    var get_balanced_list = ListBalancer(lists);
     return function assign_condition(req, res, next) {
         // check for existing record for this worker
         req.query.workerId || next({ error: 'Missing workerId in request' });
-        
+
         db('assignments')
             .select()
             .where('workerId', req.query.workerId)
-            .then(function(workers) {
-                if (workers.length) {
-                    // existing record for worker
-                    console.log("existing record for worker:", 
-                                req.query.workerId);
-                    // TODO: check whether they've actually STARTED the experiment
-                    // (add route to signal that and callback in script)
-                    next({ error: "Existing record for worker" });
-                } else {
-                    list_balancer()
-                        .then(function(list) {
-                            res.json(list.condition);
-                            return list.list_id;
-                        })
-                        .tap(R.curryN(4, console.log)('Worker',
-                                                      req.query.workerId, 
-                                                      'assigned list'))
-                        .then(function(list_id) {
-                            return db('assignments')
-                                .returning('workerId')
-                                .insert(new Assignment(R.merge({list_id: list_id}, 
-                                                               req.query)
-                                                      ));
-                        })
-                        .catch(function(err) {
-                            next(err);
-                        });
-                }
-            });
+            .then(check_workers)
+            .then(get_balanced_list)
+            .tap(send_condition(res))
+            .get('list_id')
+            .tap(R.curryN(4, console.log)('Worker',
+                                          req.query.workerId, 
+                                          'assigned list'))
+            .then(function(list_id) {
+                return db('assignments')
+                    .returning('workerId')
+                    .insert(new Assignment(R.merge({list_id: list_id}, 
+                                                   req.query)
+                                          ));
+            })
+            .catch(R.propEq('error', 'Existing record for worker'), function(err) {
+                // existing record for worker
+                console.log("existing record for worker:", 
+                            req.query.workerId);
+                throw err;
+            })
+            .catch(next);
     };
 
 };
