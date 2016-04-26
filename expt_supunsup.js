@@ -2,6 +2,7 @@ var Experiment = require('./js-adapt/experimentControl2')
   , mturk_helpers = require('./js-adapt/mturk_helpers')
   , ui = require('./js-adapt/ui.js')
   , $ = require('jquery')
+  , Promise = require('bluebird')
   ;
 
 window.respDelim = ';';
@@ -46,26 +47,30 @@ $(document).ready(
         }
 
         if (! e.previewMode) {
-            $.ajax({
-                dataType: 'json',
-                url: 'condition',
-                data: e.urlparams,
-                async: true
-            })
-                .done(function(conditions) {
-                    console.log('Received condition:', conditions);
-                    var vwb = require('./blocks/visworld.js')(conditions);
-                    e.addBlock({block: vwb,
-                                onPreview: false});
-                    e.nextBlock();
-                })
-                .fail(function(err) {
-                    ui.errorMessage(err.responseJSON.error);
-                });
-        } else {
-            // run the experiment
-            e.nextBlock();
-        }
+            function getCondition() {
+                return Promise.resolve($.ajax({
+                    dataType: 'json',
+                    url: 'condition',
+                    data: e.urlparams,
+                    async: true
+                }));
+            };
 
+            var vwb = getCondition()
+                    .then(function(conditions) {
+                        console.log('Received condition:', conditions);
+                        return require('./blocks/visworld.js')(conditions);
+                    })
+                    .catch(function(err) {
+                        ui.errorMessage(err.responseJSON.error);
+                    });
+
+            // add promise as block
+            e.addBlock({block: vwb,
+                        onPreview: false});
+
+        }
+        
+        e.nextBlock();
         
     });
