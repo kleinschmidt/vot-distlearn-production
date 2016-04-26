@@ -7,7 +7,11 @@
 * [done] split out lists into a config file
 * [done] check for preview in client and don't serve VWB/check for condition
 * factor out existing worker checks into separate middleware?
-
+* status dependent
+    * add column in db
+    * check for status when existing record located
+    * send status updates in client
+    * add routes for updating status in server
 
 # Browerifying `js-adapt`
 
