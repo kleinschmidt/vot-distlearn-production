@@ -4,6 +4,7 @@
 var db = require('./db.js')
   , ListBalancer = require('./list_balancer.js')
   , R = require('ramda')
+  , Assignment = require('./assignment.js')
   ;
 
 /*
@@ -12,13 +13,6 @@ var db = require('./db.js')
  * 3. If doesn't exist, send JSON with condition and save in db
  */
 
-
-// TODO: replace this with bookcase.js Model.extend
-function Assignment(obj) {
-    var a = R.pickAll(['workerId', 'assignmentId', 'hitId', 'list_id'], obj);
-    a.startTime = new Date();
-    return a;
-}
 
 function WorkerRecordError(msg) {
     this.message = msg;
@@ -69,9 +63,10 @@ module.exports = function(lists) {
                         .then(function(list_id) {
                             return db('assignments')
                                 .returning('workerId')
-                                .insert(new Assignment(R.merge({list_id: list_id}, 
-                                                               req.query)
-                                                      ));
+                                .insert(R.merge({list_id: list_id,
+                                                 startTime: new Date()}, 
+                                                Assignment(req.query))
+                                       );
                         });
                 }
                 return list;
