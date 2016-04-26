@@ -8,8 +8,8 @@
 * [done] check for preview in client and don't serve VWB/check for condition
 * factor out existing worker checks into separate middleware?
 * status dependent
-    * add column in db
-    * check for status when existing record located
+    * [done] add column in db
+    * [done] check for status when existing record located
     * send status updates in client
     * add routes for updating status in server
 
