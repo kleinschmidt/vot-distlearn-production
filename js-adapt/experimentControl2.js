@@ -30,6 +30,7 @@ var ui = require('./ui')
   , Modernizr = require('browsernizr')
   , querystring = require('querystring')
   , $ = require('jquery')
+  , Promise = require('bluebird')
   ;
 
 
@@ -134,8 +135,12 @@ Experiment.prototype = {
             // then check to see if practice mode is needed.
             if (typeof this_block.practiceParameters !== 'undefined') {
                 // if yes, do practice mode, with a call back to run the block for real
-                this_block.block.practice(this_block.practiceParameters,
-                                          function() {_self.runBlock();});
+                // TODO: deal with Promised blocks
+                var promised = Promise.resolve(this_block.block);
+                promised.then(function(block) {
+                    block.practice(this_block.practiceParameters,
+                                   function() {_self.runBlock();});
+                });
             } else {
                 // otherwise, run the block for real.
                 this.runBlock();
@@ -149,19 +154,22 @@ Experiment.prototype = {
         var this_block = this.blocks[this.blockn++];
         var _self = this;
 
+        var promised = Promise.resolve(this_block.block);
+        
         if (typeof(this_block.instructions) !== 'undefined') {
             // if there are instructions...
             // show them, with a continue button
             $("#instructions").html(this_block.instructions).show();
             continueButton(function() {
-                               $("#instructions").hide();
-                               //this_block.block.run();
-                               //_curBlock = this_block.block;
-                               this_block.block.run(_self);
-                           });
+                $("#instructions").hide();
+                //this_block.block.run();
+                //_curBlock = this_block.block;
+                // this_block.block.run(_self);
+                promised.then(function(block) {block.run(_self);});
+            });
         } else {
             // ...otherwise, just run the block.
-            this_block.block.run(_self);
+            promised.then(function(block) {block.run(_self);});
         }
     },
 
