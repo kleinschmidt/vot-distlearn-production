@@ -47,7 +47,11 @@ if (process.env.NODE_ENV === 'development') {
 // Error handling
 
 function logErrors(err, req, res, next) {
-    console.error(err);
+    if (err.stack) {
+        console.error(err.stack);
+    } else {
+        console.error(err);
+    }
     next(err);
 }
 
