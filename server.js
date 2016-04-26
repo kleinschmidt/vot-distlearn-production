@@ -37,9 +37,9 @@ if (process.env.NODE_ENV === 'development') {
         db('assignments')
             .where(req.query)
             .del()
-            .then(function() {
+            .then(function(n) {
                 console.log('Blew up assignments table');
-                res.send('blammo');
+                res.send('blew up ' + n + ' rows. blammo!');
             });
     });
 }
