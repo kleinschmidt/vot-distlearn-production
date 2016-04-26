@@ -94,12 +94,15 @@ Experiment.prototype = {
         // add onEndedBlock handler function to block (block object MUST
         // call its onEndedBlock method  when it has truly ended...)
         var _self = this;
-        block.onEndedBlock =
-            typeof(endedHandler) === 'undefined' ?
-            function() {_self.nextBlock();} :
-            endedHandler;
-        // and link back to this experiment object to block object...
-        block.parent = _self;
+        Promise.resolve(block)
+            .then(function(b) {
+                b.onEndedBlock =
+                    typeof(endedHandler) === 'undefined' ?
+                    function() {_self.nextBlock();} :
+                    endedHandler;
+                // and link back to this experiment object to block object...
+                b.parent = _self;
+            });
         // add block object and its associated instructions to the blocks array
         this.blocks.push({block: block,
                           instructions: instructions,
