@@ -290,6 +290,8 @@ VisworldBlock.prototype = {
     endBlock: function() {
         $("#visworldContainer").hide();
         $("#progressBar").hide();
+
+        PubSub.publish('trials_ended.' + this.namespace);
         
         // finally: hand control back to whatever called this
         if (this.practiceMode && typeof(this.onEndedPractice) === 'function') {
@@ -375,6 +377,7 @@ VisworldBlock.prototype = {
             $("#progressBar").show();
             $("#instructions").hide();
             $("#visworldContainer").show();
+            PubSub.publish('trials_starting.' + _self.namespace);
             _self.next();
         });
     }
