@@ -166,14 +166,17 @@ Experiment.prototype = {
             $("#instructions").html(this_block.instructions).show();
             continueButton(function() {
                 $("#instructions").hide();
-                //this_block.block.run();
-                //_curBlock = this_block.block;
-                // this_block.block.run(_self);
-                promised.then(function(block) {block.run(_self);});
+                promised.then(function(block) {
+                    _self._curBlock = block;
+                    block.run(_self);
+                });
             });
         } else {
             // ...otherwise, just run the block.
-            promised.then(function(block) {block.run(_self);});
+            promised.then(function(block) {
+                _self._curBlock = block;
+                block.run(_self);
+            });
         }
     },
 
