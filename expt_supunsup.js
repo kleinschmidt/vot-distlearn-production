@@ -57,14 +57,15 @@ $(document).ready(
                     var vwb = require('./blocks/visworld.js')(conditions);
                     e.addBlock({block: vwb,
                                 onPreview: false});
+                    e.nextBlock();
                 })
                 .fail(function(err) {
                     ui.errorMessage(err.responseJSON.error);
                 });
+        } else {
+            // run the experiment
+            e.nextBlock();
         }
-        
-        // run the experiment
-        e.nextBlock();
 
         
     });
