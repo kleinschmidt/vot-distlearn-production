@@ -29,6 +29,7 @@ var pb = require('./progressBar.js')
   , utils = require('./utilities.js')
   , stimuli = require('./stimuli.js')
   , $ = require('jquery')
+  , PubSub = require('pubsub-js')
   ; 
 
 function VisworldBlock(params) {
@@ -358,7 +359,7 @@ VisworldBlock.prototype = {
     },
 
     endFamiliarize: function() {
-        if (console) console.log('Familiarization completed');
+        PubSub.publish('familiarization_completed');
         $("#visworldContainer").hide();
         var numTrials = this.itemOrder.length;
         // approximate duration of whole section, to nearest five minutes (rounded up)

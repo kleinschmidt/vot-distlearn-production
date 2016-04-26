@@ -3,6 +3,7 @@ var Experiment = require('./js-adapt/experimentControl2')
   , ui = require('./js-adapt/ui.js')
   , $ = require('jquery')
   , Promise = require('bluebird')
+  , PubSub = require('pubsub-js')
   ;
 
 window.respDelim = ';';
@@ -31,6 +32,16 @@ $(document).ready(
         e.sandboxmode = mturk_helpers.checkSandbox(e.urlparams);
         e.previewMode = mturk_helpers.checkPreview(e.urlparams);
         e.debugMode = mturk_helpers.checkDebug(e.urlparams);
+        
+        // set up status handler
+        var update_status = require('./client/status.js')(e);
+        // update_status('testing');
+
+        PubSub.subscribe('familiarization_completed', function() {
+            console.log('Familiarization completed');
+            update_status('started');
+        });
+
         
         ////////////////////////////////////////////////////////////////////////
         // Instructions
