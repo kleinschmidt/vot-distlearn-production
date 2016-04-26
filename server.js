@@ -1,13 +1,18 @@
 var express = require('express')
+  , bodyParser = require('body-parser')
   , browserify = require('browserify-middleware')
   , mturk_helpers = require('./js-adapt/mturk_helpers.js')
   , db = require('./server/db.js')
   , lists = require('./lists')
   , assign_condition = require('./server/conditions.js')(lists)
+  , update_status = require('./server/status.js')
   ;
 
 
 var app = express();
+
+// for PUT requests in status
+app.use(bodyParser.urlencoded({extended: false}));
 
 app.get('/bundle.js', browserify(__dirname + '/expt_supunsup.js'));
 app.get('/', function(req, res) {
@@ -26,8 +31,11 @@ app.use(function (req, res, next) {
     next();
 });
 
+// assign conditions
 app.get('/condition', assign_condition);
 
+// middleware to update status
+app.put('/status/:status', update_status);
 
 // debugging middleware: blow up the database
 if (process.env.NODE_ENV === 'development') {
