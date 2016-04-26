@@ -4,9 +4,10 @@
 * [done] Little app that balances lists
 * [done] or browserify middleware on app
 * [done] actually use conditions returned by /condition route
-* split out lists into a config file
+* [done] split out lists into a config file
 * [done] check for preview in client and don't serve VWB/check for condition
 * factor out existing worker checks into separate middleware?
+
 
 # Browerifying `js-adapt`
 
