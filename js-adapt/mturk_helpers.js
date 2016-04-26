@@ -21,6 +21,7 @@
 
 var ui = require('./ui')
   , $ = require('jquery')
+  , PubSub = require('pubsub-js')
   ;
 
 // global variables for some of the things extracted by these functions...
@@ -64,46 +65,9 @@ module.exports = {
     },
 
     checkPreview: function checkPreview(params) {
-        if (params['assignmentId'] == "ASSIGNMENT_ID_NOT_AVAILABLE") {
-            previewMode = true;
-            return true;
-        } else {
-            return false;
-        }
+        return params['assignmentId'] == "ASSIGNMENT_ID_NOT_AVAILABLE";
     },
-
-    checkSandbox: function checkSandbox(params) {
-        if (document.referrer && ( document.referrer.indexOf('workersandbox') != -1) ) {
-            $("#mturk_form").attr("action", "https://workersandbox.mturk.com/mturk/externalSubmit");
-            sandboxMode = true;
-            return true;
-        } else {
-            return false;
-        }
-    },
-
-    checkDebug: function checkDebug(params) {
-        if (params['debug']) {
-            debugMode = true;
-            $("#buttons").show();
-            $("#mturk_form").addClass('debug').show().children().show();
-            $("#comments").hide();
-            
-            // some debugging shortcuts:
-            $("#buttons").append("<input type='button' value='short blocks' " +
-                                 "onclick='expTrials=[4,8];'" +
-                                 "></button>");
-            $("#buttons").append("<input type='button' value='skip calibration' " +
-                                 "onclick='generateFakeData();" + 
-                                 "$(document).trigger(\"endCalibrationBlock\");'" +
-                                 "></button>");
-            return true;
-        } else {
-            return false;
-        }
-
-    },
-
+    
     // boilerplate:
     // UR logo
     logoDiv: '<div id="logo"><img src="logo.png" /></div>',
@@ -120,7 +84,7 @@ module.exports = {
 
 
     // function to run through RSRB demographic and audio/comments forms and then submit
-    mturk_end_surveys_and_submit: function() {
+    mturk_end_surveys_and_submit: function(submit_callback) {
         $("#instructions").hide();
         $('#mturk_form #rsrb').show();
         $('#mturk_form #rsrb *').show();
@@ -131,9 +95,7 @@ module.exports = {
             
             // post back to amazon
             $("#contText").text('Submit');
-            ui.continueButton(function() {
-                $("#mturk_form").submit();
-            });
+            ui.continueButton(submit_callback);
         });
 
     }
