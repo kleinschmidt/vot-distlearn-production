@@ -3,7 +3,7 @@ var env = process.env.NODE_ENV || 'development'
   , knex = require('knex')(config[env])
   ;
 
-knex.migrate.latest([config]);
+// knex.migrate.latest([config]);
 
 module.exports = knex;
 
