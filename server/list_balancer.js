@@ -32,15 +32,19 @@ module.exports = function list_balancer_factory(lists) {
     // lists is an array of objects with id, condition obj, and optional count 
     // (number of repetitions:
     // { list_id: <n>, condition: {...}[, count: <n>] }
-    return function list_balancer() {
-        return assignments_per_list_id()
-            .then(function(db_counts) {
-                // find the list with the biggest gap between number of
-                // assignments in the db with that list_id and the request
-                // number of assignments.
-                return R.reduce(R.maxBy(count_to_go(db_counts)), R.head(lists), R.tail(lists));
-                // TODO: pre-compute count to go?
-            });
+    return function list_balancer(optional_list_id) {
+        if (typeof(optional_list_id) !== 'undefined') {
+            return R.filter(R.propEq('list_id', optional_list_id), lists);
+        } else {
+            return assignments_per_list_id()
+                .then(function(db_counts) {
+                    // find the list with the biggest gap between number of
+                    // assignments in the db with that list_id and the request
+                    // number of assignments.
+                    return R.reduce(R.maxBy(count_to_go(db_counts)), R.head(lists), R.tail(lists));
+                    // TODO: pre-compute count to go?
+                });
+        }
     };
 };
 

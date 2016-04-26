@@ -25,8 +25,6 @@ function check_workers(workers) {
         // TODO: check whether they've actually STARTED the experiment
         // (add route to signal that and callback in script)
         throw { error: "Existing record for worker" };
-    } else {
-        return workers;
     }
 }
 
