@@ -3,6 +3,7 @@ var Experiment = require('./js-adapt/experimentControl2')
   , ui = require('./js-adapt/ui.js')
   , $ = require('jquery')
   , Promise = require('bluebird')
+  , PubSub = require('pubsub-js')
   ;
 
 window.respDelim = ';';
@@ -27,11 +28,34 @@ $(document).ready(
         e.init();
 
         ////////////////////////////////////////////////////////////////////////
-        // parse relevant URL parameters
-        e.sandboxmode = mturk_helpers.checkSandbox(e.urlparams);
-        e.previewMode = mturk_helpers.checkPreview(e.urlparams);
-        e.debugMode = mturk_helpers.checkDebug(e.urlparams);
         
+        // set up status handler
+        var update_status = require('./client/status.js')(e);
+        // update_status('testing');
+
+        e.submit_callback = function() {
+            update_status('submitted')
+                .finally(function() {
+                    // is this a dirty hack
+                    Experiment.prototype.submit_callback();
+                });
+        };
+        
+        PubSub.subscribe('familiarization_completed', function() {
+            console.log('Familiarization completed');
+        });
+
+        PubSub.subscribe('trials_starting', function() {
+            console.log('Trials starting');
+            update_status('started')
+                .then(function(d) {console.log(d);});
+        });
+
+        PubSub.subscribe('trials_ended', function() {
+            console.log('Trials ended');
+            update_status('finished');
+        });
+
         ////////////////////////////////////////////////////////////////////////
         // Instructions
 

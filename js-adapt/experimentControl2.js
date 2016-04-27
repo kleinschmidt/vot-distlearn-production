@@ -64,6 +64,7 @@ function Experiment(baseobj) {
 Experiment.prototype = {
     blocks: [],
     blockn: undefined,
+    runMturkChecks: true,
     rsrbProtocolNumber: 'RSRB00045955',
     rsrbConsentFormURL: 'http://www.hlp.rochester.edu/consent/RSRB45955_Consent_2014-02-10.pdf',
     consentFormDiv: '<div id="consent">By accepting this HIT, you confirm that you have read and understood the <a target="_blank" href="{0}">consent form</a>, that you are willing to participate in this experiment, and that you agree that the data you provide by participating can be used in scientific publications (no identifying information will be used). Sometimes it is necessary to share the data elicited from you &mdash; including sound files &mdash; with other researchers for scientific purposes (for replication purposes). That is the only reason for which we will share data and we will only share data with other researchers and only if it is for non-commercial use. Identifying information will <span style="font-weight:bold;">never</span> be shared (your MTurk ID will be replaced with an arbitrary alphanumeric code).</div>',
@@ -93,12 +94,15 @@ Experiment.prototype = {
         // add onEndedBlock handler function to block (block object MUST
         // call its onEndedBlock method  when it has truly ended...)
         var _self = this;
-        block.onEndedBlock =
-            typeof(endedHandler) === 'undefined' ?
-            function() {_self.nextBlock();} :
-            endedHandler;
-        // and link back to this experiment object to block object...
-        block.parent = _self;
+        Promise.resolve(block)
+            .then(function(b) {
+                b.onEndedBlock =
+                    typeof(endedHandler) === 'undefined' ?
+                    function() {_self.nextBlock();} :
+                    endedHandler;
+                // and link back to this experiment object to block object...
+                b.parent = _self;
+            });
         // add block object and its associated instructions to the blocks array
         this.blocks.push({block: block,
                           instructions: instructions,
@@ -162,14 +166,17 @@ Experiment.prototype = {
             $("#instructions").html(this_block.instructions).show();
             continueButton(function() {
                 $("#instructions").hide();
-                //this_block.block.run();
-                //_curBlock = this_block.block;
-                // this_block.block.run(_self);
-                promised.then(function(block) {block.run(_self);});
+                promised.then(function(block) {
+                    _self._curBlock = block;
+                    block.run(_self);
+                });
             });
         } else {
             // ...otherwise, just run the block.
-            promised.then(function(block) {block.run(_self);});
+            promised.then(function(block) {
+                _self._curBlock = block;
+                block.run(_self);
+            });
         }
     },
 
@@ -179,6 +186,13 @@ Experiment.prototype = {
         // read in URL parameters
         this.urlparams = querystring.parse(window.location.search.substring(1));
 
+        // run mturk checks (unless disabled)
+        if (this.runMturkChecks) {
+            this.checkPreview();
+            this.checkSandbox();
+            this.checkDebug();
+        }
+        
         // get assignmentID and populate form field
         $("#assignmentId").val(this.urlparams['assignmentId']);
         // record userAgent
@@ -249,8 +263,68 @@ Experiment.prototype = {
         
         // mturk_end_surveys_and_submit() is a function in js-adapt/mturk-helpers.js
         // which steps through the demographics/audio equipment surveys and then submits.
-        continueButton(mturk_helpers.mturk_end_surveys_and_submit);
+        var sc = this.submit_callback;
+        continueButton(function() {
+            mturk_helpers.mturk_end_surveys_and_submit(sc);
+        });
+    },
+
+    submit_callback: function() {
+        $("#mturk_form").submit();
+    },
+
+    checkPreview: function checkPreview() {
+        if (mturk_helpers.checkPreview(this.urlparams)) {
+            this.previewMode = true;
+            return true;
+        } else {
+            this.previewMode = false;
+            return false;
+        }
+    },
+
+    checkSandbox: function checkSandbox() {
+        // turkSubmitTo tells where to submit HIT
+        var submitTo = this.urlparams['turkSubmitTo'];
+        
+        $("#mturk_form").attr("action", submitTo + "/mturk/externalSubmit");
+
+        this.sandboxMode = /sandbox/.test(submitTo);
+        return this.sandboxMode;
+    },
+
+    checkDebug: function checkDebug() {
+        if (this.urlparams['debug']) {
+            this.debugMode = true;
+            $("#buttons").show();
+            $("#mturk_form").addClass('debug').show().children().show();
+            $("#comments").hide();
+
+            var _self = this;
+            window.e = _self;
+
+            $('<button />', {
+                text: 'End block',
+                click: function() {
+                    _self._curBlock.endBlock();
+                }
+            }).appendTo('#buttons');
+            
+            // some debugging shortcuts:
+            $("#buttons").append("<input type='button' value='short blocks' " +
+                                 "onclick='expTrials=[4,8];'" +
+                                 "></button>");
+            $("#buttons").append("<input type='button' value='skip calibration' " +
+                                 "onclick='generateFakeData();" + 
+                                 "$(document).trigger(\"endCalibrationBlock\");'" +
+                                 "></button>");
+            
+        } else {
+            this.debugMode = false;
+        }
+        return this.debugMode;
     }
+
 };
 
 module.exports = Experiment;
