@@ -284,12 +284,12 @@ Experiment.prototype = {
     },
 
     checkSandbox: function checkSandbox() {
-        if (document.referrer && ( document.referrer.indexOf('workersandbox') != -1) ) {
-            $("#mturk_form").attr("action", "https://workersandbox.mturk.com/mturk/externalSubmit");
-            this.sandboxMode = true;
-        } else {
-            this.sandboxMode = false;
-        }
+        // turkSubmitTo tells where to submit HIT
+        var submitTo = this.urlparams['turkSubmitTo'];
+        
+        $("#mturk_form").attr("action", submitTo + "/mturk/externalSubmit");
+
+        this.sandboxMode = /sandbox/.test(submitTo);
         return this.sandboxMode;
     },
 
