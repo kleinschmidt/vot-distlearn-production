@@ -36,7 +36,8 @@ $(document).ready(
         e.submit_callback = function() {
             update_status('submitted')
                 .finally(function() {
-                    e.prototype.submit_callback();
+                    // is this a dirty hack
+                    Experiment.prototype.submit_callback();
                 });
         };
         
