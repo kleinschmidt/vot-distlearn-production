@@ -34,11 +34,13 @@ function check_workers(workers) {
 
 var get_first_list_id = R.pipe(R.pluck('list_id'), R.head);
 
-// given a request with a query string, send a JSON object with condition 
-// information for this assignment
+// exports condition assigning middleware
 module.exports = function(lists) {
     var get_balanced_list = ListBalancer(lists);
     var lists_by_id = R.indexBy(R.prop('list_id'), lists);
+
+    // given a request with a query string, send a JSON object with condition 
+    // information for this assignment
     return function assign_condition(req, res, next) {
         // check for existing record for this worker
         req.query.workerId || next({ error: 'Missing workerId in request' });
