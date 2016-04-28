@@ -57,7 +57,7 @@ $(document).ready(
                 });
         };
 
-        //   4. abandoned
+        //   4. abandoned (started but not submitted)
         window.onbeforeunload = function() {
             if (e.status != 'submitted' && e.status != 'initialized') {
                 update_status('abandoned', {async: false});
