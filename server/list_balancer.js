@@ -2,10 +2,14 @@ var db = require('./db.js')
   , R = require('ramda')
   ;
 
+// status codes for assignments that are NOT occupying a list item
+var excluded_statuses = ['returned', 'abandoned', 'rejected'];
+
 // Returns a promise which resolves to an array of list id counts:
 // { list_id: <n>, count: <n> }
 function assignments_per_list_id() {
     return db('assignments')
+        .where('status', 'not in', excluded_statuses)
         .select('list_id')
         .groupBy('list_id')
         .count()
