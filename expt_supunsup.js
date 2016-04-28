@@ -47,16 +47,19 @@ $(document).ready(
         });
 
         //   3. submitted (posted to amazon)
-        e.submit_callback = function() {
-            // really try hard to update status on server...
+        $("#mturk_form").submit(function() {
+            var form = this;
+            console.log("Submit event intercepted");
             retry(function() {return update_status('submitted');},
                   {interval: 1000, timeout: 5000})
                 .finally(function() {
-                    // is this a dirty hack
-                    Experiment.prototype.submit_callback();
+                    console.log("Submitting now");
+                    form.submit();
                 });
-        };
-
+            // block submission until ajax callback.
+            return false;
+        });
+        
         //   4. abandoned (started but not submitted)
         window.onbeforeunload = function() {
             if (e.status != 'submitted' && e.status != 'initialized') {
