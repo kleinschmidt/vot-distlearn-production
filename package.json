@@ -5,6 +5,7 @@
   "main": "server.js",
   "dependencies": {
     "bluebird": "^3.3.5",
+    "bluebird-retry": "^0.6.1",
     "body-parser": "^1.15.0",
     "browserify-middleware": "^7.0.0",
     "browsernizr": "^2.1.0",
