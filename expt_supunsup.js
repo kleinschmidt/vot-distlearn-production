@@ -3,6 +3,7 @@ var Experiment = require('./js-adapt/experimentControl2')
   , ui = require('./js-adapt/ui.js')
   , $ = require('jquery')
   , Promise = require('bluebird')
+  , retry = require('bluebird-retry')
   , PubSub = require('pubsub-js')
   ;
 
@@ -28,34 +29,41 @@ $(document).ready(
         e.init();
 
         ////////////////////////////////////////////////////////////////////////
-        
-        // set up status handler
+        // status progression:
+        //   0. initialized (on load),
         var update_status = require('./client/status.js')(e);
-        // update_status('testing');
-
-        e.submit_callback = function() {
-            update_status('submitted')
-                .finally(function() {
-                    // is this a dirty hack
-                    Experiment.prototype.submit_callback();
-                });
-        };
         
-        PubSub.subscribe('familiarization_completed', function() {
-            console.log('Familiarization completed');
-        });
-
+        //   1. started (first trial)
         PubSub.subscribe('trials_starting', function() {
             console.log('Trials starting');
             update_status('started')
                 .then(function(d) {console.log(d);});
         });
 
+        //   2. finished (last trial)
         PubSub.subscribe('trials_ended', function() {
             console.log('Trials ended');
             update_status('finished');
         });
 
+        //   3. submitted (posted to amazon)
+        e.submit_callback = function() {
+            // really try hard to update status on server...
+            retry(function() {return update_status('submitted');},
+                  {interval: 1000, timeout: 5000})
+                .finally(function() {
+                    // is this a dirty hack
+                    Experiment.prototype.submit_callback();
+                });
+        };
+
+        //   4. abandoned
+        window.onbeforeunload = function() {
+            if (e.status != 'submitted' && e.status != 'initialized') {
+                update_status('abandoned', {async: false});
+            }
+        };
+        
         ////////////////////////////////////////////////////////////////////////
         // Instructions
 
