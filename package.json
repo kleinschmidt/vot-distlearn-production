@@ -4,10 +4,17 @@
   "description": "VOT distributional learning experiment",
   "main": "server.js",
   "dependencies": {
+    "bluebird": "^3.3.5",
+    "bluebird-retry": "^0.6.1",
+    "body-parser": "^1.15.0",
     "browserify-middleware": "^7.0.0",
     "browsernizr": "^2.1.0",
     "express": "^4.13.4",
     "jquery": "^2.2.3",
+    "knex": "^0.10.0",
+    "pg": "^4.5.3",
+    "pubsub-js": "^1.5.3",
+    "ramda": "^0.21.0",
     "underscore": "^1.8.3"
   },
   "devDependencies": {},

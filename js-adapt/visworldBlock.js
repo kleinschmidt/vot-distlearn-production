@@ -29,6 +29,7 @@ var pb = require('./progressBar.js')
   , utils = require('./utilities.js')
   , stimuli = require('./stimuli.js')
   , $ = require('jquery')
+  , PubSub = require('pubsub-js')
   ; 
 
 function VisworldBlock(params) {
@@ -289,6 +290,8 @@ VisworldBlock.prototype = {
     endBlock: function() {
         $("#visworldContainer").hide();
         $("#progressBar").hide();
+
+        PubSub.publish('trials_ended.' + this.namespace);
         
         // finally: hand control back to whatever called this
         if (this.practiceMode && typeof(this.onEndedPractice) === 'function') {
@@ -358,7 +361,7 @@ VisworldBlock.prototype = {
     },
 
     endFamiliarize: function() {
-        if (console) console.log('Familiarization completed');
+        PubSub.publish('familiarization_completed');
         $("#visworldContainer").hide();
         var numTrials = this.itemOrder.length;
         // approximate duration of whole section, to nearest five minutes (rounded up)
@@ -374,6 +377,7 @@ VisworldBlock.prototype = {
             $("#progressBar").show();
             $("#instructions").hide();
             $("#visworldContainer").show();
+            PubSub.publish('trials_starting.' + _self.namespace);
             _self.next();
         });
     }

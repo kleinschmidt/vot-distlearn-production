@@ -1,6 +1,10 @@
 var Experiment = require('./js-adapt/experimentControl2')
   , mturk_helpers = require('./js-adapt/mturk_helpers')
+  , ui = require('./js-adapt/ui.js')
   , $ = require('jquery')
+  , Promise = require('bluebird')
+  , retry = require('bluebird-retry')
+  , PubSub = require('pubsub-js')
   ;
 
 window.respDelim = ';';
@@ -25,45 +29,43 @@ $(document).ready(
         e.init();
 
         ////////////////////////////////////////////////////////////////////////
-        // parse relevant URL parameters
-        e.sandboxmode = mturk_helpers.checkSandbox(e.urlparams);
-        e.previewMode = mturk_helpers.checkPreview(e.urlparams);
-        e.debugMode = mturk_helpers.checkDebug(e.urlparams);
-
-
-        // getting the conditions:
-        // method one: URL parameters:
-
-        var bvot_condition = e.urlparams['bvot'];
-        var bvot = parseInt(bvot_condition);
-        var pboffset = 40;
-        var pvot_condition = e.urlparams['pvot'];
-        var pvot;
-        if (typeof pvot_condition === 'undefined') {
-            pvot = bvot + pboffset;
-        } else {
-            pvot = parseInt(pvot_condition);
-        }
-
-        var conditions = {
-            mean_vots: {'b': bvot, 'p': pvot},
-            supunsup: e.urlparams['supunsup']
-        };
-
-        // method two: AJAX call to /condition endpoint.
-        $.ajax({
-            dataType: 'json',
-            url: 'condition',
-            data: e.urlparams,
-            success: function(data) {
-                console.log('Received condition:', data);
-                // conditions = data;
-            },
-            async: false
+        // status progression:
+        //   0. initialized (on load),
+        var update_status = require('./client/status.js')(e);
+        
+        //   1. started (first trial)
+        PubSub.subscribe('trials_starting', function() {
+            console.log('Trials starting');
+            update_status('started')
+                .then(function(d) {console.log(d);});
         });
 
-        // either way: pass conditions to visworld block constructor
-        var vwb = require('./blocks/visworld.js')(conditions);
+        //   2. finished (last trial)
+        PubSub.subscribe('trials_ended', function() {
+            console.log('Trials ended');
+            update_status('finished');
+        });
+
+        //   3. submitted (posted to amazon)
+        $("#mturk_form").submit(function() {
+            var form = this;
+            console.log("Submit event intercepted");
+            retry(function() {return update_status('submitted');},
+                  {interval: 1000, timeout: 5000})
+                .finally(function() {
+                    console.log("Submitting now");
+                    form.submit();
+                });
+            // block submission until ajax callback.
+            return false;
+        });
+        
+        //   4. abandoned (started but not submitted)
+        window.onbeforeunload = function() {
+            if (e.status != 'submitted' && e.status != 'initialized') {
+                update_status('abandoned', {async: false});
+            }
+        };
         
         ////////////////////////////////////////////////////////////////////////
         // Instructions
@@ -78,11 +80,32 @@ $(document).ready(
             e.addBlock({block: instructions,
                         onPreview: true});
         }
-        e.addBlock({block: vwb,
-                    onPreview: false});
 
-        // run the experiment
+        if (! e.previewMode) {
+            function getCondition() {
+                return Promise.resolve($.ajax({
+                    dataType: 'json',
+                    url: 'condition',
+                    data: e.urlparams,
+                    async: true
+                }));
+            };
+
+            var vwb = getCondition()
+                    .then(function(conditions) {
+                        console.log('Received condition:', conditions);
+                        return require('./blocks/visworld.js')(conditions);
+                    })
+                    .catch(function(err) {
+                        ui.errorMessage(err.responseJSON.error);
+                    });
+
+            // add promise as block
+            e.addBlock({block: vwb,
+                        onPreview: false});
+
+        }
+        
         e.nextBlock();
-
         
     });

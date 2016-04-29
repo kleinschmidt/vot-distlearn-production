@@ -151,6 +151,7 @@ form#mturk_form.debug {
     position: absolute;
     left: 10px;
     top: 10px;
+    z-index: -1;
 }
 
 form#mturk_form * {
@@ -279,6 +280,10 @@ button#endinstr {
     border-radius: 0px;
     border: none;
     font-family: Helvetica;
+}
+
+button#endinstr:disabled {
+    background-color: #A6D9A6;
 }
 
 div.listcontent > p.instructioncheckbox {
