@@ -2,3 +2,4 @@
 /node_modules
 passenger.*
 tmp
+/dkleinschmidt_pw.json
