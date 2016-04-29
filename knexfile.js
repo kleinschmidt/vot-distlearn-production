@@ -5,14 +5,15 @@ module.exports = {
   development: {
     client: 'postgresql',
     connection: {
-      database: 'bp_adapt_dev'
+      database: 'dkleinschmidt_dev'
     }
   },
 
   production: {
     client: 'postgresql',
     connection: {
-      database: 'bp_adapt'
+      database: 'dkleinschmidt',
+      user: 'dkleinschmidt'
     }
   }
   
