@@ -59,7 +59,8 @@ module.exports.errorMessage = function errorMessage(message) {
 
     $("#textContainer")
         .append('<div class="error"><h1>Sorry, something went wrong</h1>' +  
-                '<p>Please <a href="mailto:hlplab@gmail.com">let us know</a>'+
+                '<p>If you think there\'s been an error, ' + 
+                'Please <a href="mailto:hlplab@gmail.com">let us know</a>'+
                 ' what happened in case the problem is ' +
                 'on our end so we can fix it!</p> </div>')
         .show();

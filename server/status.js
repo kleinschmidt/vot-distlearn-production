@@ -28,7 +28,8 @@ module.exports = function(req, res, next) {
             .catch(next);
         
     } else {
-        next({ error: 'Invalid status:' + new_status,
+        next({ error: 'invalid_status_update', 
+               message: 'Invalid status:' + new_status,
                status: new_status });
     }
 

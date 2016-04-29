@@ -96,8 +96,13 @@ $(document).ready(
                         console.log('Received condition:', conditions);
                         return require('./blocks/visworld.js')(conditions);
                     })
-                    .catch(function(err) {
-                        ui.errorMessage(err.responseJSON.error);
+                    .catch(function(errResp) {
+                        var err = errResp.responseJSON;
+                        ui.errorMessage(err);
+                        if (err.error == 'worker_status_error') {
+                            $('div.error > h1').after('Rejected because of status: ' + 
+                                                      err.data.status);
+                        }
                     });
 
             // add promise as block

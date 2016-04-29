@@ -14,10 +14,19 @@ var db = require('./db.js')
  */
 
 
-function WorkerRecordError(msg) {
+function MultipleWorkerRecordError(msg, data) {
+    this.error = 'multiple_worker_record_error';
     this.message = msg;
+    this.data = data;
 };
-WorkerRecordError.prototype = Object.create(Error.prototype);
+MultipleWorkerRecordError.prototype = Object.create(Error.prototype);
+
+function WorkerStatusError(msg, data) {
+    this.error = 'worker_status_error';
+    this.message = msg;
+    this.data = data;
+};
+WorkerStatusError.prototype = Object.create(Error.prototype);
 
 
 // test whether a status is bad. add other forbidden statuses in array
@@ -25,10 +34,11 @@ var bad_status = R.contains(R.__, ['started', 'finished', 'abandoned', 'submitte
 var status_of = R.pluck('status');
 function check_workers(workers) {
     if (workers.length > 1) {
-        throw new WorkerRecordError('Multiple records for worker');
+        throw new MultipleWorkerRecordError('Multiple records for worker');
     } else if (R.any(bad_status, status_of(workers))) {
-        throw new WorkerRecordError('Existing record with status: ' + 
-                                    status_of(workers));
+        throw new WorkerStatusError('Existing record with status: ' + 
+                                    status_of(workers),
+                                    {status: R.head(status_of(workers))});
     }
 }
 
@@ -83,11 +93,12 @@ module.exports = function(config) {
             .tap(R.curryN(4, console.log)('Worker',
                                           req.query.workerId, 
                                           'assigned list'))
-            .catch(WorkerRecordError, function(err) {
+            .catch(MultipleWorkerRecordError, WorkerStatusError, function(err) {
                 // existing record for worker
-                console.error("existing record for worker:", 
-                              req.query.workerId, err.message);
-                throw { error: err.message }; // don't need stack trace etc.
+                console.error(err.message, "(Worker ID: " + req.query.workerId + ")");
+                err.stack = undefined; // don't need stack trace etc.
+                throw err;
+                // throw { error: err.message }; 
             })
             .catch(next);
     };
