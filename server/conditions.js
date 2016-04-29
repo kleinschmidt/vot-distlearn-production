@@ -21,7 +21,7 @@ WorkerRecordError.prototype = Object.create(Error.prototype);
 
 
 // test whether a status is bad. add other forbidden statuses in array
-var bad_status = R.contains(R.__, ['started', 'finished', 'abandoned']);
+var bad_status = R.contains(R.__, ['started', 'finished', 'abandoned', 'submitted']);
 var status_of = R.pluck('status');
 function check_workers(workers) {
     if (workers.length > 1) {
