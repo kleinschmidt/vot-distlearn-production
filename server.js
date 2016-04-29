@@ -3,8 +3,8 @@ var express = require('express')
   , browserify = require('browserify-middleware')
   , mturk_helpers = require('./js-adapt/mturk_helpers.js')
   , db = require('./server/db.js')
-  , lists = require('./lists')
-  , assign_condition = require('./server/conditions.js')(lists)
+  , config = require('./experiment_config')
+  , assign_condition = require('./server/conditions.js')(config)
   , update_status = require('./server/status.js')
   ;
 
@@ -73,5 +73,7 @@ app.use(clientErrors);
 // Start server
 
 app.listen(3000, function() {
-    console.log('Experiment server running in', process.env.NODE_ENV, 'environment.');
+    console.log('Experiment server running', config.experiment,
+                '(', config.batch, ')', 
+                'in', process.env.NODE_ENV, 'environment.');
 });

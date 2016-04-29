@@ -35,7 +35,10 @@ function check_workers(workers) {
 var get_first_list_id = R.pipe(R.pluck('list_id'), R.head);
 
 // exports condition assigning middleware
-module.exports = function(lists) {
+module.exports = function(config) {
+
+    var lists = config.lists;
+  
     var get_balanced_list = ListBalancer(lists);
     var lists_by_id = R.indexBy(R.prop('list_id'), lists);
 
@@ -66,6 +69,8 @@ module.exports = function(lists) {
                             return db('assignments')
                                 .returning('workerId')
                                 .insert(R.merge({list_id: list_id,
+                                                 experiment: config.experiment,
+                                                 batch: config.batch,
                                                  startTime: new Date()}, 
                                                 Assignment(req.query))
                                        );
