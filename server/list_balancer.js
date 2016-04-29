@@ -48,4 +48,6 @@ module.exports = function list_balancer_factory(lists) {
     };
 };
 
-assignments_per_list_id().then(console.log);
+assignments_per_list_id().then(function(counts) {
+    console.log('Assignment counts in database:\n', counts);
+});
