@@ -31,26 +31,26 @@ $(document).ready(
         ////////////////////////////////////////////////////////////////////////
         // status progression:
         //   0. initialized (on load),
-        var update_status = require('./client/status.js')(e);
+        var status = require('./client/status.js')(e);
         
         //   1. started (first trial)
         PubSub.subscribe('trials_starting', function() {
             console.log('Trials starting');
-            update_status('started')
+            status.update('started')
                 .then(function(d) {console.log(d);});
         });
 
         //   2. finished (last trial)
         PubSub.subscribe('trials_ended', function() {
             console.log('Trials ended');
-            update_status('finished');
+            status.update('finished');
         });
 
         //   3. submitted (posted to amazon)
         $("#mturk_form").submit(function() {
             var form = this;
             console.log("Submit event intercepted");
-            retry(function() {return update_status('submitted');},
+            retry(function() {return status.update('submitted');},
                   {interval: 1000, timeout: 5000})
                 .finally(function() {
                     console.log("Submitting now");
@@ -63,7 +63,7 @@ $(document).ready(
         //   4. abandoned (started but not submitted)
         window.onbeforeunload = function() {
             if (e.status != 'submitted' && e.status != 'initialized') {
-                update_status('abandoned', {async: false});
+                status.update('abandoned', {async: false});
             }
         };
         
@@ -96,8 +96,14 @@ $(document).ready(
                         console.log('Received condition:', conditions);
                         return require('./blocks/visworld.js')(conditions);
                     })
-                    .catch(function(err) {
-                        ui.errorMessage(err.responseJSON.error);
+                    .catch(function(errResp) {
+                        var err = errResp.responseJSON;
+                        ui.errorMessage(err);
+                        if (err.error == 'worker_status_error') {
+                            $('div.error > h1').after('<p>' + 
+                                                      status.messages[err.data.status] + 
+                                                      '</p>');
+                        }
                     });
 
             // add promise as block
