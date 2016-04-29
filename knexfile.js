@@ -5,7 +5,10 @@ module.exports = {
   development: {
     client: 'postgresql',
     connection: {
-      database: 'dkleinschmidt_dev'
+      database: 'dkleinschmidt_dev',
+      user: 'dkleinschmidt',
+      password: require('./dkleinschmidt_pw'),
+      host: '127.0.0.1'
     }
   },
 
@@ -13,7 +16,9 @@ module.exports = {
     client: 'postgresql',
     connection: {
       database: 'dkleinschmidt',
-      user: 'dkleinschmidt'
+      user: 'dkleinschmidt',
+      password: require('./dkleinschmidt_pw'),
+      host: '127.0.0.1'
     }
   }
   
