@@ -56,7 +56,10 @@ module.exports = function(config) {
     // information for this assignment
     return function assign_condition(req, res, next) {
         // check for existing record for this worker
-        req.query.workerId || next({ error: 'Missing workerId in request' });
+        if (!req.query.workerId) {
+            next({ error: 'Missing workerId in request' });
+            return;
+        }
 
         var send_list_condition = function(list) {res.json(list.condition);};
 
