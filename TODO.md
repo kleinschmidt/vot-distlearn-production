@@ -26,8 +26,9 @@
     * get running on slate
     * test in sandbox
 * deploy
-    * add migrations and knexfile info
-    * store experiment ID in database
+    * [done] add migrations 
+    * knexfile
+    * [done] store experiment ID in database
     * clean up db schema?
 * improvements:
     * store trials data in database?
