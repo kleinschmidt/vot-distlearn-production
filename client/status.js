@@ -16,7 +16,7 @@ module.exports = function(e) {
 
     e.status = 'initialized';
 
-    return function update_status(status, params) {
+    this.update = function(status, params) {
         // store status on experiment object
         e.status = status;
         // update status via PUT status/:status?workerId=...
@@ -27,5 +27,14 @@ module.exports = function(e) {
             method: 'PUT'
         }, params));
     };
+
+    this.messages = {
+        'abandoned': 'It looks like you started this HIT and then closed or reloaded the page. Unfortunately, we can\'t accept your data at this point, so please return this HIT and contact us.',
+        'submitted': 'It looks like you\'ve already submitted this HIT.',
+        'started': 'It looks like you\'ve already started this HIT in another window. Unfortunately, we can\'t accept your data at this point, so please return this HIT and contact us.',
+        'finished': 'It looks like you\'ve already started working on this HIT. Unfortunately, we can\'t accept your data at this point, so please return this HIT and contact us.'
+    };
+
+    return this;
     
 };
