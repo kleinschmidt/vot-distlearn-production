@@ -1,8 +1,8 @@
 {
     "app_type": "node",
     "startup_file": "server.js",
-    // "environment": "development",
-    "environment": "production",
+    "environment": "development",
+    // "environment": "production",
     "port": 3004,
     "daemonize": true,
     "user": "www-data"
