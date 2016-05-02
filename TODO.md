@@ -18,13 +18,15 @@
 * final tweaks: 
     * check status on preview, too (get condition but don't make block)
         * (just check status based on WORKER id?? prevent repeat takers right there)
-    * check status error codes on client side and display informative message
+    * [done] check status error codes on client side and display informative message
     * [done] set up experiment config file (with lists, and experiment + batch ID)
 * actually test the damn thing.
     * [done] debug ending 
     * [done] visworld block (etc.) needs to create a form field for data
-    * get running on slate
+    * [done] get running on slate
     * test in sandbox
+        * update mturk-utils
+        * HIT specification files
 * deploy
     * [done] add migrations 
     * knexfile
