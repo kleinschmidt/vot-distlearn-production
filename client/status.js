@@ -29,10 +29,10 @@ module.exports = function(e) {
     };
 
     this.messages = {
-        'abandoned': 'It looks like you started this HIT and then closed or reloaded the page. Unfortunately, we can\'t accept your data at this point, so please return this HIT and contact us.',
-        'submitted': 'It looks like you\'ve already submitted this HIT.',
-        'started': 'It looks like you\'ve already started this HIT in another window. Unfortunately, we can\'t accept your data at this point, so please return this HIT and contact us.',
-        'finished': 'It looks like you\'ve already started working on this HIT. Unfortunately, we can\'t accept your data at this point, so please return this HIT and contact us.'
+        'abandoned': 'It looks like you started this experiment and then closed or reloaded the page. Unfortunately, we can\'t accept your data at this point, so please return the HIT and contact us.',
+        'submitted': 'It looks like you\'ve already submitted a version of this experiment. Thanks for participating!',
+        'started': 'It looks like you\'ve already started this experiment before. Unfortunately, we can\'t accept your data at this point. If the HIT is still active, please return it and contact us.',
+        'finished': 'It looks like you\'ve already started this experiment before. Unfortunately, we can\'t accept your data at this point. If the HIT is still active, please return it and contact us.'
     };
 
     return this;
