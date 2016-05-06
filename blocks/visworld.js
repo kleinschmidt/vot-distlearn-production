@@ -1,5 +1,6 @@
 var _ = require('underscore')
   , $ = require('jquery')
+  , R = require('ramda')
   , stimuli = require('../js-adapt/stimuli')
   , VisworldBlock = require('../js-adapt/visworldBlock')
   ;
@@ -118,6 +119,17 @@ module.exports = function(conditions) {
     // for each combination, generate stimuli object, pull out appropriate images, and pull out reps, then put into object.
     // return list of list item objects.
 
+
+    // helper functions
+    // n-ary list cross-product
+    // [[a], [b], ...] -> [ [a, b, ...], ... ]
+    var xprod_l = R.pipe(R.reduce(R.xprod, [[]]),
+                         R.map(R.flatten));
+    // var xprod_l = R.reduce(R.pipe(R.xprod, R.map(R.apply(R.concat))), [[]]);
+    // variadic version:
+    // [a] -> [b] -> ... -> [ [a, b, ...], ... ]
+    var xprod_n = R.unapply(xprod_l);
+
     // function to generate one list item: 
     var make_list_item = function(word, sup_unsup, category) {
         return {'stimuli': make_vot_stims(word,
@@ -129,18 +141,7 @@ module.exports = function(conditions) {
                };
     };
 
-    // iterate over all the different item variable combinations: 
-    var items = _.map(words, function(word) {
-        return _.map(trial_types,
-                     function(sup_unsup) {
-                         return _.map(categories,
-                                      function(category) {
-                                          return make_list_item(word, sup_unsup, category);
-                                      });
-                     });
-    });
-
-    items = _.flatten(items);
+    var items = R.map(R.apply(make_list_item), xprod_n(words, trial_types, categories));
 
     // create the visual world block object
     return new VisworldBlock({lists: items,
