@@ -43,10 +43,6 @@ Stimuli.prototype = {
         }
 
         // for any properties that are arrays, default to taking the specified subset...
-        // BUG: this conflicts with taking a subset of indices, too, because indices is used
-        // to (duh) index other arryays during install, etc. There's no need to do this
-        // subsetting as long as indices is always used. But they're not. So we need to set
-        // new indices as 
         for (var key in newstims) {
             if (typeof(newstims[key].getSubset) !== 'undefined') {
                 newstims[key] = newstims[key].getSubset(subinds);    
@@ -56,7 +52,7 @@ Stimuli.prototype = {
         // repair properties which may not exist or be handled by the loop over properties above
         newstims.maxAmbigRange = this.maxAmbigRange;
 
-        // set newstims.indices = [0, 1, ..., n] so it indexes continuum properly
+        // set newstims.indices = [0, 1, ..., n] so it indexes continuum etc. properly
         newstims.indices = range(subinds.length);
 
         newstims.__proto__ = this.__proto__;
