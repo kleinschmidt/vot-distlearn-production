@@ -143,8 +143,32 @@ module.exports = function(conditions) {
 
     var items = R.map(R.apply(make_list_item), xprod_n(words, trial_types, categories));
 
+    // split an item with multiple stimuli into a list of one-stimulus items
+    function split_item(item) {
+        var ids = R.range(0, item.reps.length);
+        var subsetFrom = R.invoker(1, 'subset');
+        var stims = R.map(subsetFrom(R.__, item.stimuli), ids);
+        var reps = R.splitEvery(1, item.reps);
+        var reps_and_stims = R.map(R.zipObj(['reps', 'stimuli']),
+                                   R.zip(reps, stims));
+        return R.map(R.apply(R.merge),
+                     R.zip(R.repeat(item, item.reps.length),
+                           reps_and_stims));
+    }
+
+    // take an item with >1 repetitions and return an array of items with 1 rep
+    function rep_item(item) {
+        var get_reps = R.pipe(R.prop('reps'), R.head);
+        var set_reps_1 = R.assoc('reps', [1]);
+        return R.repeat(set_reps_1(item), get_reps(item));
+    }
+
+    var items_split = R.flatten(R.map(R.pipe(split_item,
+                                             R.map(rep_item)),
+                                      items));
+
     // create the visual world block object
-    return new VisworldBlock({lists: items,
+    return new VisworldBlock({lists: items_split,
                              images: stim_images,
                              namespace: 'visworld_' + sup_unsup_condition + '_' + mean_vots['b'] + '_' + mean_vots['p'],
                              imagePositions: ['left', 'right']});
