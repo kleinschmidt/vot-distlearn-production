@@ -37,7 +37,16 @@ Stimuli.prototype = {
         // deep copy of original object
         var newstims = $.extend(true, {}, this);
 
+        // make sure subinds is an Array
+        if (typeof(subinds.length) === 'undefined') {
+            subinds = [ subinds ];
+        }
+
         // for any properties that are arrays, default to taking the specified subset...
+        // BUG: this conflicts with taking a subset of indices, too, because indices is used
+        // to (duh) index other arryays during install, etc. There's no need to do this
+        // subsetting as long as indices is always used. But they're not. So we need to set
+        // new indices as 
         for (var key in newstims) {
             if (typeof(newstims[key].getSubset) !== 'undefined') {
                 newstims[key] = newstims[key].getSubset(subinds);    
@@ -45,8 +54,10 @@ Stimuli.prototype = {
         }
 
         // repair properties which may not exist or be handled by the loop over properties above
-        if (typeof(this.indices) === 'undefined') newstims.indices = subinds;
         newstims.maxAmbigRange = this.maxAmbigRange;
+
+        // set newstims.indices = [0, 1, ..., n] so it indexes continuum properly
+        newstims.indices = range(subinds.length);
 
         newstims.__proto__ = this.__proto__;
 
@@ -58,7 +69,7 @@ Stimuli.prototype = {
         var indices = typeof(this.indices)==='undefined' ? range(this.continuum.length) : this.indices;
 
         // if stimuli are already installed, can skip this (see else below) 
-        if (typeof(this.installed) == 'undefined') {
+        if (typeof(this.installed) == 'undefined' || this.installed.length == 0) {
             var _self = this;
             // create temporary class to pick out stimuli installed right now.
             // (this is necessary because other stimuli might share the same css_class, especially
