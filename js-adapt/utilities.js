@@ -65,6 +65,14 @@ module.exports = {
         } else if (method == 'shuffle') {
             // if specifying "shuffle", do a full randomization.
             return this.randomOrder(reps, n);
+        } else if (method == 'fixed') {
+            var itemOrder = [];
+            for (var i=0; i<reps.length; i++) {
+                for (var j=0; j<reps[i]; j++) {
+                    itemOrder.push(i);
+                }
+            }
+            return itemOrder;
         }
 
         // pseudo-random order for stimuli: create blocks with one of

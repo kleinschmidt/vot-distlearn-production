@@ -55,6 +55,9 @@ function VisworldBlock(params) {
         case 'imagePositions':
             this.imagePositions = params[p];
             break;
+        case 'trialOrderMethod':
+            this.trialOrderMethod = params[p];
+            break;
         default:
             if(console) console.log('Warning: unknown parameter passed to VisworldBlock: ' + p);
             break;
@@ -137,6 +140,7 @@ function VisworldBlock(params) {
 
 VisworldBlock.prototype = {
     itemOrder: undefined,       // replaces this.stims in LabelingBlock, indexed by n, indexes stimuli
+    trialOrderMethod: 'shuffle',
     n: 0,
     stimuli: undefined,         // information about stimuli (incl. image names and actual DOM objects
     randomizeImagePositions: true,
@@ -161,7 +165,9 @@ VisworldBlock.prototype = {
 
         ////////////////////////////////////////////////////////////////////////////////
         // construct list of items and randomize trial order
-        this.itemOrder = utils.pseudoRandomOrder(this.stimuli.reps, undefined, 'shuffle');
+        this.itemOrder = utils.pseudoRandomOrder(this.stimuli.reps,
+                                                 undefined,
+                                                 this.trialOrderMethod);
         
         // install "start trial" handler for the "ready" light
         $('#readyWaitContainer img#ready')

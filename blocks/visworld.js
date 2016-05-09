@@ -1,5 +1,6 @@
 var _ = require('underscore')
   , $ = require('jquery')
+  , R = require('ramda')
   , stimuli = require('../js-adapt/stimuli')
   , VisworldBlock = require('../js-adapt/visworldBlock')
   ;
@@ -118,6 +119,17 @@ module.exports = function(conditions) {
     // for each combination, generate stimuli object, pull out appropriate images, and pull out reps, then put into object.
     // return list of list item objects.
 
+
+    // helper functions
+    // n-ary list cross-product
+    // [[a], [b], ...] -> [ [a, b, ...], ... ]
+    var xprod_l = R.pipe(R.reduce(R.xprod, [[]]),
+                         R.map(R.flatten));
+    // var xprod_l = R.reduce(R.pipe(R.xprod, R.map(R.apply(R.concat))), [[]]);
+    // variadic version:
+    // [a] -> [b] -> ... -> [ [a, b, ...], ... ]
+    var xprod_n = R.unapply(xprod_l);
+
     // function to generate one list item: 
     var make_list_item = function(word, sup_unsup, category) {
         return {'stimuli': make_vot_stims(word,
@@ -129,23 +141,66 @@ module.exports = function(conditions) {
                };
     };
 
-    // iterate over all the different item variable combinations: 
-    var items = _.map(words, function(word) {
-        return _.map(trial_types,
-                     function(sup_unsup) {
-                         return _.map(categories,
-                                      function(category) {
-                                          return make_list_item(word, sup_unsup, category);
-                                      });
-                     });
-    });
+    var items = R.map(R.apply(make_list_item), xprod_n(words, trial_types, categories));
 
-    items = _.flatten(items);
+    // split an item with multiple stimuli into a list of one-stimulus items
+    function split_item(item) {
+        var ids = R.range(0, item.reps.length);
+        var subsetFrom = R.invoker(1, 'subset');
+        var stims = R.map(subsetFrom(R.__, item.stimuli), ids);
+        var reps = R.splitEvery(1, item.reps);
+        var reps_and_stims = R.map(R.zipObj(['reps', 'stimuli']),
+                                   R.zip(reps, stims));
+        return R.map(R.apply(R.merge),
+                     R.zip(R.repeat(item, item.reps.length),
+                           reps_and_stims));
+    }
+
+    // take an item with >1 repetitions and return an array of items with 1 rep
+    function rep_item(item) {
+        var get_reps = R.pipe(R.prop('reps'), R.head);
+        var set_reps_1 = R.assoc('reps', [1]);
+        return R.repeat(set_reps_1(item), get_reps(item));
+    }
+
+    var items_split = _.shuffle(R.flatten(R.map(R.pipe(split_item,
+                                                       R.map(rep_item)),
+                                                items)));
+
+    // test trials:
+    // 10x [-10, 0, 10, 20, 30, 40, 50], randomly assigned words
+    var reps_per = 10;
+    var test_vot = [-10, 0, 10, 20, 30, 40, 50];
+    var test_vots = R.reduce(R.concat, [],
+                             R.map(_.shuffle,
+                                   R.repeat(test_vot, reps_per)));
+
+    function make_stim(vot, word) {
+        return new stimuli.Stimuli({
+            prefix: 'stimuli_vot/',
+            continuum: [vot],
+            mediaType: 'audio',
+            filenameFormatter: make_word_fn_formatter(word)
+        });
+    }
+
+    function make_item(vot) {
+        var word = _.sample(words, 1);
+        return {'stimuli': make_stim(vot, word),
+                'images': images['unsupervised'][word]['b'],
+                'reps': [1],
+                'id': ['test', word, vot].join('_')
+               };
+    }
+
+    var test_items = R.map(make_item, test_vots);
+
 
     // create the visual world block object
-    return new VisworldBlock({lists: items,
-                             images: stim_images,
-                             namespace: 'visworld_' + sup_unsup_condition + '_' + mean_vots['b'] + '_' + mean_vots['p'],
-                             imagePositions: ['left', 'right']});
+    return new VisworldBlock({lists: R.concat(items_split, test_items),
+                              trialOrderMethod: 'fixed',
+                              images: stim_images,
+                              namespace: 'visworld_' + sup_unsup_condition + '_' + mean_vots['b'] + '_' + mean_vots['p'],
+                              imagePositions: ['left', 'right']});
 
 };
