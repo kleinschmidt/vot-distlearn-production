@@ -48,8 +48,13 @@ var get_first_list_id = R.pipe(R.pluck('list_id'), R.head);
 module.exports = function(config) {
 
     var lists = config.lists;
+
+    var assignment_filters = {
+        experiment: config.experiment,
+        batch: config.batch
+    };
   
-    var get_balanced_list = ListBalancer(lists);
+    var get_balanced_list = ListBalancer(lists, assignment_filters);
     var lists_by_id = R.indexBy(R.prop('list_id'), lists);
 
     // given a request with a query string, send a JSON object with condition 

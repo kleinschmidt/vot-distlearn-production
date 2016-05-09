@@ -7,9 +7,13 @@ var excluded_statuses = ['returned', 'abandoned', 'rejected'];
 
 // Returns a promise which resolves to an array of list id counts:
 // { list_id: <n>, count: <n> }
-function assignments_per_list_id() {
+function assignments_per_list_id(where_obj) {
+    if (typeof where_obj === 'undefined') {
+        where_obj = {};
+    }
     return db('assignments')
         .where('status', 'not in', excluded_statuses)
+        .where(where_obj)
         .select('list_id')
         .groupBy('list_id')
         .count()
@@ -30,14 +34,20 @@ var count_to_go = R.curry(function(db_counts, list) {
     return target_count - db_count;
 });
 
-module.exports = function list_balancer_factory(lists) {
+module.exports = function list_balancer_factory(lists, assignment_filters) {
+
+    assignments_per_list_id(assignment_filters).then(function(counts) {
+        console.log('List balancer:\n Using assignment filters:', assignment_filters);
+        console.log(' Assignment counts in database:\n', counts);
+    });
+
     // generate a function to yield conditions that balance lists.
     //
     // lists is an array of objects with id, condition obj, and optional count 
     // (number of repetitions:
     // { list_id: <n>, condition: {...}[, count: <n>] }
     return function list_balancer() {
-        return assignments_per_list_id()
+        return assignments_per_list_id(assignment_filters)
             .then(function(db_counts) {
                 // find the list with the biggest gap between number of
                 // assignments in the db with that list_id and the request
@@ -46,8 +56,6 @@ module.exports = function list_balancer_factory(lists) {
                 // TODO: pre-compute count to go?
             });
     };
+
 };
 
-assignments_per_list_id().then(function(counts) {
-    console.log('Assignment counts in database:\n', counts);
-});
