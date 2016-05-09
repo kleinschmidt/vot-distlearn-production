@@ -163,14 +163,15 @@ module.exports = function(conditions) {
         return R.repeat(set_reps_1(item), get_reps(item));
     }
 
-    var items_split = R.flatten(R.map(R.pipe(split_item,
-                                             R.map(rep_item)),
-                                      items));
+    var items_split = _.shuffle(R.flatten(R.map(R.pipe(split_item,
+                                                       R.map(rep_item)),
+                                                items)));
 
     // create the visual world block object
     return new VisworldBlock({lists: items_split,
-                             images: stim_images,
-                             namespace: 'visworld_' + sup_unsup_condition + '_' + mean_vots['b'] + '_' + mean_vots['p'],
-                             imagePositions: ['left', 'right']});
+                              trialOrderMethod: 'fixed',
+                              images: stim_images,
+                              namespace: 'visworld_' + sup_unsup_condition + '_' + mean_vots['b'] + '_' + mean_vots['p'],
+                              imagePositions: ['left', 'right']});
 
 };
