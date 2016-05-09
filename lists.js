@@ -38,10 +38,10 @@ var make_cond = R.curry(function(bvot, pvot) {
 });
 
 // generate list objects with conditions:
-// vary /b/ mean, from -80 to 10 (with /p/ mean always 50).
+// vary /b/ mean
 var b_conditions = R.map(make_cond(R.__, 50), [-20, -50, -80]);
-// vary /p/ mean, from 60 to 80 (with /b/ mean always 0).
-var p_conditions = R.map(make_cond(0, R.__), [50, 80]);
+// vary /p/ mean
+var p_conditions = R.map(make_cond(10, R.__), [50, 80]);
 
 
 // add list_id to list objects
