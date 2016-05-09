@@ -89,6 +89,7 @@ module.exports = function(config) {
                                 .insert(R.merge({list_id: list_id,
                                                  experiment: config.experiment,
                                                  batch: config.batch,
+                                                 status: "assigned",
                                                  startTime: new Date()}, 
                                                 Assignment(req.query))
                                        );

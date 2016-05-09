@@ -6,8 +6,14 @@ var db = require('./db.js')
   , R = require('ramda')
   ;
 
-var valid_status = ['started', 'finished', 'submitted', 'accepted',
-                    'returned', 'abandoned', 'rejected'];
+var valid_status = ['assigned',  // condition assigned
+                    'started',   // trials started
+                    'finished',  // trials finished
+                    'submitted', // submitted to amazon
+                    'accepted',  // NOT USED: HIT approved
+                    'returned',  // NOT USED: HIT returned
+                    'abandoned', // window reloaded or closed
+                    'rejected']; // NOT USED: HIT rejected
 
 var status_is_valid = R.contains(R.__, valid_status);
 
