@@ -167,8 +167,37 @@ module.exports = function(conditions) {
                                                        R.map(rep_item)),
                                                 items)));
 
+    // test trials:
+    // 10x [-10, 0, 10, 20, 30, 40, 50], randomly assigned words
+    var reps_per = 10;
+    var test_vot = [-10, 0, 10, 20, 30, 40, 50];
+    var test_vots = R.reduce(R.concat, [],
+                             R.map(_.shuffle,
+                                   R.repeat(test_vot, reps_per)));
+
+    function make_stim(vot, word) {
+        return new stimuli.Stimuli({
+            prefix: 'stimuli_vot/',
+            continuum: [vot],
+            mediaType: 'audio',
+            filenameFormatter: make_word_fn_formatter(word)
+        });
+    }
+
+    function make_item(vot) {
+        var word = _.sample(words, 1);
+        return {'stimuli': make_stim(vot, word),
+                'images': images['unsupervised'][word]['b'],
+                'reps': [1],
+                'id': ['test', word, vot].join('_')
+               };
+    }
+
+    var test_items = R.map(make_item, test_vots);
+
+
     // create the visual world block object
-    return new VisworldBlock({lists: items_split,
+    return new VisworldBlock({lists: R.concat(items_split, test_items),
                               trialOrderMethod: 'fixed',
                               images: stim_images,
                               namespace: 'visworld_' + sup_unsup_condition + '_' + mean_vots['b'] + '_' + mean_vots['p'],
