@@ -62,7 +62,9 @@ $(document).ready(
         
         //   4. abandoned (started but not submitted)
         window.onbeforeunload = function() {
-            if (e.status != 'submitted' && e.status != 'initialized') {
+            if (e.status != 'submitted' &&
+                e.status != 'initialized' &&
+                e.status != 'assigned') {
                 status.update('abandoned', {async: false});
             }
         };
@@ -93,6 +95,7 @@ $(document).ready(
 
             var vwb = getCondition()
                     .then(function(conditions) {
+                        e.status = 'assigned'; // updated on the server already
                         console.log('Received condition:', conditions);
                         return require('./blocks/visworld.js')(conditions);
                     })
