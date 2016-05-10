@@ -4,6 +4,7 @@
 var db = require('./db.js')
   , Assignment = require('./assignment.js')
   , R = require('ramda')
+  , logger = require('./logger')
   ;
 
 var valid_status = ['assigned',  // condition assigned
@@ -21,8 +22,7 @@ module.exports = function(req, res, next) {
     var asgn = Assignment(req.body);
     var new_status = req.params.status;
 
-    console.log('Request to update status to', new_status, 
-                'received with body', asgn);
+    logger.info('Updating status to "%s"', new_status, asgn);
 
     if (status_is_valid(new_status)) {
     

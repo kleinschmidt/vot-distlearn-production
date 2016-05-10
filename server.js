@@ -6,6 +6,7 @@ var express = require('express')
   , config = require('./experiment_config')
   , assign_condition = require('./server/conditions.js')(config)
   , update_status = require('./server/status.js')
+  , logger = require('./server/logger')
   ;
 
 
@@ -39,14 +40,14 @@ app.put('/status/:status', update_status);
 
 // debugging middleware: blow up the database
 if (process.env.NODE_ENV === 'development') {
-    console.log('GET /blammo to delete assignment records' +
+    logger.info('GET /blammo to delete assignment records' +
                 ' (filtered by query parameters)');
     app.use('/blammo', function(req, res, next) {
         db('assignments')
             .where(req.query)
             .del()
             .then(function(n) {
-                console.log('Blew up assignments table');
+                logger.info('Blew up assignments table');
                 res.send('blew up ' + n + ' rows. blammo!');
             });
     });
@@ -56,9 +57,9 @@ if (process.env.NODE_ENV === 'development') {
 
 function logErrors(err, req, res, next) {
     if (err.stack) {
-        console.error(err.stack);
+        logger.error(err.stack);
     } else {
-        console.error(err);
+        logger.error(err);
     }
     next(err);
 }
@@ -73,7 +74,6 @@ app.use(clientErrors);
 // Start server
 
 app.listen(3000, function() {
-    console.log('Experiment server running', config.experiment,
-                '(', config.batch, ')', 
-                'in', process.env.NODE_ENV, 'environment.');
+    logger.info('Experiment server running "%s" ("%s") in %s environment',
+                config.experiment, config.batch, process.env.NODE_ENV);
 });

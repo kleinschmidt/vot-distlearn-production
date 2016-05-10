@@ -1,5 +1,6 @@
 var db = require('./db.js')
   , R = require('ramda')
+  , logger = require('./logger')
   ;
 
 // status codes for assignments that are NOT occupying a list item
@@ -30,15 +31,16 @@ var count_to_go = R.curry(function(db_counts, list) {
     var db_res = R.filter(R.propEq('list_id', list.list_id), db_counts);
     var db_count = db_res[0] ? db_res[0].count : 0;
     var target_count = list.count ? list.count : 0;
-    // console.log('Count to go', target_count-db_count, 'list:', list);
+    logger.debug('Count to go %d (list: %j)', target_count-db_count, list);
     return target_count - db_count;
 });
 
 module.exports = function list_balancer_factory(lists, assignment_filters) {
 
     assignments_per_list_id(assignment_filters).then(function(counts) {
-        console.log('List balancer:\n Using assignment filters:', assignment_filters);
-        console.log(' Assignment counts in database:\n', counts);
+        logger.info('List balancer:');
+        logger.info('  Using assignment filters:', assignment_filters);
+        logger.info('  Assignment counts in database:', counts);
     });
 
     // generate a function to yield conditions that balance lists.

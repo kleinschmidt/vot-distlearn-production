@@ -5,6 +5,7 @@ var db = require('./db.js')
   , ListBalancer = require('./list_balancer.js')
   , R = require('ramda')
   , Assignment = require('./assignment.js')
+  , logger = require('./logger')
   ;
 
 /*
@@ -99,12 +100,12 @@ module.exports = function(config) {
             })
             .tap(send_list_condition)
             .get('list_id')
-            .tap(R.curryN(4, console.log)('Worker',
+            .tap(R.curryN(4, logger.info)('Worker',
                                           req.query.workerId, 
                                           'assigned list'))
             .catch(MultipleWorkerRecordError, WorkerStatusError, function(err) {
                 // existing record for worker
-                console.error(err.message, "(Worker ID: " + req.query.workerId + ")");
+                logger.info("%s (Worker ID: %s)", err.message, req.query.workerId);
                 err.stack = undefined; // don't need stack trace etc.
                 throw err;
                 // throw { error: err.message }; 
