@@ -189,7 +189,7 @@ module.exports = function(conditions) {
         return {'stimuli': make_stim(vot, word),
                 'images': images['unsupervised'][word]['b'],
                 'reps': [1],
-                'id': ['test', word, vot].join('_')
+                'id': [word, 'test', 'unsupervised'].join('_')
                };
     }
 
