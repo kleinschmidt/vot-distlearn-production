@@ -1,5 +1,5 @@
 module.exports = {
   experiment: 'bp-adapt-twomeans',
-  batch: 'pilot2',
+  batch: '1',
   lists: require('./lists')
 };
