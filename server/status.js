@@ -30,10 +30,15 @@ module.exports = function(req, res, next) {
             .where(asgn)
             .returning('status')
             .update('status', new_status)
-            .tap(function(status) {logger.debug('Updated status in db to "%s"',
-                                                status, asgn);})
+            .tap(function(status) {
+                logger.debug('Updated status in db to "%s"',
+                             status, asgn);
+            })
             .then(function(status) {res.send(status);})
-            .catch(next);
+            .catch(function(err) {
+                logger.error('error updating status in db', err);
+                next(err);
+            });
         
     } else {
         next({ error: 'invalid_status_update', 
