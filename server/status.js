@@ -30,6 +30,8 @@ module.exports = function(req, res, next) {
             .where(asgn)
             .returning('status')
             .update('status', new_status)
+            .tap(function(status) {logger.debug('Updated status in db to "%s"',
+                                                status, asgn);})
             .then(function(status) {res.send(status);})
             .catch(next);
         
