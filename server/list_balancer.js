@@ -4,7 +4,8 @@ var db = require('./db.js')
   ;
 
 // status codes for assignments that are NOT occupying a list item
-var excluded_statuses = ['returned', 'abandoned', 'rejected'];
+var excluded_statuses = ['returned', 'abandoned', 'abandoned_before_start',
+                         'rejected'];
 
 // Returns a promise which resolves to an array of list id counts:
 // { list_id: <n>, count: <n> }

@@ -8,6 +8,7 @@ var db = require('./db.js')
   ;
 
 var valid_status = ['assigned',  // condition assigned
+                    'abandoned_before_start',
                     'started',   // trials started
                     'finished',  // trials finished
                     'submitted', // submitted to amazon
@@ -25,18 +26,20 @@ module.exports = function(req, res, next) {
     logger.info('Updating status to "%s"', new_status, asgn);
 
     if (status_is_valid(new_status)) {
+        // TODO: check for current status, to prevent updating started+ to
+        // abandoned_before_start
     
         db('assignments')
             .where(asgn)
             .returning('status')
             .update('status', new_status)
             .tap(function(status) {
-                logger.debug('Updated status in db to "%s"',
-                             status, asgn);
+                logger.verbose('Updated status in db to "%s"',
+                               status, asgn);
             })
             .then(function(status) {res.send(status);})
             .catch(function(err) {
-                logger.error('error updating status in db', err);
+                logger.error('Error updating status in db', err);
                 next(err);
             });
         
