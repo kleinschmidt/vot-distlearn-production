@@ -40,7 +40,7 @@ module.exports = function(req, res, next) {
     var asgn = Assignment(req.body);
     var new_status = req.params.status;
 
-    logger.info('Updating status to "%s"', new_status, asgn);
+    logger.verbose('Status update requested: "%s"', new_status, asgn);
 
     if (status_is_valid(new_status)) {
 
@@ -48,10 +48,9 @@ module.exports = function(req, res, next) {
             .where(asgn)
             .select('status')
             .then(R.pipe(R.pluck('status'), R.head))
-            .tap(function(status) {
-                logger.verbose('Current status in db "%s"', status, asgn);
-            })
             .tap(function(old_status) {
+                logger.info('Updating status from "%s" to "%s"',
+                            old_status, new_status, asgn);
                 if (!prev_status_is_valid(new_status, old_status)) {
                     throw {
                         error: 'invalid_status_update',
