@@ -1,4 +1,5 @@
-var R = require('ramda');
+var R = require('ramda')
+  , list_balancing_counts = require('./list_balancing_counts');
 
 // make lists that look like:
 // 
@@ -49,5 +50,13 @@ var add_list_id = function(c, id) {return R.assoc('list_id', id, c);};
 // a map function which provides index to f
 var mapIndex = R.addIndex(R.map); 
 var lists = mapIndex(add_list_id, R.concat(b_conditions, p_conditions));
+
+// add list balancing counts
+var merge_one_by = R.curry(function(prop, cs, l) {
+    var find_match_by_prop = R.find(R.propEq(prop, R.prop(prop, l)));
+    return R.merge(l, find_match_by_prop(cs));
+});
+lists = R.map(merge_one_by('list_id', list_balancing_counts), lists);
+
 
 module.exports = lists;
