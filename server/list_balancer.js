@@ -40,6 +40,8 @@ module.exports = function list_balancer_factory(lists, assignment_filters) {
 
     assignments_per_list_id(assignment_filters).then(function(counts) {
         logger.info('List balancer:');
+        logger.info('  Running lists:');
+        R.map(function(l) {logger.info('   ', l);}, lists);
         logger.info('  Using assignment filters:', assignment_filters);
         logger.info('  Assignment counts in database:', counts);
     });
